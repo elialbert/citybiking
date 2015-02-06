@@ -7,6 +7,7 @@ function init() {
     var theCircle = setupBike();
     var background = setupBackground();
     var input = {up: false, down: false, left: false, right: false}
+    var posChange = {changeX:0, changeY:0, direction:270, speed:0}
     setupKeys(input);
     stage.addChild(background);
     stage.addChild(theCircle);
@@ -15,7 +16,7 @@ function init() {
 
     function animate() {
         requestAnimFrame( animate );
-	posChange = moveBike(null,null,input)
+	posChange = moveBike(posChange.direction,posChange.speed,input)
 	theCircle.position.x += posChange.changeX
 	theCircle.position.y += posChange.changeY
 	// render the stage   
