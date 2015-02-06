@@ -8,13 +8,17 @@ function moveBike(direction, speed, input) {
 	speed -= .1;
     }
     if (input.up) {
-	speed += .11;
+	speed += .05;
     }
     if (input.left) {
-	direction -= 3;
+	if (speed != 0) {
+	    direction -= 3.1/speed;
+	}
     }
     if (input.right) {
-	direction += 3;
+	if (speed != 0) {
+	    direction += 3.1/speed;
+	}
     }
     
     direction = direction % 360;
@@ -22,8 +26,8 @@ function moveBike(direction, speed, input) {
     if (speed < 0) {
 	speed = 0;
     }
-    if (speed > 5) {
-	speed = 5;
+    if (speed > 3) {
+	speed = 3;
     }
     // now find the x and y offset
     changeX = Math.cos(toRadians(direction)) * speed;

@@ -4,21 +4,25 @@ function init() {
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(600, 600, {view:document.getElementById("game-canvas")});
-    var theCircle = setupBike();
+    var theBike = setupBike();
     var background = setupBackground();
     var input = {up: false, down: false, left: false, right: false}
     var posChange = {changeX:0, changeY:0, direction:270, speed:0}
     setupKeys(input);
     stage.addChild(background);
-    stage.addChild(theCircle);
+    stage.addChild(theBike);
 
     requestAnimFrame( animate );
 
     function animate() {
         requestAnimFrame( animate );
 	posChange = moveBike(posChange.direction,posChange.speed,input)
-	theCircle.position.x += posChange.changeX
-	theCircle.position.y += posChange.changeY
+	theBike.position.x += posChange.changeX;
+	theBike.position.y += posChange.changeY;
+	//theBike.pivot.x = theBike.position.x
+	//theBike.pivot.y = theBike.position.y
+	//theBike.rotation +=1; //toRadians(posChange.direction);
+   
 	// render the stage   
 	renderer.render(stage);
     }
@@ -26,10 +30,16 @@ function init() {
 
 function setupBike() {
     var graphics = new PIXI.Graphics();
-    graphics.lineStyle(2, 0x000000, 1);
-    graphics.beginFill(0x009900, 1);
-    graphics.drawCircle(325,580,10);
+    graphics.lineStyle(2, 0x009900, 1);
+    graphics.beginFill(0xffffff, 1);
+    graphics.moveTo(325, 580);
+    graphics.lineTo(329, 580);
+    graphics.lineTo(329, 570);
+    graphics.lineTo(325, 570);
+    graphics.lineTo(325, 580);
     graphics.endFill();
+    console.log("pivot is " + graphics.pivot)
+    console.dir(graphics.pivot);
     return graphics
 }
 
