@@ -96,6 +96,11 @@ function buildLevel(stage) {
     }
 
     function drawSidewalks(graphics, roadDef) {
+    	xdiff = roadDef.xFinish - roadDef.xStart
+	ydiff = roadDef.yFinish - roadDef.yStart
+	
+    
+    
 	// left sidewalk
 	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
 	leftStart = roadDef.xStart - roadDef.roadWidth/2 - roadDef.sidewalkWidth/2;
@@ -116,7 +121,7 @@ function buildLevel(stage) {
 
 	// not quite ready for sideways / diagonal roads yet
 	function drawSidewalkLines(start, end) {
-	    graphics.lineStyle(1, 0x101214, 1); // darker gray
+    	    graphics.lineStyle(1, 0x101214, 1); // darker gray
 	    var y = roadDef.yStart;
 	    while (true) {
 		y += 15;
