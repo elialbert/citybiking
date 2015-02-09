@@ -45,13 +45,14 @@ function moveBike(direction, speed, input) {
 }
 
 function checkCollisions(theBike, staticCollisionObjects, posChange) {
-    // console.log(theBike.position.x + ": " + staticCollisionObjects[0].position.x);
+    //console.log(theBike.position.x + ": " + staticCollisionObjects[1].position.x);
     _.each(staticCollisionObjects, function(obj) {
 	var xdist = obj.position.x - theBike.position.x;
-	// console.log("A: " + xdist + ", " + obj.width/2);
-	if (xdist > -obj.width && xdist < obj.width) {
+	//console.log("A: " + xdist + ", " + obj.width/2);
+	if (xdist > -obj.width/2 && xdist < obj.width/2) {
 	    var ydist = obj.position.y - theBike.position.y;
-	    // console.log("B: " + obj.position.y + ": " + ydist + ", " + obj.height/2);
+	    //console.log("B: " + obj.position.y + ": " + ydist + ", " + obj.height/2);
+	    // brokenish:
 	    if (ydist >= -obj.height && ydist <= obj.height) {
 		posChange.speed = posChange.speed / 2;
 	    }
