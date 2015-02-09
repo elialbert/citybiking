@@ -13,16 +13,14 @@ function init() {
     stage.addChild(theBike);
 
     requestAnimFrame( animate );
-
+    window.ttt = theBike;
     function animate() {
         requestAnimFrame( animate );
 	posChange = moveBike(posChange.direction,posChange.speed,input)
 	theBike.position.x += posChange.changeX;
 	theBike.position.y += posChange.changeY;
-	//theBike.pivot.x = theBike.position.x
-	//theBike.pivot.y = theBike.position.y
-	//theBike.rotation +=1; //toRadians(posChange.direction);
-   
+	theBike.rotation = toRadians(posChange.direction - 270);
+	
 	// render the stage   
 	renderer.render(stage);
     }
@@ -33,14 +31,18 @@ function setupBike() {
     graphics.lineStyle(2, 0x009900, 1);
     graphics.beginFill(0xffffff, 1);
     graphics.moveTo(325, 580);
-    graphics.lineTo(329, 580);
-    graphics.lineTo(329, 570);
     graphics.lineTo(325, 570);
+    graphics.lineTo(329, 570);
+    graphics.lineTo(329, 580);
     graphics.lineTo(325, 580);
     graphics.endFill();
-    console.log("pivot is " + graphics.pivot)
-    console.dir(graphics.pivot);
-    return graphics
+    texture = graphics.generateTexture()
+    theBike = new PIXI.Sprite(texture)
+    theBike.position.x = 325;
+    theBike.position.y = 580;
+    theBike.anchor.x = .5;
+    theBike.anchor.y = .5;
+    return theBike
 }
 
 function setupBackground() {

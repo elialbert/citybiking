@@ -11,14 +11,21 @@ function moveBike(direction, speed, input) {
 	speed += .05;
     }
     if (input.left) {
-	if (speed != 0) {
+	if (speed >= 1) {
 	    direction -= 3.1/speed;
+	}
+	else if (speed >= 0) {
+	    direction -= 1;
 	}
     }
     if (input.right) {
-	if (speed != 0) {
+	if (speed >= 1) {
 	    direction += 3.1/speed;
+	}	
+	else if (speed >= 0) {
+	    direction += 1;
 	}
+
     }
     
     direction = direction % 360;
