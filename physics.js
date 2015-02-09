@@ -44,16 +44,41 @@ function moveBike(direction, speed, input) {
     return {changeX:changeX, changeY:changeY, direction:direction, speed:speed}
 }
 
+function checkCollisions2(theBike, staticCollisionObjects, posChange) { 
+    window.b=theBike;
+    window.o = staticCollisionObjects;
+    rb = staticCollisionObjects[1]
+    var bike = new SAT.Polygon(new SAT.Vector(theBike.position.x,theBike.position.y), [
+	new SAT.Vector(theBike.position.x, theBike.position.y),
+	new SAT.Vector(theBike.position.x, theBike.position.y+theBike.height),
+	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y+theBike.height),
+	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y)
+    ]);
+    var bike = new SAT.Vector(theBike.position.x, theBike.position.y);
+    window.bb=bike;
+    var right = new SAT.Polygon(new SAT.Vector(rb.position.x,rb.position.y), [
+	new SAT.Vector(rb.position.x, rb.position.y),
+	new SAT.Vector(rb.position.x+rb.width, rb.position.y+rb.height),
+	new SAT.Vector(rb.position.x+rb.width+5, rb.position.y+rb.height),
+	new SAT.Vector(rb.position.x+5, rb.position.y)
+	
+    ]);
+    window.ba=right;
+
+    //console.log(SAT.pointInPolygon(bike,right))
+}
+
 function checkCollisions(theBike, staticCollisionObjects, posChange) {
-    //console.log(theBike.position.x + ": " + staticCollisionObjects[1].position.x);
+    console.log("bikex: "+ theBike.position.x + ",rightcurbx: " + staticCollisionObjects[1].position.x);
     _.each(staticCollisionObjects, function(obj) {
 	var xdist = obj.position.x - theBike.position.x;
-	//console.log("A: " + xdist + ", " + obj.width/2);
+	console.log("xdist: " + xdist + ", objwidth/2: " + obj.width/2);
 	if (xdist > -obj.width/2 && xdist < obj.width/2) {
 	    var ydist = obj.position.y - theBike.position.y;
-	    //console.log("B: " + obj.position.y + ": " + ydist + ", " + obj.height/2);
+	    console.log("objpos y: " + obj.position.y + ", ydist: " + ydist + ", objheight/2: " + obj.height/2);
 	    // brokenish:
 	    if (ydist >= -obj.height && ydist <= obj.height) {
+		console.log("hit");
 		posChange.speed = posChange.speed / 2;
 	    }
 	}

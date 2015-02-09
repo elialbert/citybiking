@@ -3,7 +3,7 @@ function init() {
     var stage = new PIXI.Stage(0x3D3D5C); //0x66FF99
     stage.interactive = true;
     // create a renderer instance.
-    var renderer = PIXI.autoDetectRenderer(600, 600, {view:document.getElementById("game-canvas")});
+    var renderer = PIXI.autoDetectRenderer(600, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
     var theBike = setupBike();
     setupResult = buildLevel(stage);
     background = setupResult.background;
@@ -24,7 +24,7 @@ function init() {
 	theBike.position.y += posChange.changeY;
 	theBike.rotation = toRadians(posChange.direction - 270);
 	
-	checkCollisions(theBike, staticCollisionObjects, posChange);
+	checkCollisions2(theBike, staticCollisionObjects, posChange);
 	// render the stage   
 	renderer.render(stage);
     }

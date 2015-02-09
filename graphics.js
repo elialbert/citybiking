@@ -40,6 +40,10 @@ function buildLevel(stage) {
 
 	function drawRoad(graphics, stage, staticCollisionObjects, roadDef) {
 	    // draws the actual road
+            xdiff = roadDef.xFinish - roadDef.xStart
+	    ydiff = roadDef.yFinish - roadDef.yStart
+    	    roadLength = Math.sqrt(Math.pow(xdiff,2) + Math.pow(ydiff,2))
+
 	    graphics.lineStyle(roadDef.roadWidth, 0x000000, 1);
 	    graphics.moveTo(roadDef.xStart, roadDef.yStart);
 	    graphics.lineTo(roadDef.xFinish, roadDef.yFinish);
@@ -72,9 +76,6 @@ function buildLevel(stage) {
     function drawYellowLines(graphics, roadDef) {
 	graphics.lineStyle(4,0xffff00, 1);
 	graphics.moveTo(roadDef.xStart,roadDef.yStart);
-	xdiff = roadDef.xFinish - roadDef.xStart
-	ydiff = roadDef.yFinish - roadDef.yStart
-	roadLength = Math.sqrt(Math.pow(xdiff,2) + Math.pow(ydiff,2))
 	num_lines = roadLength / 10 / 2
 	drawing = true;
 	var y = roadDef.yStart;
@@ -95,12 +96,7 @@ function buildLevel(stage) {
 	return graphics
     }
 
-    function drawSidewalks(graphics, roadDef) {
-    	xdiff = roadDef.xFinish - roadDef.xStart
-	ydiff = roadDef.yFinish - roadDef.yStart
-	
-    
-    
+    function drawSidewalks(graphics, roadDef) {    
 	// left sidewalk
 	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
 	leftStart = roadDef.xStart - roadDef.roadWidth/2 - roadDef.sidewalkWidth/2;
@@ -121,16 +117,17 @@ function buildLevel(stage) {
 
 	// not quite ready for sideways / diagonal roads yet
 	function drawSidewalkLines(start, end) {
+	    numLines = roadLength / 15;
     	    graphics.lineStyle(1, 0x101214, 1); // darker gray
 	    var y = roadDef.yStart;
-	    while (true) {
-		y += 15;
-		graphics.moveTo(start-roadDef.sidewalkWidth/2, y);
-		graphics.lineTo(start+roadDef.sidewalkWidth/2, y);
-		if (y > roadDef.yFinish) {
-		    break
-		}
-	    }
+	    var x = start;
+	    for (i=0;i<=numLines;i++) {
+		graphics.moveTo(x-roadDef.sidewalkWidth/2, y);
+		graphics.lineTo(x+roadDef.sidewalkWidth/2, y-ydiff/numLines/2);
+		y=y+ydiff/numLines;
+		x=x+xdiff/numLines;
+
+    	    }
 	    return graphics
 	}
     }
