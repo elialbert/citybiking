@@ -24,7 +24,7 @@ function buildLevel(stage) {
     var graphics = new PIXI.Graphics();
     // takes the middle of the road start and finish
     // goes from top to bottom
-    roadDefs = [{xStart:300,yStart:0, xFinish:300, yFinish:600, roadWidth:100, sidewalkWidth:17}]
+    roadDefs = [{xStart:300,yStart:0, xFinish:350, yFinish:600, roadWidth:100, sidewalkWidth:17}]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
     window.stage = stage;
