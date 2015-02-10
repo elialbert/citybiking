@@ -8,6 +8,7 @@ function init() {
     setupResult = buildLevel(stage);
     background = setupResult.background;
     staticCollisionObjects = setupResult.staticCollisionObjects;
+    setupStaticBBs(staticCollisionObjects, stage);
     stage = setupResult.stage
 
     var input = {up: false, down: false, left: false, right: false}

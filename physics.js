@@ -48,24 +48,57 @@ function checkCollisions2(theBike, staticCollisionObjects, posChange) {
     window.b=theBike;
     window.o = staticCollisionObjects;
     rb = staticCollisionObjects[1]
-    var bike = new SAT.Polygon(new SAT.Vector(theBike.position.x,theBike.position.y), [
-	new SAT.Vector(theBike.position.x, theBike.position.y),
-	new SAT.Vector(theBike.position.x, theBike.position.y+theBike.height),
-	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y+theBike.height),
-	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y)
-    ]);
+    //var bike = new SAT.Polygon(new SAT.Vector(theBike.position.x,theBike.position.y), [
+//	new SAT.Vector(theBike.position.x, theBike.position.y),
+//	new SAT.Vector(theBike.position.x, theBike.position.y+theBike.height),
+//	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y+theBike.height),
+//	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y)
+  //  ]);
     var bike = new SAT.Vector(theBike.position.x, theBike.position.y);
     window.bb=bike;
-    var right = new SAT.Polygon(new SAT.Vector(rb.position.x,rb.position.y), [
-	new SAT.Vector(rb.position.x, rb.position.y),
-	new SAT.Vector(rb.position.x+rb.width, rb.position.y+rb.height),
-	new SAT.Vector(rb.position.x+rb.width+5, rb.position.y+rb.height),
-	new SAT.Vector(rb.position.x+5, rb.position.y)
+    //var right = new SAT.Polygon(new SAT.Vector(rb.position.x,rb.position.y), [
+//	new SAT.Vector(rb.position.x, rb.position.y),
+//	new SAT.Vector(rb.position.x+rb.width, rb.position.y+rb.height),
+//	new SAT.Vector(rb.position.x+rb.width+5, rb.position.y+rb.height),
+//	new SAT.Vector(rb.position.x+5, rb.position.y)
 	
-    ]);
-    window.ba=right;
+  //  ]);
+    _.each(staticCollisionObjects, function(obj) {
+	if (SAT.pointInPolygon(bike, obj.bbPoly)) {
+	    console.log("hit! " + bike.x);
+	}
+    });
+}
 
-    //console.log(SAT.pointInPolygon(bike,right))
+function setupStaticBBs(staticCollisionObjects, stage) {
+    _.each(staticCollisionObjects, function(obj) {
+	obj.bbPoly = BBFromSprite(obj);
+	var ttt = obj.bbPoly;
+	var g = new PIXI.Graphics();
+	g.lineStyle(2, 0xff0000, 1);
+	g.moveTo(ttt.pos.x,ttt.pos.y);
+	_.each(ttt.points, function(point) {
+	    console.log("check " + ttt.pos.x + point.x);
+	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
+	});
+	stage.addChild(g);
+	window.tt1 = ttt;
+	window.tt2 = g;
+
+    });
+}
+
+function BBFromSprite(sprite) {
+    // take a pixi sprite, return a SAT.js polygon
+    // SAT.js polygon requires a position and then counterclockwise points referenced off of initial position
+    if (sprite.polygonPoints) {
+	var poly = new SAT.Polygon(new SAT.Vector(sprite.position.x,sprite.position.y), sprite.polygonPoints);
+    }
+    else {
+	console.log("NO POLY POINTS!");
+    }
+    return poly;
+    
 }
 
 function checkCollisions(theBike, staticCollisionObjects, posChange) {
