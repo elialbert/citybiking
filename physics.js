@@ -45,27 +45,11 @@ function moveBike(direction, speed, input) {
 }
 
 function checkCollisions2(theBike, staticCollisionObjects, posChange) { 
-    window.b=theBike;
-    window.o = staticCollisionObjects;
-    rb = staticCollisionObjects[1]
-    //var bike = new SAT.Polygon(new SAT.Vector(theBike.position.x,theBike.position.y), [
-//	new SAT.Vector(theBike.position.x, theBike.position.y),
-//	new SAT.Vector(theBike.position.x, theBike.position.y+theBike.height),
-//	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y+theBike.height),
-//	new SAT.Vector(theBike.position.x+theBike.width, theBike.position.y)
-  //  ]);
     var bike = new SAT.Vector(theBike.position.x, theBike.position.y);
-    window.bb=bike;
-    //var right = new SAT.Polygon(new SAT.Vector(rb.position.x,rb.position.y), [
-//	new SAT.Vector(rb.position.x, rb.position.y),
-//	new SAT.Vector(rb.position.x+rb.width, rb.position.y+rb.height),
-//	new SAT.Vector(rb.position.x+rb.width+5, rb.position.y+rb.height),
-//	new SAT.Vector(rb.position.x+5, rb.position.y)
-	
-  //  ]);
     _.each(staticCollisionObjects, function(obj) {
 	if (SAT.pointInPolygon(bike, obj.bbPoly)) {
-	    console.log("hit! " + bike.x);
+	    //console.log("hit! " + bike.y);
+	    posChange.speed = posChange.speed / 1.9;
 	}
     });
 }
@@ -74,17 +58,18 @@ function setupStaticBBs(staticCollisionObjects, stage) {
     _.each(staticCollisionObjects, function(obj) {
 	obj.bbPoly = BBFromSprite(obj);
 	var ttt = obj.bbPoly;
+	// draw red lines around bbs for testing:
+	/*
 	var g = new PIXI.Graphics();
 	g.lineStyle(2, 0xff0000, 1);
 	g.moveTo(ttt.pos.x,ttt.pos.y);
+	console.log("setup: " + ttt.pos.x);
 	_.each(ttt.points, function(point) {
-	    console.log("check " + ttt.pos.x + point.x);
+	    console.log("ttt.pos.x+point.x " + (ttt.pos.x+point.x));
 	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
 	});
 	stage.addChild(g);
-	window.tt1 = ttt;
-	window.tt2 = g;
-
+	*/
     });
 }
 

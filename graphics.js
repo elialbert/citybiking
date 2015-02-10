@@ -21,10 +21,14 @@ function setupBike() {
 
 function buildLevel(stage) {
     var staticCollisionObjects = [];
+    var curblist = [];
     var graphics = new PIXI.Graphics();
     // takes the middle of the road start and finish
     // goes from top to bottom
-    roadDefs = [{xStart:300,yStart:0, xFinish:350, yFinish:600, roadWidth:100, sidewalkWidth:17}]
+    roadDefs = [
+	{xStart:300,yStart:0, xFinish:350, yFinish:300, roadWidth:100, sidewalkWidth:17},
+	{xStart:350,yStart:300, xFinish:300, yFinish:600, roadWidth:100, sidewalkWidth:17}
+    ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
     window.stage = stage;
@@ -35,6 +39,10 @@ function buildLevel(stage) {
     function drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs) {
 	_.each(roadDefs, function(roadDef, idx) {
 	    drawRoad(graphics, stage, staticCollisionObjects, roadDef);
+	});
+	// make sure curbs render on top
+	_.each(curblist, function(curb) {
+	    stage.addChild(curb);
 	});
 	return graphics
 
@@ -65,11 +73,14 @@ function buildLevel(stage) {
 	curb1.lineStyle(5, 0xd3d3d3, 1);
 	curb1.moveTo(xstart, roadDef.yStart);
 	curb1.lineTo(xfinish, roadDef.yFinish);
+	console.log("xstart is " + xstart);
 	console.log("xfinish is " + xfinish);
+	console.log("point1 " + ((xfinish-2.5)-xstart));
+	console.log(roadDef.yFinish);
 	var polygonPoints = [
 	    new SAT.Vector(-2.5,0),
-	    new SAT.Vector((xfinish-2.5)-xstart,roadDef.yFinish),
-	    new SAT.Vector((xfinish+2.5)-xstart,roadDef.yFinish),
+	    new SAT.Vector((xfinish-2.5)-xstart,roadDef.yFinish-roadDef.yStart),
+	    new SAT.Vector((xfinish+2.5)-xstart,roadDef.yFinish-roadDef.yStart),
 	    new SAT.Vector(2.5,0),
 	    new SAT.Vector(-2.5,0),
 	];
@@ -78,7 +89,8 @@ function buildLevel(stage) {
 	curb1sprite.position.x = xstart;
 	curb1sprite.position.y = roadDef.yStart;
 	curb1sprite.polygonPoints = polygonPoints;
-	stage.addChild(curb1); // when I added the sprite,
+	//stage.addChild(curb1); // when I added the sprite,
+	curblist.push(curb1);
 	// it didn't go exactly where it was supposed to
 	staticCollisionObjects.push(curb1sprite);
     }
