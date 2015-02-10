@@ -59,7 +59,7 @@ function setupStaticBBs(staticCollisionObjects, stage) {
 	obj.bbPoly = BBFromSprite(obj);
 	var ttt = obj.bbPoly;
 	// draw red lines around bbs for testing:
-	/*
+	
 	var g = new PIXI.Graphics();
 	g.lineStyle(2, 0xff0000, 1);
 	g.moveTo(ttt.pos.x,ttt.pos.y);
@@ -69,7 +69,7 @@ function setupStaticBBs(staticCollisionObjects, stage) {
 	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
 	});
 	stage.addChild(g);
-	*/
+	
     });
 }
 

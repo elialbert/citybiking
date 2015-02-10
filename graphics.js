@@ -26,8 +26,11 @@ function buildLevel(stage) {
     // takes the middle of the road start and finish
     // goes from top to bottom
     roadDefs = [
+	/*
 	{xStart:300,yStart:0, xFinish:350, yFinish:300, roadWidth:100, sidewalkWidth:17},
 	{xStart:350,yStart:300, xFinish:300, yFinish:600, roadWidth:100, sidewalkWidth:17}
+	*/
+	{xStart:0,yStart:300, xFinish:600, yFinish:350, roadWidth:100, sidewalkWidth:17},
     ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
