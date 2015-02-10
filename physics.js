@@ -46,6 +46,7 @@ function moveBike(direction, speed, input) {
 
 function checkCollisions2(theBike, staticCollisionObjects, posChange) { 
     var bike = new SAT.Vector(theBike.position.x, theBike.position.y);
+    //console.log(theBike.position.x + ", " + theBike.position.y);
     _.each(staticCollisionObjects, function(obj) {
 	if (SAT.pointInPolygon(bike, obj.bbPoly)) {
 	    //console.log("hit! " + bike.y);
@@ -63,9 +64,7 @@ function setupStaticBBs(staticCollisionObjects, stage) {
 	var g = new PIXI.Graphics();
 	g.lineStyle(2, 0xff0000, 1);
 	g.moveTo(ttt.pos.x,ttt.pos.y);
-	console.log("setup: " + ttt.pos.x);
 	_.each(ttt.points, function(point) {
-	    console.log("ttt.pos.x+point.x " + (ttt.pos.x+point.x));
 	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
 	});
 	stage.addChild(g);
@@ -104,5 +103,9 @@ function checkCollisions(theBike, staticCollisionObjects, posChange) {
 }
 
 function toRadians (angle) {
-  return angle * (Math.PI / 180);
+    return angle * (Math.PI / 180);
+}
+
+function toDegrees(radians) {
+    return radians * (180/Math.PI);
 }

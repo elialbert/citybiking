@@ -26,11 +26,12 @@ function buildLevel(stage) {
     // takes the middle of the road start and finish
     // goes from top to bottom
     roadDefs = [
+	
+	{xStart:300,yStart:0, xFinish:450, yFinish:400, roadWidth:100, sidewalkWidth:17},
 	/*
-	{xStart:300,yStart:0, xFinish:350, yFinish:300, roadWidth:100, sidewalkWidth:17},
 	{xStart:350,yStart:300, xFinish:300, yFinish:600, roadWidth:100, sidewalkWidth:17}
-	*/
 	{xStart:0,yStart:300, xFinish:600, yFinish:350, roadWidth:100, sidewalkWidth:17},
+	*/
     ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
@@ -76,10 +77,6 @@ function buildLevel(stage) {
 	curb1.lineStyle(5, 0xd3d3d3, 1);
 	curb1.moveTo(xstart, roadDef.yStart);
 	curb1.lineTo(xfinish, roadDef.yFinish);
-	console.log("xstart is " + xstart);
-	console.log("xfinish is " + xfinish);
-	console.log("point1 " + ((xfinish-2.5)-xstart));
-	console.log(roadDef.yFinish);
 	var polygonPoints = [
 	    new SAT.Vector(-2.5,0),
 	    new SAT.Vector((xfinish-2.5)-xstart,roadDef.yFinish-roadDef.yStart),
@@ -121,23 +118,45 @@ function buildLevel(stage) {
 	return graphics
     }
 
-    function drawSidewalks(graphics, roadDef) {    
-	// left sidewalk
-	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
-	leftStart = roadDef.xStart - roadDef.roadWidth/2 - roadDef.sidewalkWidth/2;
-	leftEnd = roadDef.xFinish - roadDef.roadWidth/2 - roadDef.sidewalkWidth/2;
-	graphics.moveTo(leftStart, roadDef.yStart);
-	graphics.lineTo(leftEnd, roadDef.yFinish);
-	drawSidewalkLines(leftStart, leftEnd);
+    function getAngleOffset(roadDef, offsetDistance) {
+	if (ydiff == 0) {
+	    ratio = 0;
+	}
+	else {
+	    ratio = xdiff/ydiff;
+	}
+	var angle1 = toDegrees(Math.atan(ratio));
+	var angle2 = 90-(90-angle1);
+	if (ratio == 0) {
+	    angle2 = 90;
+	}
+	var x = Math.cos(toRadians(angle2)) * offsetDistance;
+	var y = Math.sin(toRadians(angle2)) * offsetDistance;
+	return {x:x,y:y}
+    }
 
-
-	// right sidewalk
+    function drawSidewalks(graphics, roadDef) {  
+	angleOffset = getAngleOffset(roadDef, roadDef.roadWidth/2 + roadDef.sidewalkWidth/2);
+	x=angleOffset.x;
+	y=angleOffset.y;
 	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
-	rightStart = roadDef.xStart + roadDef.roadWidth/2 + roadDef.sidewalkWidth/2;
-	rightEnd = roadDef.xFinish + roadDef.roadWidth/2 + roadDef.sidewalkWidth/2;
-	graphics.moveTo(rightStart, roadDef.yStart);
-	graphics.lineTo(rightEnd, roadDef.yFinish);
-	drawSidewalkLines(rightStart, rightEnd);
+	leftXStart = roadDef.xStart - x;
+	leftXFinish = roadDef.xFinish - x;
+	leftYStart = roadDef.yStart + y;
+	leftYFinish = roadDef.yFinish + y;
+
+	rightXStart = roadDef.xStart + x;
+	rightXFinish = roadDef.xFinish + x;
+	rightYStart = roadDef.yStart - y;
+	rightYFinish = roadDef.yFinish - y;
+
+	graphics.moveTo(leftXStart, leftYStart);
+	graphics.lineTo(leftXFinish, leftYFinish);
+	graphics.moveTo(rightXStart, rightYStart);
+	graphics.lineTo(rightXFinish, rightYFinish);
+
+	//drawSidewalkLines(rightStart, rightEnd);
+	
 	return graphics
 
 	// not quite ready for sideways / diagonal roads yet
@@ -157,4 +176,12 @@ function buildLevel(stage) {
 	}
     }
 
+}
+
+function toRadians (angle) {
+    return angle * (Math.PI / 180);
+}
+
+function toDegrees(radians) {
+    return radians * (180/Math.pi);
 }
