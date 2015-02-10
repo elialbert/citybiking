@@ -64,10 +64,13 @@ function setupStaticBBs(staticCollisionObjects, stage) {
 	var g = new PIXI.Graphics();
 	g.lineStyle(2, 0xff0000, 1);
 	g.moveTo(ttt.pos.x,ttt.pos.y);
+	console.log("START");
 	_.each(ttt.points, function(point) {
+	    console.log("X: " + (ttt.pos.x+point.x) + ", Y: " + (ttt.pos.y+point.y));
 	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
 	});
 	stage.addChild(g);
+	window.ttt =ttt;
 	
     });
 }

@@ -26,12 +26,7 @@ function buildLevel(stage) {
     // takes the middle of the road start and finish
     // goes from top to bottom
     roadDefs = [
-	
-	{xStart:300,yStart:0, xFinish:450, yFinish:400, roadWidth:100, sidewalkWidth:17},
-	/*
-	{xStart:350,yStart:300, xFinish:300, yFinish:600, roadWidth:100, sidewalkWidth:17}
-	{xStart:0,yStart:300, xFinish:600, yFinish:350, roadWidth:100, sidewalkWidth:17},
-	*/
+	{xStart:100,yStart:300, xFinish:500, yFinish:350, roadWidth:100, sidewalkWidth:17},
     ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
@@ -72,6 +67,8 @@ function buildLevel(stage) {
 	}
 
     }
+// drawing curb with 93.79826327053958, 349.61389383568337, 493.79826327053956, 399.61389383568337
+//drawing curb with 106.20173672946042, 250.38610616431663, 506.20173672946044, 300.38610616431663
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {
     	var curb1 = new PIXI.Graphics();
@@ -79,6 +76,10 @@ function buildLevel(stage) {
 	curb1.lineStyle(5, 0xd3d3d3, 1);
 	curb1.moveTo(xstart, ystart);
 	curb1.lineTo(xfinish, yfinish);
+	// TODO NOTE: bounding box needs its own fucking angle offsets
+	// this -2.5 shit aint gonna cut it
+	// and keep order of points in mind (must be counterclockwise)
+	console.log("drawing curb with " + xstart +", " + ystart + ", " + xfinish + ", " + yfinish);
 	var polygonPoints = [
 	    new SAT.Vector(-2.5,0),
 	    new SAT.Vector((xfinish-2.5)-xstart,yfinish-ystart),
