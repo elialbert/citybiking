@@ -65,29 +65,31 @@ function buildLevel(stage) {
 	    graphics = drawYellowLines(graphics, roadDef);
 	    stage.addChild(graphics);
     
-	    drawCurb(roadDef, roadDef.xStart-roadDef.roadWidth/2,roadDef.xFinish-roadDef.roadWidth/2)
-    	    drawCurb(roadDef, roadDef.xStart+roadDef.roadWidth/2,roadDef.xFinish+roadDef.roadWidth/2)
+	    angleOffset = getAngleOffset(roadDef, roadDef.roadWidth/2)
+	    
+	    drawCurb(roadDef, roadDef.xStart-angleOffset.x, roadDef.yStart+angleOffset.y, roadDef.xFinish-angleOffset.x, roadDef.yFinish+angleOffset.y)
+	    drawCurb(roadDef, roadDef.xStart+angleOffset.x, roadDef.yStart-angleOffset.y, roadDef.xFinish+angleOffset.x, roadDef.yFinish-angleOffset.y)
 	}
 
     }
     
-    function drawCurb(roadDef, xstart, xfinish) {
+    function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {
     	var curb1 = new PIXI.Graphics();
 	var polygonPoints = [];
 	curb1.lineStyle(5, 0xd3d3d3, 1);
-	curb1.moveTo(xstart, roadDef.yStart);
-	curb1.lineTo(xfinish, roadDef.yFinish);
+	curb1.moveTo(xstart, ystart);
+	curb1.lineTo(xfinish, yfinish);
 	var polygonPoints = [
 	    new SAT.Vector(-2.5,0),
-	    new SAT.Vector((xfinish-2.5)-xstart,roadDef.yFinish-roadDef.yStart),
-	    new SAT.Vector((xfinish+2.5)-xstart,roadDef.yFinish-roadDef.yStart),
+	    new SAT.Vector((xfinish-2.5)-xstart,yfinish-ystart),
+	    new SAT.Vector((xfinish+2.5)-xstart,yfinish-ystart),
 	    new SAT.Vector(2.5,0),
 	    new SAT.Vector(-2.5,0),
 	];
 	curb1texture = curb1.generateTexture()
 	curb1sprite = new PIXI.Sprite(curb1texture)
 	curb1sprite.position.x = xstart;
-	curb1sprite.position.y = roadDef.yStart;
+	curb1sprite.position.y = ystart;
 	curb1sprite.polygonPoints = polygonPoints;
 	//stage.addChild(curb1); // when I added the sprite,
 	curblist.push(curb1);
