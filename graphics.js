@@ -1,4 +1,4 @@
-function setupBike() {
+function setupBike(x,y) {
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(2, 0x009900, 1);
     graphics.beginFill(0xffffff, 1);
@@ -10,8 +10,8 @@ function setupBike() {
     graphics.endFill();
     texture = graphics.generateTexture()
     theBike = new PIXI.Sprite(texture)
-    theBike.position.x = 325;
-    theBike.position.y = 580;
+    theBike.position.x = x;
+    theBike.position.y = y;
     theBike.anchor.x = .5;
     theBike.anchor.y = .5;
     return theBike
@@ -19,18 +19,13 @@ function setupBike() {
 
 // take a road center starting point, specify points along its course
 
-function buildLevel(stage) {
+function buildLevel(stage, roadDefs) {
     var staticCollisionObjects = [];
     var curblist = [];
     var graphics = new PIXI.Graphics();
-    // takes the middle of the road start and finish
-    // goes from top to bottom
-    roadDefs = [
-	{xStart:100,yStart:100, xFinish:100, yFinish:500, roadWidth:100, sidewalkWidth:17},
-    ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
-    window.ttt = staticCollisionObjects;
-    window.stage = stage;
+    //window.ttt = staticCollisionObjects;
+    //window.stage = stage;
 
     return {staticCollisionObjects: staticCollisionObjects, stage: stage}
 
