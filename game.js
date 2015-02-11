@@ -4,7 +4,7 @@ function init() {
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    var theBike = setupBike(425,700);
+    var theBike = setupBike(425,550);
     // takes the middle of the road start and finish
     // goes from top to bottom
     var roadDefs = [

@@ -5,36 +5,36 @@
 // so another way to look at it is we have angle and distance and need to calculate x and y offset
 function moveBike(direction, speed, input) {
     if (input.down) {
-	speed -= .07;
+	speed -= .05;
     }
     if (input.up) {
-	speed += .04;
+	speed += Math.pow(.03,2)*22;
     }
     if (input.left) {
 	if (speed >= 1) {
-	    direction -= 3.8/speed;
+	    direction -= 1/speed;
 	}
 	else if (speed >= 0) {
-	    direction -= 2;
+	    direction -= 1.5;
 	}
     }
     if (input.right) {
 	if (speed >= 1) {
-	    direction += 3.8/speed;
+	    direction += 1/speed;
 	}	
 	else if (speed >= 0) {
-	    direction += 2;
+	    direction += 1.5;
 	}
 
     }
     
     direction = direction % 360;
-    speed -= .01; // friction
+    speed -= .005; // friction
     if (speed < 0) {
 	speed = 0;
     }
-    if (speed > 2.7) {
-	speed = 2.7;
+    if (speed > 1.3) {
+	speed = 1.3;
     }
     // now find the x and y offset
     changeX = Math.cos(toRadians(direction)) * speed;
