@@ -144,7 +144,7 @@ function buildLevel(stage) {
 	}
 	var x = Math.cos(toRadians(angle2)) * offsetDistance;
 	var y = Math.sin(toRadians(angle2)) * offsetDistance;
-	console.log("offsetd: " + offsetDistance + ", ratio: " + ratio + ", angle1: " + angle1 + ", angle2: " + angle2);
+	//console.log("offsetd: " + offsetDistance + ", ratio: " + ratio + ", angle1: " + angle1 + ", angle2: " + angle2);
 	return {x:x,y:y}
     }
 
@@ -152,7 +152,7 @@ function buildLevel(stage) {
 	var angleOffset = getAngleOffset(roadDef.roadWidth/2 + roadDef.sidewalkWidth/2);
 	var x=angleOffset.x;
 	var y=angleOffset.y;
-	console.log("sidewalk angleoffset: " + x + ", " + y);
+	//console.log("sidewalk angleoffset: " + x + ", " + y);
 	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
 	leftXStart = roadDef.xStart - x;
 	leftXFinish = roadDef.xFinish - x;
