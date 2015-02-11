@@ -26,7 +26,7 @@ function buildLevel(stage) {
     // takes the middle of the road start and finish
     // goes from top to bottom
     roadDefs = [
-	{xStart:100,yStart:300, xFinish:500, yFinish:350, roadWidth:100, sidewalkWidth:17},
+	{xStart:100,yStart:100, xFinish:300, yFinish:500, roadWidth:100, sidewalkWidth:17},
     ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
@@ -60,15 +60,23 @@ function buildLevel(stage) {
 	    graphics = drawYellowLines(graphics, roadDef);
 	    stage.addChild(graphics);
     
-	    angleOffset = getAngleOffset(roadDef, roadDef.roadWidth/2)
+	    angleOffset = getAngleOffset(roadDef.roadWidth/2)
 	    
-	    drawCurb(roadDef, roadDef.xStart-angleOffset.x, roadDef.yStart+angleOffset.y, roadDef.xFinish-angleOffset.x, roadDef.yFinish+angleOffset.y)
-	    drawCurb(roadDef, roadDef.xStart+angleOffset.x, roadDef.yStart-angleOffset.y, roadDef.xFinish+angleOffset.x, roadDef.yFinish-angleOffset.y)
+	    drawCurb(roadDef, 
+		     roadDef.xStart-angleOffset.x, 
+		     roadDef.yStart+angleOffset.y, 
+		     roadDef.xFinish-angleOffset.x, 
+		     roadDef.yFinish+angleOffset.y);
+		     
+	    drawCurb(roadDef, 
+		     roadDef.xStart+angleOffset.x, 
+		     roadDef.yStart-angleOffset.y, 
+		     roadDef.xFinish+angleOffset.x, 
+		     roadDef.yFinish-angleOffset.y);
+
 	}
 
     }
-// drawing curb with 93.79826327053958, 349.61389383568337, 493.79826327053956, 399.61389383568337
-//drawing curb with 106.20173672946042, 250.38610616431663, 506.20173672946044, 300.38610616431663
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {
     	var curb1 = new PIXI.Graphics();
@@ -76,16 +84,16 @@ function buildLevel(stage) {
 	curb1.lineStyle(5, 0xd3d3d3, 1);
 	curb1.moveTo(xstart, ystart);
 	curb1.lineTo(xfinish, yfinish);
-	// TODO NOTE: bounding box needs its own fucking angle offsets
-	// this -2.5 shit aint gonna cut it
-	// and keep order of points in mind (must be counterclockwise)
-	console.log("drawing curb with " + xstart +", " + ystart + ", " + xfinish + ", " + yfinish);
+	//console.log("drawing curb with " + xstart +", " + ystart + ", " + xfinish + ", " + yfinish);
+	var angleOffset = getAngleOffset(2.5);
+	//console.log("angle offset x: " + angleOffset.x + ", y: " + angleOffset.y);
+
 	var polygonPoints = [
-	    new SAT.Vector(-2.5,0),
-	    new SAT.Vector((xfinish-2.5)-xstart,yfinish-ystart),
-	    new SAT.Vector((xfinish+2.5)-xstart,yfinish-ystart),
-	    new SAT.Vector(2.5,0),
-	    new SAT.Vector(-2.5,0),
+	    new SAT.Vector(-angleOffset.x,angleOffset.y),
+	    new SAT.Vector(xfinish-xstart-angleOffset.x,yfinish-ystart + angleOffset.y),
+	    new SAT.Vector(xfinish-xstart+angleOffset.x,yfinish-ystart - angleOffset.y),
+	    new SAT.Vector(angleOffset.x,-angleOffset.y),
+	    new SAT.Vector(-angleOffset.x,angleOffset.y),
 	];
 	curb1texture = curb1.generateTexture()
 	curb1sprite = new PIXI.Sprite(curb1texture)
@@ -121,12 +129,12 @@ function buildLevel(stage) {
 	return graphics
     }
 
-    function getAngleOffset(roadDef, offsetDistance) {
+    function getAngleOffset(offsetDistance) {
 	if (ydiff == 0) {
-	    ratio = 0;
+	    var ratio = 0;
 	}
 	else {
-	    ratio = xdiff/ydiff;
+	    var ratio = xdiff/ydiff;
 	}
 	var angle1 = toDegrees(Math.atan(ratio));
 	var angle2 = 90-(90-angle1);
@@ -139,9 +147,9 @@ function buildLevel(stage) {
     }
 
     function drawSidewalks(graphics, roadDef) {  
-	angleOffset = getAngleOffset(roadDef, roadDef.roadWidth/2 + roadDef.sidewalkWidth/2);
-	x=angleOffset.x;
-	y=angleOffset.y;
+	var angleOffset = getAngleOffset(roadDef.roadWidth/2 + roadDef.sidewalkWidth/2);
+	var x=angleOffset.x;
+	var y=angleOffset.y;
 	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
 	leftXStart = roadDef.xStart - x;
 	leftXFinish = roadDef.xFinish - x;

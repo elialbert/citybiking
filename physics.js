@@ -64,9 +64,8 @@ function setupStaticBBs(staticCollisionObjects, stage) {
 	var g = new PIXI.Graphics();
 	g.lineStyle(2, 0xff0000, 1);
 	g.moveTo(ttt.pos.x,ttt.pos.y);
-	console.log("START");
 	_.each(ttt.points, function(point) {
-	    console.log("X: " + (ttt.pos.x+point.x) + ", Y: " + (ttt.pos.y+point.y));
+	    //console.log("X: " + (ttt.pos.x+point.x) + ", Y: " + (ttt.pos.y+point.y));
 	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
 	});
 	stage.addChild(g);
@@ -86,23 +85,6 @@ function BBFromSprite(sprite) {
     }
     return poly;
     
-}
-
-function checkCollisions(theBike, staticCollisionObjects, posChange) {
-    console.log("bikex: "+ theBike.position.x + ",rightcurbx: " + staticCollisionObjects[1].position.x);
-    _.each(staticCollisionObjects, function(obj) {
-	var xdist = obj.position.x - theBike.position.x;
-	console.log("xdist: " + xdist + ", objwidth/2: " + obj.width/2);
-	if (xdist > -obj.width/2 && xdist < obj.width/2) {
-	    var ydist = obj.position.y - theBike.position.y;
-	    console.log("objpos y: " + obj.position.y + ", ydist: " + ydist + ", objheight/2: " + obj.height/2);
-	    // brokenish:
-	    if (ydist >= -obj.height && ydist <= obj.height) {
-		console.log("hit");
-		posChange.speed = posChange.speed / 2;
-	    }
-	}
-    });
 }
 
 function toRadians (angle) {
