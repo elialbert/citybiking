@@ -26,7 +26,7 @@ function buildLevel(stage) {
     // takes the middle of the road start and finish
     // goes from top to bottom
     roadDefs = [
-	{xStart:100,yStart:100, xFinish:300, yFinish:500, roadWidth:100, sidewalkWidth:17},
+	{xStart:100,yStart:100, xFinish:100, yFinish:500, roadWidth:100, sidewalkWidth:17},
     ]
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
     window.ttt = staticCollisionObjects;
@@ -130,6 +130,7 @@ function buildLevel(stage) {
     }
 
     function getAngleOffset(offsetDistance) {
+	//console.log("xdiff: " + xdiff + ", ydiff: " + ydiff)
 	if (ydiff == 0) {
 	    var ratio = 0;
 	}
@@ -138,11 +139,12 @@ function buildLevel(stage) {
 	}
 	var angle1 = toDegrees(Math.atan(ratio));
 	var angle2 = 90-(90-angle1);
-	if (ratio == 0) {
+	if (ydiff == 0) {
 	    angle2 = 90;
 	}
 	var x = Math.cos(toRadians(angle2)) * offsetDistance;
 	var y = Math.sin(toRadians(angle2)) * offsetDistance;
+	console.log("offsetd: " + offsetDistance + ", ratio: " + ratio + ", angle1: " + angle1 + ", angle2: " + angle2);
 	return {x:x,y:y}
     }
 
@@ -150,6 +152,7 @@ function buildLevel(stage) {
 	var angleOffset = getAngleOffset(roadDef.roadWidth/2 + roadDef.sidewalkWidth/2);
 	var x=angleOffset.x;
 	var y=angleOffset.y;
+	console.log("sidewalk angleoffset: " + x + ", " + y);
 	graphics.lineStyle(roadDef.sidewalkWidth, 0x9BB4CD); //lightgray
 	leftXStart = roadDef.xStart - x;
 	leftXFinish = roadDef.xFinish - x;
