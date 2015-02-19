@@ -58,6 +58,7 @@ function checkCollisions(theBike, collisionObjects, posChange) {
 	if (SAT.pointInPolygon(bike, obj.bbPoly)) {
 	    //console.log("hit! " + bike.y);
 	    posChange.speed = posChange.speed / 1.9;
+	    obj.hit = true;
 	}
     });
 }

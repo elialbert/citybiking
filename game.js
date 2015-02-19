@@ -13,10 +13,10 @@ function init() {
     var carDefs = level.carDefs;
 
     setupResult = buildLevel(stage, roadDefs, intersectionList, carDefs);
-    car1 = setupResult.cars[0]
     background = setupResult.background;
     staticCollisionObjects = setupResult.staticCollisionObjects;
     dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
+    car1 = dynamicCollisionObjects[0];
     setupBBs(staticCollisionObjects, stage);
     stage = setupResult.stage
 
@@ -40,7 +40,9 @@ function init() {
 	checkCollisions(theBike, dynamicCollisionObjects, posChange);
 
 	// simple car movement for testing
-	car1.position.y += .5
+	if (!car1.hit) {
+	    car1.position.y += .5;
+	}
 
 	// render the stage   
 	renderer.render(stage);
