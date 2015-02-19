@@ -4,16 +4,14 @@ function init() {
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    var theBike = setupBike(425,550);
+    level = defaultLevel;
+    var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     // takes the middle of the road start and finish
     // goes from top to bottom
-    var roadDefs = [
-	{xStart:400,yStart:0, xFinish:400, yFinish:250, roadWidth:100, sidewalkWidth:17},
-	{xStart:400,yStart:350, xFinish:400, yFinish:600, roadWidth:100, sidewalkWidth:17},
-	{xStart:0,yStart:300, xFinish:350, yFinish:300, roadWidth:100, sidewalkWidth:17},
-	{xStart:450,yStart:300, xFinish:800, yFinish:300, roadWidth:100, sidewalkWidth:17},
-    ]
-    setupResult = buildLevel(stage, roadDefs);
+    var roadDefs = level.roadDefs;
+    var intersectionList = level.intersectionList;
+
+    setupResult = buildLevel(stage, roadDefs, intersectionList);
     background = setupResult.background;
     staticCollisionObjects = setupResult.staticCollisionObjects;
     setupStaticBBs(staticCollisionObjects, stage);

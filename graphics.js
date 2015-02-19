@@ -19,18 +19,19 @@ function setupBike(x,y) {
 
 // take a road center starting point, specify points along its course
 
-function buildLevel(stage, roadDefs) {
+function buildLevel(stage, roadDefs, intersectionList) {
     var staticCollisionObjects = [];
     var curblist = [];
     var graphics = new PIXI.Graphics();
-    graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs);
+    graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList);
     //window.ttt = staticCollisionObjects;
     //window.stage = stage;
 
     return {staticCollisionObjects: staticCollisionObjects, stage: stage}
 
 
-    function drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs) {
+    function drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList) {
+	drawIntersections(graphics, intersectionList); // basically just fill in black in the polygons in the list for now
 	_.each(roadDefs, function(roadDef, idx) {
 	    drawRoad(graphics, stage, staticCollisionObjects, roadDef);
 	});
@@ -38,6 +39,7 @@ function buildLevel(stage, roadDefs) {
 	_.each(curblist, function(curb) {
 	    stage.addChild(curb);
 	});
+	
 	return graphics
 
 	function drawRoad(graphics, stage, staticCollisionObjects, roadDef) {
@@ -69,6 +71,21 @@ function buildLevel(stage, roadDefs) {
 		     roadDef.xFinish+angleOffset.x, 
 		     roadDef.yFinish-angleOffset.y);
 
+	}
+
+	function drawIntersections(graphics, intersectionList) {
+	    _.each(intersectionList, function(intersectionDef) {
+		graphics.beginFill(0x000000, 1);
+		_.each(intersectionDef, function(coord, idx) {
+		    if (idx == 0) {
+			graphics.moveTo(coord[0], coord[1]);
+		    }
+		    else {
+			graphics.lineTo(coord[0], coord[1]);
+		    }
+		});
+		graphics.endFill();
+	    });
 	}
 
     }
