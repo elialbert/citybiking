@@ -4,8 +4,8 @@ function setupBike(x,y) {
     graphics.beginFill(0xffffff, 1);
     graphics.moveTo(325, 580);
     graphics.lineTo(325, 570);
-    graphics.lineTo(329, 570);
-    graphics.lineTo(329, 580);
+    graphics.lineTo(328, 570);
+    graphics.lineTo(328, 580);
     graphics.lineTo(325, 580);
     graphics.endFill();
     texture = graphics.generateTexture()
@@ -19,18 +19,18 @@ function setupBike(x,y) {
 
 // take a road center starting point, specify points along its course
 
-function buildLevel(stage, roadDefs, intersectionList) {
+function buildLevel(stage, roadDefs, intersectionList, carDefs) {
     var staticCollisionObjects = [];
+    var dynamicCollisionObjects = [];
     var curblist = [];
     var graphics = new PIXI.Graphics();
-    graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList);
-    //window.ttt = staticCollisionObjects;
-    //window.stage = stage;
+    graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList, carDefs);
+    return {staticCollisionObjects: staticCollisionObjects, 
+	    dynamicCollisionObjects: dynamicCollisionObjects, 
+	    stage: stage}
 
-    return {staticCollisionObjects: staticCollisionObjects, stage: stage}
 
-
-    function drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList) {
+    function drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList, carDefs) {
 	drawIntersections(graphics, intersectionList); // basically just fill in black in the polygons in the list for now
 	_.each(roadDefs, function(roadDef, idx) {
 	    drawRoad(graphics, stage, staticCollisionObjects, roadDef);
@@ -38,6 +38,10 @@ function buildLevel(stage, roadDefs, intersectionList) {
 	// make sure curbs render on top
 	_.each(curblist, function(curb) {
 	    stage.addChild(curb);
+	});
+
+	_.each(carDefs, function(carCoords) {
+	    drawCar(carCoords, stage);
 	});
 	
 	return graphics
@@ -89,6 +93,29 @@ function buildLevel(stage, roadDefs, intersectionList) {
 	}
 
     }
+
+    function drawCar(startingCoords, stage) {
+	var car = new PIXI.Graphics();
+	var polygonPoints = [];
+	car.lineStyle(2, 0xCC00FF, 1);
+	car.beginFill(0x9933FF, 1);
+	var x = startingCoords[0];
+	var y = startingCoords[1];
+	car.moveTo(x, y); 
+	car.lineTo(x, y-24);
+	car.lineTo(x+12, y-24);
+	car.lineTo(x+12, y);
+	car.lineTo(x, y);
+	car.endFill();
+	texture = car.generateTexture()
+	carSprite = new PIXI.Sprite(texture)
+	carSprite.position.x = x;
+	carSprite.position.y = y;
+	carSprite.anchor.x = .5;
+	carSprite.anchor.y = .5;
+	stage.addChild(carSprite);
+	dynamicCollisionObjects.push(carSprite);
+    };
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {
     	var curb1 = new PIXI.Graphics();

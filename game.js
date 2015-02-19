@@ -10,11 +10,13 @@ function init() {
     // goes from top to bottom
     var roadDefs = level.roadDefs;
     var intersectionList = level.intersectionList;
+    var carDefs = level.carDefs;
 
-    setupResult = buildLevel(stage, roadDefs, intersectionList);
+    setupResult = buildLevel(stage, roadDefs, intersectionList, carDefs);
     background = setupResult.background;
     staticCollisionObjects = setupResult.staticCollisionObjects;
-    setupStaticBBs(staticCollisionObjects, stage);
+    dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
+    setupBBs(staticCollisionObjects, stage);
     stage = setupResult.stage
 
     var input = {up: false, down: false, left: false, right: false}
@@ -31,7 +33,11 @@ function init() {
 	theBike.position.y += posChange.changeY;
 	theBike.rotation = toRadians(posChange.direction - 270);
 	
-	checkCollisions2(theBike, staticCollisionObjects, posChange);
+	checkCollisions(theBike, staticCollisionObjects, posChange);
+
+	setupBBs(dynamicCollisionObjects, stage, false, true)
+	checkCollisions(theBike, dynamicCollisionObjects, posChange);
+
 	// render the stage   
 	renderer.render(stage);
     }
