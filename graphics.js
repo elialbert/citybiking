@@ -23,11 +23,13 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
     var staticCollisionObjects = [];
     var dynamicCollisionObjects = [];
     var curblist = [];
+    var cars = [];
     var graphics = new PIXI.Graphics();
     graphics = drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList, carDefs);
     return {staticCollisionObjects: staticCollisionObjects, 
 	    dynamicCollisionObjects: dynamicCollisionObjects, 
-	    stage: stage}
+	    stage: stage,
+	    cars: cars}
 
 
     function drawRoadSections(graphics, stage, staticCollisionObjects, roadDefs, intersectionList, carDefs) {
@@ -115,6 +117,7 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 	carSprite.anchor.y = .5;
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carSprite);
+	cars.push(carSprite);
     };
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {
