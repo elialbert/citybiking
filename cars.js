@@ -25,7 +25,8 @@ Car.prototype.isInScene = function() {
 // will hook into physics for acceleration
 Car.prototype.calcMovement = function() {
     if (!this.hit) {
-	this.sprite.position.y += this.def.speed;
+	this.sprite.position.x += this.def.speed[0];
+	this.sprite.position.y += this.def.speed[1];
     }
 }
 

@@ -15,17 +15,23 @@ var defaultLevel = {
 	    [350,250]
 	]
     ],
+    stopSigns: [
+	[460,360],
+	[460,240],
+	[340,240],
+	[340,360],
+    ],
     carDefs: [
 	{startingCoords: [382,-50],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: 2,
+	 speed: [0,2],
 	 fillColor: 0x9933FF,
 	},
 	{startingCoords: [420,605],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: -4,
+	 speed: [0,-4],
 	 fillColor: 0x4D4DFF,
 	},
     ],

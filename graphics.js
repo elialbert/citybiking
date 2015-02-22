@@ -19,19 +19,24 @@ function setupBike(x,y) {
 
 // take a road center starting point, specify points along its course
 
-function buildLevel(stage, roadDefs, intersectionList, carDefs) {
+function buildLevel(stage, level) {
     var staticCollisionObjects = [];
     var dynamicCollisionObjects = [];
     var curblist = [];
     var graphics = new PIXI.Graphics();
-    graphics = drawObjects(graphics, stage, staticCollisionObjects, roadDefs, intersectionList, carDefs);
+    graphics = drawObjects(graphics, stage, staticCollisionObjects, level);
     return {staticCollisionObjects: staticCollisionObjects, 
 	    dynamicCollisionObjects: dynamicCollisionObjects, 
 	    stage: stage
 	   }
 
 
-    function drawObjects(graphics, stage, staticCollisionObjects, roadDefs, intersectionList, carDefs) {
+    function drawObjects(graphics, stage, staticCollisionObjects, level) {
+	// takes the middle of the road start and finish
+	var roadDefs = level.roadDefs;
+	var intersectionList = level.intersectionList;
+	var carDefs = level.carDefs;
+	var stopSigns = level.stopSigns;
 	drawIntersections(graphics, intersectionList); // basically just fill in black in the polygons in the list for now
 	_.each(roadDefs, function(roadDef, idx) {
 	    drawRoad(graphics, stage, staticCollisionObjects, roadDef);
@@ -43,6 +48,10 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 
 	_.each(carDefs, function(carDef) {
 	    drawCar(carDef, stage);
+	});
+
+	_.each(stopSigns, function(stopSign) {
+	    drawStopSign(stopSign, stage);
 	});
 	
 	return graphics
@@ -115,9 +124,30 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 	carSprite.position.y = y;
 	carSprite.anchor.x = .5;
 	carSprite.anchor.y = .5;
+	// can we add brake lights here, to be toggled later?
 	carObj = new Car(carSprite, carDef);
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
+    };
+
+    function drawStopSign(coords) {
+	var sg = new PIXI.Graphics();
+	var x = coords[0];
+	var y = coords[1];
+	sg.lineStyle(2, 0xFF0000, 1);
+	sg.beginFill(0xFF0000, 1);
+	sg.moveTo(x,y);
+	sg.lineTo(x-4, y-8);
+	sg.lineTo(x-8, y-4);
+	sg.lineTo(x-8, y+4);
+	sg.lineTo(x-4, y+8);
+	sg.lineTo(x+4, y+8);
+	sg.lineTo(x+8, y+4);
+	sg.lineTo(x+8, y-4);
+	sg.lineTo(x+4, y-8);
+	sg.lineTo(x-4, y-8);
+	sg.endFill();
+	stage.addChild(sg);
     };
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {

@@ -6,12 +6,7 @@ function init() {
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
     level = defaultLevel;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
-    // takes the middle of the road start and finish
-    var roadDefs = level.roadDefs;
-    var intersectionList = level.intersectionList;
-    var carDefs = level.carDefs;
-
-    setupResult = buildLevel(stage, roadDefs, intersectionList, carDefs);
+    setupResult = buildLevel(stage, level);
     background = setupResult.background;
     staticCollisionObjects = setupResult.staticCollisionObjects;
     dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
