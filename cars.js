@@ -7,7 +7,7 @@ function Car(sprite, def) {
     this.hit = false;
     this.lastInScene = null;
     this.sceneChangeCount = -1; //because we start null
-    this.restartTimer = 10;
+    this.restartTimer = 20;
 }
 
 Car.prototype.isInScene = function() {
@@ -17,11 +17,20 @@ Car.prototype.isInScene = function() {
     return false
 };
 
+// this will soon become the entrance to the ai functionality
+// calculating when to stop / slowdown
+// deciding when / if to turn or
+// running pathing based on cardefs
+// restarting movement after a collision
+// will hook into physics for acceleration
+Car.prototype.calcMovement = function() {
+    if (!this.hit) {
+	this.sprite.position.y += this.def.speed;
+    }
+}
 
 Car.prototype.move = function() {
-    if (!this.hit) {
-	this.sprite.position.y += 5.5;
-    }
+    this.calcMovement();
     var curInScene = this.isInScene();
     if (curInScene != this.lastInScene) {
 	this.sceneChangeCount += 1;

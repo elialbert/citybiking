@@ -100,7 +100,7 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 	var car = new PIXI.Graphics();
 	var polygonPoints = [];
 	car.lineStyle(2, 0xCC00FF, 1);
-	car.beginFill(0x9933FF, 1);
+	car.beginFill(carDef.fillColor, 1);
 	var x = startingCoords[0];
 	var y = startingCoords[1];
 	car.moveTo(x, y); 
