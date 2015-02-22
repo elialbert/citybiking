@@ -1,6 +1,6 @@
 function init() {
     // create an new instance of a pixi stage
-    var stage = new PIXI.Stage(0x3D3D5C); //0x66FF99
+    var stage = new PIXI.Stage(0x3D3D5C); 
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
@@ -17,7 +17,7 @@ function init() {
     staticCollisionObjects = setupResult.staticCollisionObjects;
     dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
     car1 = dynamicCollisionObjects[0];
-    setupBBs(staticCollisionObjects, stage);
+    setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
 
     var input = {up: false, down: false, left: false, right: false}
@@ -35,14 +35,15 @@ function init() {
 	theBike.rotation = toRadians(posChange.direction - 270);
 	
 	checkCollisions(theBike, staticCollisionObjects, posChange);
-
 	setupBBs(dynamicCollisionObjects, stage, true, true)
-	checkCollisions(theBike, dynamicCollisionObjects, posChange);
+
+	checkCollisions(theBike, dynamicCollisionObjects, posChange, true);
 
 	// simple car movement for testing
 	if (!car1.hit) {
-	    car1.position.y += .5;
+	    car1.sprite.position.y += .5;
 	}
+	car1.isInScene();
 
 	// render the stage   
 	renderer.render(stage);

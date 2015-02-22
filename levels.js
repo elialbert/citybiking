@@ -16,6 +16,6 @@ var defaultLevel = {
 	]
     ],
     carDefs: [
-	[375,50]
+	[375,-50]
     ],
 };

@@ -51,11 +51,17 @@ function moveBike(direction, speed, input) {
 	    speed:speed}
 }
 
-function checkCollisions(theBike, collisionObjects, posChange) { 
+function checkCollisions(theBike, collisionObjects, posChange, carMode) { 
     var bike = new SAT.Vector(theBike.position.x+posChange.frontOffsetX, theBike.position.y+posChange.frontOffsetY);
     //console.log(theBike.position.x + ", " + theBike.position.y);
     _.each(collisionObjects, function(obj) {
-	if (SAT.pointInPolygon(bike, obj.bbPoly)) {
+	if (carMode) {
+	    var bbPoly = obj.bbPoly;
+	}
+	else {
+	    var bbPoly = obj.bbPoly;
+	}
+	if (SAT.pointInPolygon(bike, bbPoly)) {
 	    //console.log("hit! " + bike.y);
 	    posChange.speed = posChange.speed / 1.9;
 	    obj.hit = true;
@@ -65,13 +71,17 @@ function checkCollisions(theBike, collisionObjects, posChange) {
 
 function setupBBs(collisionObjects, stage, skipDraw, carMode) {
     _.each(collisionObjects, function(obj) {
-	obj.bbPoly = BBFromSprite(obj);
-	var ttt = obj.bbPoly;
-	// draw red lines around bbs for testing:
-	
+	if (carMode) {
+	    obj.bbPoly = BBFromSprite(obj.sprite);
+	}
+	else {
+	    obj.bbPoly = BBFromSprite(obj);
+	};
 	if (skipDraw) {
 	    return 
 	}
+	// draw red lines around bbs for testing:
+	var ttt = obj.bbPoly;
 	var g = new PIXI.Graphics();
 	g.lineStyle(2, 0xff0000, 1);
 	if (carMode) {
