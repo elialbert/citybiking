@@ -41,8 +41,8 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 	    stage.addChild(curb);
 	});
 
-	_.each(carDefs, function(carCoords) {
-	    drawCar(carCoords, stage);
+	_.each(carDefs, function(carDef) {
+	    drawCar(carDef, stage);
 	});
 	
 	return graphics
@@ -95,7 +95,8 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 
     }
 
-    function drawCar(startingCoords, stage) {
+    function drawCar(carDef, stage) {
+	var startingCoords = carDef.startingCoords
 	var car = new PIXI.Graphics();
 	var polygonPoints = [];
 	car.lineStyle(2, 0xCC00FF, 1);
@@ -114,7 +115,7 @@ function buildLevel(stage, roadDefs, intersectionList, carDefs) {
 	carSprite.position.y = y;
 	carSprite.anchor.x = .5;
 	carSprite.anchor.y = .5;
-	carObj = new Car(carSprite, startingCoords, "normal");
+	carObj = new Car(carSprite, carDef);
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
     };

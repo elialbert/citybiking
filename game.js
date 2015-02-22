@@ -7,7 +7,6 @@ function init() {
     level = defaultLevel;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     // takes the middle of the road start and finish
-    // goes from top to bottom
     var roadDefs = level.roadDefs;
     var intersectionList = level.intersectionList;
     var carDefs = level.carDefs;
@@ -38,13 +37,11 @@ function init() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)
 
 	checkCollisions(theBike, dynamicCollisionObjects, posChange, true);
-
-	// simple car movement for testing
-	if (!car1.hit) {
-	    car1.sprite.position.y += .5;
+	var res = runCars(dynamicCollisionObjects);
+	if (res != false) {
+	    dynamicCollisionObjects[res[0]] = res[1];
 	}
-	car1.isInScene();
-
+	
 	// render the stage   
 	renderer.render(stage);
     }

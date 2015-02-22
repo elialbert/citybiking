@@ -16,6 +16,9 @@ var defaultLevel = {
 	]
     ],
     carDefs: [
-	[375,-50]
+	{startingCoords: [375,-50],
+	 type: 'normal',
+	 sceneIncrementRestart: 2
+	},
     ],
 };
