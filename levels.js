@@ -24,13 +24,14 @@ var defaultLevel = {
     carDefs: [
 	
 	{coordPath: [
-	    [380,-50],
-	    [420, 605],
-	    //[-5, 400],
+	    [380,-50],	 
+	    [380, 280],
+	    [100, 240],
+	    [-5, 280],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: 2,
+	 speed: 1,
 	 fillColor: 0x9933FF,
 	 height: 24,
 	},
@@ -44,12 +45,6 @@ var defaultLevel = {
 	 speed: 4,
 	 fillColor: 0x4D4DFF,
 	},
-	
-    ],
-};
-
-
-/*
 	{coordPath: [
 	    [420,605],
 	    [420, -5],
@@ -58,5 +53,7 @@ var defaultLevel = {
 	 sceneIncrementRestart: 2,
 	 speed: 4,
 	 fillColor: 0x4D4DFF,
-	},
-*/
+	},	
+	
+    ],
+};
