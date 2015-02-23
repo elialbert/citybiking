@@ -55,12 +55,7 @@ function checkCollisions(theBike, collisionObjects, posChange, carMode) {
     var bike = new SAT.Vector(theBike.position.x+posChange.frontOffsetX, theBike.position.y+posChange.frontOffsetY);
     //console.log(theBike.position.x + ", " + theBike.position.y);
     _.each(collisionObjects, function(obj) {
-	if (carMode) {
-	    var bbPoly = obj.bbPoly;
-	}
-	else {
-	    var bbPoly = obj.bbPoly;
-	}
+	var bbPoly = obj.bbPoly;
 	if (SAT.pointInPolygon(bike, bbPoly)) {
 	    //console.log("hit! " + bike.y);
 	    posChange.speed = posChange.speed / 1.9;

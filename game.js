@@ -8,9 +8,8 @@ function init() {
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     setupResult = buildLevel(stage, level);
     background = setupResult.background;
-    staticCollisionObjects = setupResult.staticCollisionObjects;
-    dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
-    car1 = dynamicCollisionObjects[0];
+    var staticCollisionObjects = setupResult.staticCollisionObjects;
+    var dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
     setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
 
@@ -20,27 +19,32 @@ function init() {
     stage.addChild(theBike);
 
     requestAnimFrame( animate );
-
     function animate() {
         requestAnimFrame( animate );
+	doBikeMovement();
+	doCarMovement();	
+	// render the stage   
+	renderer.render(stage);
+    }
+
+    function doBikeMovement() {
 	posChange = moveBike(posChange.direction,posChange.speed,input)
 	theBike.position.x += posChange.changeX;
 	theBike.position.y += posChange.changeY;
 	theBike.rotation = toRadians(posChange.direction - 270);
-	
 	checkCollisions(theBike, staticCollisionObjects, posChange);
+    };
+    function doCarMovement() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)
-
 	checkCollisions(theBike, dynamicCollisionObjects, posChange, true);
 	var res = runCars(dynamicCollisionObjects);
 	if (res != false) {
 	    dynamicCollisionObjects[res[0]] = res[1];
 	}
-	
-	// render the stage   
-	renderer.render(stage);
-    }
+    };
+
 }
+
 
 function setupKeys(input) {
     document.addEventListener('keydown', function(event) {

@@ -37,7 +37,7 @@ Car.prototype.move = function() {
 	this.sceneChangeCount += 1;
     }
     this.lastInScene = curInScene;
-    if (this.sceneChangeCount == this.def.sceneIncrementRestart || 2) {
+    if (this.sceneChangeCount == (this.def.sceneIncrementRestart || 2)) {
 	this.restartTimer -= 1;
     }
 };
