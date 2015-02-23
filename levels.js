@@ -26,8 +26,8 @@ var defaultLevel = {
 	{coordPath: [
 	    [380,-50],	 
 	    [380, 280],
-	    [100, 290],
-	    [-5, 270]
+	    [680, 290],
+	    [805, 270]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -35,16 +35,18 @@ var defaultLevel = {
 	 fillColor: 0x9933FF,
 	 height: 24,
 	},
-	/*
+	
 	{coordPath: [
 	    [-5,330],
-	    [805,350],
+	    [405,350],
+	    [380,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 4,
 	 fillColor: 0x4D4DFF,
 	},
+	/*
 	{coordPath: [
 	    [420,605],
 	    [420, -5],

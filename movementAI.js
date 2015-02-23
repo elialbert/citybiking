@@ -92,19 +92,27 @@ MovementAI.prototype.preparePaths = function() {
     _.each(angleList, function(angle, idx) {
 	info = {angle: angle, needsTurn: false}
 	if (angleList[idx+1]) {
-	    angleDiff = Math.abs(angleList[idx+1] - angle)
-	    if (angleDiff > 40) {
+	    var counterclockwise = false;
+	    angleDiff = Math.abs(angleList[idx+1] - angle);
+	    angleDiffNew = Math.min(angleDiff, 360-angleDiff);
+	    if (angleDiffNew < angleDiff) {
+		angleDiff = angleDiffNew;
+		counterclockwise = true;
+	    }
+	    console.log("ad: " + angleDiff + "adn: " + angleDiffNew);
+	    if (angleDiff > 5) {
 		info.needsTurn = true;
 		info.turnIncrement = 2;
-		if (angleList[idx+1] < angle) {
-		    info.turnIncrement = -info.TurnIncrement;
+		if ((angleList[idx+1] < angle) || counterclockwise) {
+		    info.turnIncrement = -1*info.turnIncrement;
 		}
-		info.numIncrements = angleDiff / info.turnIncrement;
+		info.numIncrements = Math.abs(angleDiff / info.turnIncrement);
 		info.nextAngle = angleList[idx+1];
 	    }
 	}
 	angleInfo.push(info);
     });
+    console.dir(angleInfo);
     return angleInfo
 }
 
