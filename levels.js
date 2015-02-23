@@ -38,8 +38,8 @@ var defaultLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [405,350],
-	    [380,-50]
+	    [400,330],
+	    [410,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
