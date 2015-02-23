@@ -22,18 +22,41 @@ var defaultLevel = {
 	{coords: [340,360], rotation: 90},
     ],
     carDefs: [
-	{startingCoords: [382,-50],
+	
+	{coordPath: [
+	    [380,-50],
+	    [420, 605],
+	    //[-5, 400],
+	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: [0,2],
+	 speed: 2,
 	 fillColor: 0x9933FF,
 	 height: 24,
 	},
-	{startingCoords: [420,605],
+	
+	{coordPath: [
+	    [-5,330],
+	    [805,350],
+	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: [0,-4],
+	 speed: 4,
 	 fillColor: 0x4D4DFF,
 	},
+	
     ],
 };
+
+
+/*
+	{coordPath: [
+	    [420,605],
+	    [420, -5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 4,
+	 fillColor: 0x4D4DFF,
+	},
+*/

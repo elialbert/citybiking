@@ -104,7 +104,7 @@ function buildLevel(stage, level) {
     }
 
     function drawCar(carDef, stage) {
-	var startingCoords = carDef.startingCoords
+	var startingCoords = carDef.coordPath[0]
 	var car = new PIXI.Graphics();
 	var polygonPoints = [];
 	var width = carDef.width || 8;

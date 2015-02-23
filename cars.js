@@ -1,6 +1,8 @@
 function Car(sprite, def) {
     this.sprite = sprite;
-    this.startingCoords = def.startingCoords;
+    this.startingCoords = def.coordPath[0];
+    this.coordPath = def.coordPath;
+    this.coordPathIndex = 0;
     this.type = def.type;
     this.state = 'new';
     this.def = def;
@@ -8,6 +10,7 @@ function Car(sprite, def) {
     this.lastInScene = null;
     this.sceneChangeCount = -1; //because we start null
     this.restartTimer = 20;
+    this.movementAI = new MovementAI(this);
 }
 
 Car.prototype.isInScene = function() {
@@ -31,7 +34,9 @@ Car.prototype.calcMovement = function() {
 }
 
 Car.prototype.move = function() {
-    this.calcMovement();
+    //this.calcMovement();
+    this.movementAI.calcMovement();
+    // decide if car should be restarted
     var curInScene = this.isInScene();
     if (curInScene != this.lastInScene) {
 	this.sceneChangeCount += 1;
@@ -60,8 +65,8 @@ function doCarRestart(car) {
 	return [false, false]
     };
     var sprite = car.sprite;
-    sprite.position.x = car.def.startingCoords[0];
-    sprite.position.y = car.def.startingCoords[1];
+    sprite.position.x = car.startingCoords[0];
+    sprite.position.y = car.startingCoords[1];
     var newcar = new Car(sprite, car.def);
     return [true, newcar]
 }
