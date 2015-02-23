@@ -101,21 +101,22 @@ function buildLevel(stage, level) {
 		graphics.endFill();
 	    });
 	}
-
     }
 
     function drawCar(carDef, stage) {
 	var startingCoords = carDef.startingCoords
 	var car = new PIXI.Graphics();
 	var polygonPoints = [];
+	var width = carDef.width || 8;
+	var height = carDef.height || 16;
 	car.lineStyle(2, 0xCC00FF, 1);
 	car.beginFill(carDef.fillColor, 1);
 	var x = startingCoords[0];
 	var y = startingCoords[1];
 	car.moveTo(x, y); 
-	car.lineTo(x, y-24);
-	car.lineTo(x+12, y-24);
-	car.lineTo(x+12, y);
+	car.lineTo(x, y-height);
+	car.lineTo(x+width, y-height);
+	car.lineTo(x+width, y);
 	car.lineTo(x, y);
 	car.endFill();
 	texture = car.generateTexture()
@@ -124,13 +125,23 @@ function buildLevel(stage, level) {
 	carSprite.position.y = y;
 	carSprite.anchor.x = .5;
 	carSprite.anchor.y = .5;
+	var polygonPoints = [
+	    new SAT.Vector(-width/2,-height/2),
+	    new SAT.Vector(-width/2,height/2),
+	    new SAT.Vector(width/2,height/2),
+	    new SAT.Vector(width/2,-height/2),
+	    new SAT.Vector(-width/2,-height/2),
+	]
+	carSprite.polygonPoints = polygonPoints;
 	// can we add brake lights here, to be toggled later?
 	carObj = new Car(carSprite, carDef);
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
     };
 
-    function drawStopSign(coords) {
+    function drawStopSign(stopSignDef) {
+	var coords = stopSignDef.coords;
+	var rotation = stopSignDef.rotation;
 	var sg = new PIXI.Graphics();
 	var x = coords[0];
 	var y = coords[1];
@@ -147,7 +158,14 @@ function buildLevel(stage, level) {
 	sg.lineTo(x+4, y-8);
 	sg.lineTo(x-4, y-8);
 	sg.endFill();
+	var text = new PIXI.Text("STOP", {font:"6px Arial", fill: "white", align:"center", strokeThickness: 1, stroke: "white", });
+	text.anchor.x=.5;
+	text.anchor.y=.5;
+	text.position.x=x;
+	text.position.y=y;
+	text.rotation = toRadians(rotation);
 	stage.addChild(sg);
+	stage.addChild(text);
     };
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {

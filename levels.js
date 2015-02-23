@@ -16,10 +16,10 @@ var defaultLevel = {
 	]
     ],
     stopSigns: [
-	[460,360],
-	[460,240],
-	[340,240],
-	[340,360],
+	{coords: [460,360], rotation: 0},
+	{coords: [460,240], rotation: 270},
+	{coords: [340,240], rotation: 180},
+	{coords: [340,360], rotation: 90},
     ],
     carDefs: [
 	{startingCoords: [382,-50],
@@ -27,6 +27,7 @@ var defaultLevel = {
 	 sceneIncrementRestart: 2,
 	 speed: [0,2],
 	 fillColor: 0x9933FF,
+	 height: 24,
 	},
 	{startingCoords: [420,605],
 	 type: 'normal',

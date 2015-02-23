@@ -101,25 +101,7 @@ function setupBBs(collisionObjects, stage, skipDraw, carMode) {
 function BBFromSprite(sprite) {
     // take a pixi sprite, return a SAT.js polygon
     // SAT.js polygon requires a position and then counterclockwise points referenced off of initial position
-    if (sprite.polygonPoints) {
-	var poly = new SAT.Polygon(new SAT.Vector(sprite.position.x,sprite.position.y), sprite.polygonPoints);
-    }
-    else { // for right now, assume it's a car with size 20,8
-	var x = sprite.position.x;
-	var y = sprite.position.y;
-	var polygonPoints = [
-	    new SAT.Vector(-6,-12),
-	    new SAT.Vector(-6,12),
-	    new SAT.Vector(6,12),
-	    new SAT.Vector(6,-12),
-	    new SAT.Vector(-6,-12),
-	]
-	var poly = new SAT.Polygon(new SAT.Vector(x,y), polygonPoints);
-	//console.log("drew car");
-	//console.dir(poly);
-    }
-    return poly;
-    
+    return new SAT.Polygon(new SAT.Vector(sprite.position.x,sprite.position.y), sprite.polygonPoints);    
 }
 
 function toRadians (angle) {
