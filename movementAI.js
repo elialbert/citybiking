@@ -87,7 +87,6 @@ MovementAI.prototype.preparePaths = function() {
 	    angleList.push(angle);
 	}
     }, this);
-    console.dir(angleList);
     var angleInfo = [];
     var speed = this.obj.def.speed;
     _.each(angleList, function(angle, idx) {
@@ -113,7 +112,7 @@ MovementAI.prototype.preparePaths = function() {
 	}
 	angleInfo.push(info);
     });
-    console.dir(angleInfo);
+    // console.dir(angleInfo);
     return angleInfo
 }
 
