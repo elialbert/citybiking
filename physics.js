@@ -99,6 +99,21 @@ function BBFromSprite(sprite) {
     return new SAT.Polygon(new SAT.Vector(sprite.position.x,sprite.position.y), sprite.polygonPoints);    
 }
 
+function getLineBB(points) {
+    return new SAT.Polygon(new SAT.Vector(points[0][0], points[0][1]), [new SAT.Vector(points[0][0],points[0][1]), new SAT.Vector(points[1][0],points[1][1])]);
+}
+
+function CCW(p1, p2, p3) {
+  a = p1[0]; b = p1[1]; 
+  c = p2[0]; d = p2[1];
+  e = p3[0]; f = p3[1];
+  return (f - b) * (c - a) > (d - b) * (e - a);
+}
+
+function isIntersect(p1, p2, p3, p4) {
+  return (CCW(p1, p3, p4) != CCW(p2, p3, p4)) && (CCW(p1, p2, p3) != CCW(p1, p2, p4));
+}
+
 function toRadians (angle) {
     return angle * (Math.PI / 180);
 }

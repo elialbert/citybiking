@@ -1,4 +1,4 @@
-function Car(sprite, def) {
+function Car(sprite, def, stopSignLines) {
     this.sprite = sprite;
     this.startingCoords = def.coordPath[0];
     this.coordPath = def.coordPath;
@@ -10,7 +10,8 @@ function Car(sprite, def) {
     this.lastInScene = null;
     this.sceneChangeCount = -1; //because we start null
     this.restartTimer = 20;
-    this.movementAI = new MovementAI(this);
+    this.stopSignLines = stopSignLines
+    this.movementAI = new MovementAI(this, stopSignLines);
 }
 
 Car.prototype.isInScene = function() {
@@ -19,19 +20,6 @@ Car.prototype.isInScene = function() {
     }
     return false
 };
-
-// this will soon become the entrance to the ai functionality
-// calculating when to stop / slowdown
-// deciding when / if to turn or
-// running pathing based on cardefs
-// restarting movement after a collision
-// will hook into physics for acceleration
-Car.prototype.calcMovement = function() {
-    if (!this.hit) {
-	this.sprite.position.x += this.def.speed[0];
-	this.sprite.position.y += this.def.speed[1];
-    }
-}
 
 Car.prototype.move = function() {
     //this.calcMovement();
@@ -67,6 +55,6 @@ function doCarRestart(car) {
     var sprite = car.sprite;
     sprite.position.x = car.startingCoords[0];
     sprite.position.y = car.startingCoords[1];
-    var newcar = new Car(sprite, car.def);
+    var newcar = new Car(sprite, car.def, car.stopSignLines);
     return [true, newcar]
 }

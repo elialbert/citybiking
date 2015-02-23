@@ -22,12 +22,14 @@ function setupBike(x,y) {
 function buildLevel(stage, level) {
     var staticCollisionObjects = [];
     var dynamicCollisionObjects = [];
+    var stopSignLines = [];
     var curblist = [];
     var graphics = new PIXI.Graphics();
     graphics = drawObjects(graphics, stage, staticCollisionObjects, level);
     return {staticCollisionObjects: staticCollisionObjects, 
 	    dynamicCollisionObjects: dynamicCollisionObjects, 
-	    stage: stage
+	    stage: stage,
+	    stopSignLines: stopSignLines,
 	   }
 
 
@@ -46,13 +48,14 @@ function buildLevel(stage, level) {
 	    stage.addChild(curb);
 	});
 
+	_.each(stopSigns, function(stopSign) {
+	    drawStopSign(stopSign, stage);
+	});
+
 	_.each(carDefs, function(carDef) {
 	    drawCar(carDef, stage);
 	});
 
-	_.each(stopSigns, function(stopSign) {
-	    drawStopSign(stopSign, stage);
-	});
 	
 	return graphics
 
@@ -134,7 +137,7 @@ function buildLevel(stage, level) {
 	]
 	carSprite.polygonPoints = polygonPoints;
 	// can we add brake lights here, to be toggled later?
-	carObj = new Car(carSprite, carDef);
+	carObj = new Car(carSprite, carDef, stopSignLines);
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
     };
@@ -166,6 +169,20 @@ function buildLevel(stage, level) {
 	text.rotation = toRadians(rotation);
 	stage.addChild(sg);
 	stage.addChild(text);
+	// now the white line
+	var wl = new PIXI.Graphics();
+	wl.lineStyle(4, 0xFFFFFF, 1);
+	offsets = [-Math.cos(toRadians(rotation)), -Math.sin(toRadians(rotation))];
+	// console.log("offsets are " + offsets);
+	var xStart = x+(15*offsets[0]);
+	var yStart = y+(15*offsets[1]);
+	var xEnd = x+(55*offsets[0]);
+	var yEnd = y+(55*offsets[1]);
+	wl.moveTo(xStart,yStart);
+	wl.lineTo(xEnd,yEnd);
+	points = [[xStart,yStart],[xEnd,yEnd]];
+	stopSignLines.push(points);
+	stage.addChild(wl);
     };
     
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {

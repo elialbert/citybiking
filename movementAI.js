@@ -1,11 +1,16 @@
-function MovementAI(obj) {
+function MovementAI(obj, stopSignLines) {
     this.obj = obj;
+    this.stopSignLines = stopSignLines;
     this.angleInfos = this.preparePaths();
     this.lastDiff = 100;
     this.turnIncrement = 0;
+    this.curSpeed = this.obj.def.speed;
+    this.stopsignCounter = 0;
 }
 
 MovementAI.prototype.calcMovement = function() {
+    var speedTarget = this.obj.def.speed;
+    var speed = this.curSpeed;
     var state = this.state;
     if (this.obj.hit) { // temporary
 	return
@@ -17,16 +22,40 @@ MovementAI.prototype.calcMovement = function() {
     var angle = angleInfo.angle;
     state = this.checkDestination(angleInfo);
     this.obj.state = state;
-    if (state == 'turning') {
+    if (this.obj.state == 'turning') {
 	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
 	//console.log("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
-	var speed = this.obj.def.speed / 2;
+	//var speed = this.obj.def.speed / 2;
+	speedTarget = this.obj.def.speed / 2;
     }
-    else if (state == 'moving') {
-	var speed = this.obj.def.speed;
+    else if (this.obj.state == 'moving') {
+	//var speed = this.obj.def.speed;
+	speedTarget = this.obj.def.speed;
     }
-    var changeX = Math.cos(toRadians(angle)) * speed;
-    var changeY = Math.sin(toRadians(angle)) * speed;
+    var trigX = Math.cos(toRadians(angle));
+    var trigY = Math.sin(toRadians(angle));
+
+    if ((this.obj.state == 'moving' || this.obj.state == 'slowing') && (this.stopsignCounter < 100)) {
+	var lookaheadResult = this.doLookahead(trigX, trigY);
+	if (lookaheadResult != null && lookaheadResult != false) {
+	    var speedTarget = .05;
+	    this.stopsignCounter += 1;
+	    //console.log("this stopsigncounter is " + this.stopsignCounter + " and " + speed);
+	    if ((this.stopsignCounter > 100) && (this.curSpeed <= speedTarget)) {
+		//this.stopsignCounter = 0;
+		this.obj.state = 'moving'
+	    }
+	}
+    }
+
+    //console.log("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget);
+    deltaSpeed = (speedTarget - this.curSpeed) / 6;
+    //console.log("deltaspeed is " + deltaSpeed);
+    speed = this.curSpeed + deltaSpeed
+    //console.log("final speed is " + speed);
+    this.curSpeed = speed;
+    var changeX = trigX * speed;
+    var changeY = trigY * speed;
     //console.log("changex is " + changeX + ", changeY is " + changeY);
     this.obj.sprite.position.x += changeX;
     this.obj.sprite.position.y += changeY;
@@ -105,7 +134,7 @@ MovementAI.prototype.preparePaths = function() {
 		info.turnIncrement = 2;
 		if ((angleList[idx+1] < angle) || counterclockwise) {
 		    info.turnIncrement = -1*info.turnIncrement;
-		}
+		} // possible counterclockwise should just negate whatevers above?
 		info.numIncrements = Math.abs(angleDiff / info.turnIncrement);
 		info.nextAngle = angleList[idx+1];
 	    }
@@ -125,4 +154,23 @@ MovementAI.prototype.doPath = function(coords, next) {
 	//console.log("found angle " + angle);
 	return angle;
     }
+}
+
+// right now just stop signs. soon to add lights, cars, peds, bikes. whew.
+MovementAI.prototype.doLookahead = function(trigX, trigY) {
+    var lookaheadX = trigX * 40;
+    var lookaheadY = trigY * 40;
+    var found = false;
+    testPoints = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
+		  [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
+    _.each(this.stopSignLines, function(line, idx) {
+	if (isIntersect(line[0],line[1],testPoints[0],testPoints[1])) {
+	    found = idx;
+	    return
+	}
+    });
+    if (found != false) {
+	return found
+    }
+    return false
 }

@@ -1,5 +1,4 @@
 function init() {
-    // create an new instance of a pixi stage
     var stage = new PIXI.Stage(0x3D3D5C); 
     stage.interactive = true;
     // create a renderer instance.
