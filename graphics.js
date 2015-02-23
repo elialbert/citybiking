@@ -258,26 +258,7 @@ function buildLevel(stage, level) {
 	graphics.lineTo(leftXFinish, leftYFinish);
 	graphics.moveTo(rightXStart, rightYStart);
 	graphics.lineTo(rightXFinish, rightYFinish);
-
-	//drawSidewalkLines(rightStart, rightEnd);
-	
 	return graphics
-
-	// not quite ready for sideways / diagonal roads yet
-	function drawSidewalkLines(start, end) {
-	    numLines = roadLength / 15;
-    	    graphics.lineStyle(1, 0x101214, 1); // darker gray
-	    var y = roadDef.yStart;
-	    var x = start;
-	    for (i=0;i<=numLines;i++) {
-		graphics.moveTo(x-roadDef.sidewalkWidth/2, y);
-		graphics.lineTo(x+roadDef.sidewalkWidth/2, y-ydiff/numLines/2);
-		y=y+ydiff/numLines;
-		x=x+xdiff/numLines;
-
-    	    }
-	    return graphics
-	}
     }
 
 }
