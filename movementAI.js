@@ -13,7 +13,7 @@ MovementAI.prototype.calcMovement = function() {
     var speed = this.curSpeed;
     var state = this.obj.state;
     if (this.obj.hit) { // temporary
-	return
+	return {changeX: 0, changeY: 0, state: 'hit'}
     };
     var angleInfo = this.angleInfos[this.obj.coordPathIndex];
     if (!angleInfo) {

@@ -24,6 +24,9 @@ Car.prototype.isInScene = function() {
 };
 
 Car.prototype.animateSprites = function(movement, reset) { 
+    if (movement.state == 'hit') {
+	return;
+    }
     if (!reset) {
 	this.sprite.position.x += movement.changeX;
 	this.sprite.position.y += movement.changeY;
