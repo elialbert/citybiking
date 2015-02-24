@@ -23,28 +23,33 @@ Car.prototype.isInScene = function() {
     return false
 };
 
-Car.prototype.moveSprites = function(movement, reset) { 
-    //window.ttt = this.sprite;
-    pointLookup = {0: 0, 1: 3, 2: 1, 3: 2}
-    _.each([this.sprite], function(sprite, idx) {
-	if (!reset) {
-	    sprite.position.x += movement.changeX;
-	    sprite.position.y += movement.changeY;
-	    sprite.rotation = movement.rotation;
+Car.prototype.animateSprites = function(movement, reset) { 
+    if (!reset) {
+	this.sprite.position.x += movement.changeX;
+	this.sprite.position.y += movement.changeY;
+    }
+    else {
+	this.sprite.position.x = movement.changeX;
+	this.sprite.position.y = movement.changeY;
+    }
+    this.sprite.rotation = movement.rotation;
+
+    // DO THE LIGHTS
+    _.each(this.lights.rearLights, function(lightSprite) {
+	if (movement.state == 'slowing') {
+	    lightSprite.alpha = 1;
 	}
 	else {
-	    sprite.position.x = movement.changeX;
-	    sprite.position.y = movement.changeY;
-	    sprite.rotation = movement.rotation;
+	    lightSprite.alpha = .4;
 	}
-
     });
+
 };
 
 Car.prototype.run = function() {
     //this.calcMovement();
     var movementResult = this.movementAI.calcMovement();
-    this.moveSprites(movementResult);
+    this.animateSprites(movementResult);
     // decide if car should be restarted
     var curInScene = this.isInScene();
     if (curInScene != this.lastInScene) {

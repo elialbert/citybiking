@@ -156,7 +156,7 @@ function buildLevel(stage, level) {
 	_.each([1,2,0,3], function(lightIdx, idx) {
 	    if (idx < 2) {
 		var color = 0xFF0000;
-		var alpha = .4
+		var alpha = .8
 	    }
 	    else {
 		var color = 0xFFFFFF;

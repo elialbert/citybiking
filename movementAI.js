@@ -11,7 +11,7 @@ function MovementAI(obj, stopSignLines) {
 MovementAI.prototype.calcMovement = function() {
     var speedTarget = this.obj.def.speed;
     var speed = this.curSpeed;
-    var state = this.state;
+    var state = this.obj.state;
     if (this.obj.hit) { // temporary
 	return
     };
@@ -37,6 +37,7 @@ MovementAI.prototype.calcMovement = function() {
     if ((this.obj.state == 'moving' || this.obj.state == 'slowing') && (this.stopsignCounter < 100)) {
 	var lookaheadResult = this.doLookahead(trigX, trigY);
 	if (lookaheadResult != null && lookaheadResult != false) {
+	    this.obj.state = 'slowing'
 	    var speedTarget = .05;
 	    this.stopsignCounter += 1;
 	    //console.log("this stopsigncounter is " + this.stopsignCounter + " and " + speed);
@@ -56,7 +57,7 @@ MovementAI.prototype.calcMovement = function() {
     var changeX = trigX * speed;
     var changeY = trigY * speed;
     //console.log("changex is " + changeX + ", changeY is " + changeY);
-    return {changeX: changeX, changeY: changeY, rotation: toRadians(angle-270)}
+    return {changeX: changeX, changeY: changeY, rotation: toRadians(angle-270), state: this.obj.state}
 };
 
 MovementAI.prototype.checkDestination = function(angleInfo) {
