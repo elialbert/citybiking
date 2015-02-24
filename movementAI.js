@@ -10,8 +10,6 @@ function MovementAI(obj, stopSignLines) {
 
 MovementAI.prototype.calcMovement = function() {
     var speedTarget = this.obj.def.speed;
-    var speed = this.curSpeed;
-    var state = this.obj.state;
     if (this.obj.hit) { // temporary
 	return {changeX: 0, changeY: 0, state: 'hit'}
     };
@@ -20,8 +18,7 @@ MovementAI.prototype.calcMovement = function() {
 	angleInfo = this.angleInfos[this.obj.coordPathIndex - 1];
     }
     var angle = angleInfo.angle;
-    state = this.checkDestination(angleInfo);
-    this.obj.state = state;
+    this.obj.state = this.checkDestination(angleInfo);
     if (this.obj.state == 'turning') {
 	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
 	//console.log("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
@@ -33,31 +30,19 @@ MovementAI.prototype.calcMovement = function() {
     }
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
-
-    if ((this.obj.state == 'moving' || this.obj.state == 'slowing') && (this.stopsignCounter < 100)) {
-	var lookaheadResult = this.doLookahead(trigX, trigY);
-	if (lookaheadResult != null && lookaheadResult != false) {
-	    this.obj.state = 'slowing'
-	    var speedTarget = .05;
-	    this.stopsignCounter += 1;
-	    //console.log("this stopsigncounter is " + this.stopsignCounter + " and " + speed);
-	    if ((this.stopsignCounter > 100) && (this.curSpeed <= speedTarget)) {
-		//this.stopsignCounter = 0;
-		this.obj.state = 'moving'
-	    }
-	}
-    }
+    speedTarget = this.checkObstacles(trigX, trigY) || speedTarget;
 
     //console.log("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget);
     deltaSpeed = (speedTarget - this.curSpeed) / 6;
     //console.log("deltaspeed is " + deltaSpeed);
-    speed = this.curSpeed + deltaSpeed
-    //console.log("final speed is " + speed);
-    this.curSpeed = speed;
-    var changeX = trigX * speed;
-    var changeY = trigY * speed;
+    this.curSpeed += deltaSpeed
+    var changeX = trigX * this.curSpeed;
+    var changeY = trigY * this.curSpeed;
     //console.log("changex is " + changeX + ", changeY is " + changeY);
-    return {changeX: changeX, changeY: changeY, rotation: toRadians(angle-270), state: this.obj.state}
+    return {changeX: changeX, 
+	    changeY: changeY, 
+	    rotation: toRadians(angle-270), 
+	    state: this.obj.state}
 };
 
 MovementAI.prototype.checkDestination = function(angleInfo) {
@@ -94,6 +79,24 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
 	}
     }
     return 'moving'
+}
+
+MovementAI.prototype.checkObstacles = function(trigX, trigY) {
+    if ((this.obj.state == 'moving' || this.obj.state == 'slowing') && (this.stopsignCounter < 100)) {
+	var lookaheadResult = this.doLookahead(trigX, trigY);
+	if (lookaheadResult != null && lookaheadResult != false) {
+	    this.obj.state = 'slowing'
+	    var speedTarget = .05;
+	    this.stopsignCounter += 1;
+	    //console.log("this stopsigncounter is " + this.stopsignCounter + " and " + speed);
+	    if ((this.stopsignCounter > 100) && (this.curSpeed <= speedTarget)) {
+		//this.stopsignCounter = 0; // right now only 1 stopsign stop per car
+		this.obj.state = 'moving'
+	    }
+	    return speedTarget;
+	}
+    }
+
 }
 
 MovementAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
