@@ -78,7 +78,7 @@ function doCarRestart(car) {
     if (car.restartTimer > 0) {
 	return [false, false]
     };
-    car.moveSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
+    car.animateSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
     var newcar = new Car(car.sprite, car.lights, car.def, car.stopSignLines);
     return [true, newcar]
 }
