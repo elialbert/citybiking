@@ -112,7 +112,7 @@ function buildLevel(stage, level) {
 	var polygonPoints = [];
 	var width = carDef.width || 8;
 	var height = carDef.height || 16;
-	car.lineStyle(2, 0xCC00FF, 1);
+	car.lineStyle(2, carDef.fillColor, 1);
 	car.beginFill(carDef.fillColor, 1);
 	var x = startingCoords[0];
 	var y = startingCoords[1];
@@ -136,11 +136,48 @@ function buildLevel(stage, level) {
 	    new SAT.Vector(-width/2,-height/2),
 	]
 	carSprite.polygonPoints = polygonPoints;
-	// can we add brake lights here, to be toggled later?
-	carObj = new Car(carSprite, carDef, stopSignLines);
+	lights = drawCarLights(carSprite, width);
+	carObj = new Car(carSprite, lights, carDef, stopSignLines);
+	carSprite.addChild(lights.rearLights[0]);
+	carSprite.addChild(lights.rearLights[1]);
+	carSprite.addChild(lights.headLights[0]);
+	carSprite.addChild(lights.headLights[1]);
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
     };
+
+    function drawCarLights(carSprite, width) {
+	// use polygon points to pick corners for 4 lights:
+	// 0: frontleft
+	// 1: rearleft
+	// 2: rearright
+	// 3: frontright
+	var lightSprites = []
+	_.each([1,2,0,3], function(lightIdx, idx) {
+	    if (idx < 2) {
+		var color = 0xFF0000;
+		var alpha = .4
+	    }
+	    else {
+		var color = 0xFFFFFF;
+		var alpha = .8
+	    }
+	    var light = new PIXI.Graphics();
+	    var offsetX = carSprite.polygonPoints[lightIdx].x - 2;
+	    var offsetY = carSprite.polygonPoints[lightIdx].y - 2;
+	    light.beginFill(color, alpha);	 
+	    light.drawCircle((carSprite.position.x + offsetX), (carSprite.position.y + offsetY), 2);
+	    light.endFill();
+	    texture = light.generateTexture()
+	    var lightSprite = new PIXI.Sprite(texture)
+	    lightSprite.position.x = offsetX; // position is relative to parent (the carSprite)
+	    lightSprite.position.y = offsetY;
+	    lightSprites.push(lightSprite);
+	});
+	return {rearLights: [lightSprites[0],lightSprites[1]], headLights:[lightSprites[2],lightSprites[3]]}
+
+    };
+
 
     function drawStopSign(stopSignDef) {
 	var coords = stopSignDef.coords;

@@ -25,7 +25,6 @@ MovementAI.prototype.calcMovement = function() {
     if (this.obj.state == 'turning') {
 	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
 	//console.log("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
-	//var speed = this.obj.def.speed / 2;
 	speedTarget = this.obj.def.speed / 2;
     }
     else if (this.obj.state == 'moving') {
@@ -57,10 +56,7 @@ MovementAI.prototype.calcMovement = function() {
     var changeX = trigX * speed;
     var changeY = trigY * speed;
     //console.log("changex is " + changeX + ", changeY is " + changeY);
-    this.obj.sprite.position.x += changeX;
-    this.obj.sprite.position.y += changeY;
-    this.obj.sprite.rotation = toRadians(angle-270);
-
+    return {changeX: changeX, changeY: changeY, rotation: toRadians(angle-270)}
 };
 
 MovementAI.prototype.checkDestination = function(angleInfo) {

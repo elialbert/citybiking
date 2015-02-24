@@ -1,5 +1,7 @@
-function Car(sprite, def, stopSignLines) {
+function Car(sprite, lights, def, stopSignLines) {
+    // lights are a hash with array keys (with [left,right]) of rearLights and headLights 
     this.sprite = sprite;
+    this.lights = lights;
     this.startingCoords = def.coordPath[0];
     this.coordPath = def.coordPath;
     this.coordPathIndex = 0;
@@ -21,9 +23,28 @@ Car.prototype.isInScene = function() {
     return false
 };
 
-Car.prototype.move = function() {
+Car.prototype.moveSprites = function(movement, reset) { 
+    //window.ttt = this.sprite;
+    pointLookup = {0: 0, 1: 3, 2: 1, 3: 2}
+    _.each([this.sprite], function(sprite, idx) {
+	if (!reset) {
+	    sprite.position.x += movement.changeX;
+	    sprite.position.y += movement.changeY;
+	    sprite.rotation = movement.rotation;
+	}
+	else {
+	    sprite.position.x = movement.changeX;
+	    sprite.position.y = movement.changeY;
+	    sprite.rotation = movement.rotation;
+	}
+
+    });
+};
+
+Car.prototype.run = function() {
     //this.calcMovement();
-    this.movementAI.calcMovement();
+    var movementResult = this.movementAI.calcMovement();
+    this.moveSprites(movementResult);
     // decide if car should be restarted
     var curInScene = this.isInScene();
     if (curInScene != this.lastInScene) {
@@ -38,7 +59,7 @@ Car.prototype.move = function() {
 function runCars(cars) {
     found = false
     _.each(cars, function(car, idx) {
-	car.move();
+	car.run();
 	res = doCarRestart(car)
 	if (res[0]) {
 	    found = [idx, res[1]]
@@ -52,9 +73,7 @@ function doCarRestart(car) {
     if (car.restartTimer > 0) {
 	return [false, false]
     };
-    var sprite = car.sprite;
-    sprite.position.x = car.startingCoords[0];
-    sprite.position.y = car.startingCoords[1];
-    var newcar = new Car(sprite, car.def, car.stopSignLines);
+    car.moveSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
+    var newcar = new Car(car.sprite, car.lights, car.def, car.stopSignLines);
     return [true, newcar]
 }
