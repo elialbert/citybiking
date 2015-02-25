@@ -9,6 +9,7 @@ function init() {
     background = setupResult.background;
     var staticCollisionObjects = setupResult.staticCollisionObjects;
     var dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
+    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects);
     setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
 
@@ -36,14 +37,13 @@ function init() {
     function doCarMovement() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)
 	checkCollisions(theBike, dynamicCollisionObjects, posChange, true);
-	var res = runCars(dynamicCollisionObjects);
+	var res = runCars(dynamicCollisionObjects, sharedCarState);
 	if (res != false) {
 	    dynamicCollisionObjects[res[0]] = res[1];
 	}
     };
 
 }
-
 
 function setupKeys(input) {
     document.addEventListener('keydown', function(event) {

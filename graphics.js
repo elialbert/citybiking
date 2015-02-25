@@ -22,7 +22,7 @@ function setupBike(x,y) {
 function buildLevel(stage, level) {
     var staticCollisionObjects = [];
     var dynamicCollisionObjects = [];
-    var stopSignLines = [];
+    var stopSignLines = {}; // dict of intersection id to list of stopsign coords at that intersection
     var curblist = [];
     var graphics = new PIXI.Graphics();
     graphics = drawObjects(graphics, stage, staticCollisionObjects, level);
@@ -36,10 +36,10 @@ function buildLevel(stage, level) {
     function drawObjects(graphics, stage, staticCollisionObjects, level) {
 	// takes the middle of the road start and finish
 	var roadDefs = level.roadDefs;
-	var intersectionList = level.intersectionList;
+	var intersectionList = level.intersectionDefs;
 	var carDefs = level.carDefs;
 	var stopSigns = level.stopSigns;
-	drawIntersections(graphics, intersectionList); // basically just fill in black in the polygons in the list for now
+	drawIntersections(graphics, intersectionList, stopSignLines); // basically just fill in black in the polygons in the list for now
 	_.each(roadDefs, function(roadDef, idx) {
 	    drawRoad(graphics, stage, staticCollisionObjects, roadDef);
 	});
@@ -52,8 +52,8 @@ function buildLevel(stage, level) {
 	    drawStopSign(stopSign, stage);
 	});
 
-	_.each(carDefs, function(carDef) {
-	    drawCar(carDef, stage);
+	_.each(carDefs, function(carDef, idx) {
+	    drawCar(carDef, stage, idx);
 	});
 
 	
@@ -90,8 +90,9 @@ function buildLevel(stage, level) {
 
 	}
 
-	function drawIntersections(graphics, intersectionList) {
-	    _.each(intersectionList, function(intersectionDef) {
+	function drawIntersections(graphics, intersectionDefs, stopSignLines) {
+	    _.each(intersectionDefs, function(intersectionDef, key) {
+		stopSignLines[key] = [];
 		graphics.beginFill(0x000000, 1);
 		_.each(intersectionDef, function(coord, idx) {
 		    if (idx == 0) {
@@ -106,7 +107,7 @@ function buildLevel(stage, level) {
 	}
     }
 
-    function drawCar(carDef, stage) {
+    function drawCar(carDef, stage, carId) {
 	var startingCoords = carDef.coordPath[0]
 	var car = new PIXI.Graphics();
 	var polygonPoints = [];
@@ -137,7 +138,7 @@ function buildLevel(stage, level) {
 	]
 	carSprite.polygonPoints = polygonPoints;
 	lights = drawCarLights(carSprite, width);
-	carObj = new Car(carSprite, lights, carDef, stopSignLines);
+	carObj = new Car(carSprite, lights, carDef, stopSignLines, carId);
 	carSprite.addChild(lights.rearLights[0]);
 	carSprite.addChild(lights.rearLights[1]);
 	carSprite.addChild(lights.headLights[0]);
@@ -218,7 +219,7 @@ function buildLevel(stage, level) {
 	wl.moveTo(xStart,yStart);
 	wl.lineTo(xEnd,yEnd);
 	points = [[xStart,yStart],[xEnd,yEnd]];
-	stopSignLines.push(points);
+	stopSignLines[stopSignDef.intersection].push(points);
 	stage.addChild(wl);
     };
     

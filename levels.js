@@ -6,20 +6,20 @@ var defaultLevel = {
 	{xStart:450,yStart:300, xFinish:800, yFinish:300, roadWidth:100, sidewalkWidth:17},
     ],
     bikeCoords: [438, 550],
-    intersectionList: [
-	[
-	    [350,250],
-	    [450,250],
-	    [450,350],
-	    [250,350],
-	    [350,250]
-	]
-    ],
+    intersectionDefs: {1:
+		       [
+			   [350,250],
+			   [450,250],
+			   [450,350],
+			   [250,350],
+			   [350,250]
+		       ]
+		      },
     stopSigns: [
-	{coords: [460,360], rotation: 0},
-	{coords: [460,240], rotation: 270},
-	{coords: [340,240], rotation: 180},
-	{coords: [340,360], rotation: 90},
+	{coords: [460,360], rotation: 0, intersection: 1},
+	{coords: [460,240], rotation: 270, intersection: 1},
+	{coords: [340,240], rotation: 180, intersection: 1},
+	{coords: [340,360], rotation: 90, intersection: 1},
     ],
     carDefs: [
 	
@@ -46,6 +46,7 @@ var defaultLevel = {
 	 speed: 3,
 	 fillColor: 0x4D4DFF,
 	},
+	
 	/*
 	{coordPath: [
 	    [420,605],

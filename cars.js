@@ -1,4 +1,4 @@
-function Car(sprite, lights, def, stopSignLines) {
+function Car(sprite, lights, def, stopSignLines, carId) {
     // lights are a hash with array keys (with [left,right]) of rearLights and headLights 
     this.sprite = sprite;
     this.lights = lights;
@@ -6,6 +6,7 @@ function Car(sprite, lights, def, stopSignLines) {
     this.coordPath = def.coordPath;
     this.coordPathIndex = 0;
     this.type = def.type;
+    this.carId = carId;
     this.state = 'new';
     this.def = def;
     this.hit = false;
@@ -13,6 +14,7 @@ function Car(sprite, lights, def, stopSignLines) {
     this.sceneChangeCount = -1; //because we start null
     this.restartTimer = 20;
     this.stopSignLines = stopSignLines
+    this.stopSignLinesCopy = copyStopsignLines(stopSignLines)
     this.movementAI = new MovementAI(this, stopSignLines);
 }
 
@@ -49,9 +51,9 @@ Car.prototype.animateSprites = function(movement, reset) {
 
 };
 
-Car.prototype.run = function() {
+Car.prototype.run = function(sharedCarState) {
     //this.calcMovement();
-    var movementResult = this.movementAI.calcMovement();
+    var movementResult = this.movementAI.calcMovement(sharedCarState);
     this.animateSprites(movementResult);
     // decide if car should be restarted
     var curInScene = this.isInScene();
@@ -64,10 +66,10 @@ Car.prototype.run = function() {
     }
 };
 
-function runCars(cars) {
+function runCars(cars, sharedCarState) {
     found = false
     _.each(cars, function(car, idx) {
-	car.run();
+	car.run(sharedCarState);
 	res = doCarRestart(car)
 	if (res[0]) {
 	    found = [idx, res[1]]
@@ -82,6 +84,30 @@ function doCarRestart(car) {
 	return [false, false]
     };
     car.animateSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
-    var newcar = new Car(car.sprite, car.lights, car.def, car.stopSignLines);
+    var newcar = new Car(car.sprite, car.lights, car.def, car.stopSignLinesCopy, car.carId);
     return [true, newcar]
+}
+
+function setupSharedCarState(setupResult, cars) {
+    allStopsignIntersections = _.uniq(_.map(setupResult.stopSignLines, function(v,k) { return k}));
+    var ss = {stopSignLines: setupResult.stopSignLines, 
+	      stopSignQueues: {}, 
+	      cars: {}, 
+	      allStopsignIntersections: allStopsignIntersections,
+	      carsInIntersection: {}};
+    _.each(allStopsignIntersections, function(intersectionId) {
+	ss.stopSignQueues[intersectionId] = [];
+    });
+    _.each(cars, function(car) {
+	ss[car.carId] = car;
+    });
+    return ss
+}
+
+function copyStopsignLines(d) {
+    var n = {};
+    _.each(d, function(v, k) {
+	n[k] = v.slice();
+    });
+    return n
 }
