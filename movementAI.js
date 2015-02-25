@@ -96,8 +96,8 @@ MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
 	delete sharedCarState.carsInIntersection[this.obj.carId]
 	this.intersectionClearedCounter = 0;
     }
-    if (lookaheadResult.found != false) {
-	if (this.stopsignCounter == 0 && !sharedCarState.carsInIntersection[this.obj.carId]) { // starting intersection dance - add car to intersection queue
+    if (lookaheadResult.found !== false) {
+	if (this.stopsignCounter === 0 && !sharedCarState.carsInIntersection[this.obj.carId]) { // starting intersection dance - add car to intersection queue
 	    console.log("adding car " + this.obj.carId + " to queue for " + lookaheadResult.intersectionId + " (stopsign): " + lookaheadResult.found);
 	    sharedCarState.stopSignQueues[lookaheadResult.intersectionId].push(this.obj.carId);
 	    sharedCarState.carsInIntersection[this.obj.carId] = lookaheadResult.intersectionId;
@@ -108,7 +108,7 @@ MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
 	
 	if ((this.stopsignCounter > 100) &&
 	    (this.curSpeed <= (speedTarget+.01)) &&
-	    (checkResult.needsToWait != true)) { // time to move and notify shared state of intersection blockage
+	    (checkResult.needsToWait !== true)) { // time to move and notify shared state of intersection blockage
 	    this.stopsignCounter = 0; 
 	    this.deleteIntersectionStopsigns(lookaheadResult.intersectionId);
 	    console.log("killing stopsign " + lookaheadResult.found + " for car " + this.obj.carId);
@@ -124,9 +124,9 @@ MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
 MovementAI.prototype.checkNeedsToWait = function(sharedCarState, trigX, trigY) {
     var lookaheadResult = this.doLookahead(trigX, trigY);
     //console.log("lookaheadresult found is " + lookaheadResult.found + " and obj state is " + this.obj.state);
-    if (lookaheadResult.found != false) {
+    if (lookaheadResult.found !== false) {
 	var firstInQueue = sharedCarState.stopSignQueues[lookaheadResult.intersectionId][0];	
-	var needsToWait = ((firstInQueue != undefined) && (firstInQueue != this.obj.carId));
+	var needsToWait = ((firstInQueue !== undefined) && (firstInQueue !== this.obj.carId));
     }
     else {
 	needsToWait = false;
