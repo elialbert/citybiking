@@ -2,6 +2,8 @@ function setupBike(x,y) {
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(2, 0x009900, 1);
     graphics.beginFill(0xffffff, 1);
+    var width = 3;
+    var height = 10;
     graphics.moveTo(325, 580);
     graphics.lineTo(325, 570);
     graphics.lineTo(328, 570);
@@ -14,6 +16,15 @@ function setupBike(x,y) {
     theBike.position.y = y;
     theBike.anchor.x = .5;
     theBike.anchor.y = .5;
+    var polygonPoints = [
+	new SAT.Vector(-width/2,-height/2),
+	new SAT.Vector(-width/2,height/2),
+	new SAT.Vector(width/2,height/2),
+	new SAT.Vector(width/2,-height/2),
+	new SAT.Vector(-width/2,-height/2),
+    ]
+    theBike.polygonPoints = polygonPoints;
+
     return theBike
 }
 

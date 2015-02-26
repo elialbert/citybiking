@@ -9,7 +9,7 @@ function init() {
     background = setupResult.background;
     var staticCollisionObjects = setupResult.staticCollisionObjects;
     var dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
-    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects);
+    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects, theBike);
     setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
 
@@ -33,6 +33,7 @@ function init() {
 	theBike.position.y += posChange.changeY;
 	theBike.rotation = toRadians(posChange.direction - 270);
 	checkCollisions(theBike, staticCollisionObjects, posChange);
+	theBike.bbPoly = BBFromSprite(theBike);
     };
     function doCarMovement() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)

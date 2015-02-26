@@ -11,7 +11,7 @@ function MovementAI(obj, stopSignLines) {
 
 MovementAI.prototype.calcMovement = function(sharedCarState) {
     var speedTarget = this.obj.def.speed;
-    if (this.obj.hit) { // temporary
+    if (this.obj.hit) { // temporary - need to handle better, including clearing intersection if nec
 	return {changeX: 0, changeY: 0, state: 'hit'}
     };
     var angleInfo = this.angleInfos[this.obj.coordPathIndex];
@@ -31,7 +31,8 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
-    speedTarget = this.checkObstacles(trigX, trigY, sharedCarState) || speedTarget;
+    this.storeProjectedMovementLine(angle, trigX, trigY, this.obj.def.speed*20); // this value is tricky. was formerly hardcoded to 40. but should be based on speed I think.
+    speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
 
     //console.log("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget);
     deltaSpeed = (speedTarget - this.curSpeed) / 6;
@@ -82,41 +83,105 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
     return 'moving'
 }
 
-MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
+MovementAI.prototype.checkObstacles = function(sharedCarState) {
     this.checkExitIntersection(sharedCarState);
-    var lookaheadResult = this.doLookahead(trigX, trigY);
+    var lookaheadResult = this.doLookahead(sharedCarState);
     if (lookaheadResult.found !== false) {
-	var needsToWait = this.checkEnterIntersection(sharedCarState, lookaheadResult.intersectionId);
+	var speedTarget = .0001;
+	if (lookaheadResult.type == 'stopsign') {
+	    var needsToWait = this.checkEnterIntersection(sharedCarState, lookaheadResult.intersectionId);
+	    speedTarget = .05;
+	}
 	this.obj.state = 'slowing';
-	var speedTarget = .05;
-	this.stopsignCounter += 1;
-	this.checkFinishStopsign(speedTarget, needsToWait, lookaheadResult.intersectionId);
+	if (lookaheadResult.type == 'stopsign') {
+	    this.stopsignCounter += 1;
+	    this.checkFinishStopsign(speedTarget, needsToWait, lookaheadResult.intersectionId);
+	}
 	return speedTarget;	
     }
 }
 
-// right now just stop signs. soon to add lights, cars, peds, bikes. whew.
+MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, forwardDistance) {
+    var lookaheadX = trigX * forwardDistance;
+    var lookaheadY = trigY * forwardDistance;
+    this.movementLine = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
+		      [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
+
+    // attempt to create lookahead polygonpoints for real lookahead bbpoly
+    var intersectAngle = 90 - angle;
+    var width = (this.obj.def.width || 8) / 2
+    var upperLeftX = width * Math.cos(toRadians(intersectAngle))
+    var upperLeftY = width * Math.sin(toRadians(intersectAngle))
+
+    var lowerLeftX = upperLeftX;//width * Math.cos(toRadians(intersectAngle))
+    var lowerLeftY = upperLeftY;//width * Math.sin(toRadians(intersectAngle))
+
+    var upperRightX = -upperLeftX;
+    var upperRightY = -upperLeftY;
+
+    var lowerRightX = upperRightX;
+    var lowerRightY = upperRightY;
+
+    this.lookaheadBBPoly = BBFromPoints([this.obj.sprite.position.x+lookaheadX, this.obj.sprite.position.y+lookaheadY], [
+	[upperLeftX,upperLeftY],
+	[lowerLeftX-lookaheadX, lowerLeftY-lookaheadY],
+	[lowerRightX-lookaheadX, lowerRightY-lookaheadY],
+	[upperRightX, upperRightY],
+	[upperLeftX, upperLeftY]
+    ]);
+
+    this.bbPoly = BBFromSprite(this.obj.sprite);
+ 
+}
+
+// check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
 // for non intersection waiting, return false for intersectionId
-MovementAI.prototype.doLookahead = function(trigX, trigY) {
-    var lookaheadX = trigX * 40;
-    var lookaheadY = trigY * 40;
+MovementAI.prototype.doLookahead = function(sharedCarState) {
+    // basically draw a projected movement line forward, and ask for the movement line from other objs
+    // compare if the lines cross or not
+    // return if conflict found, what type of conflict, and any additional info (like intersectionId)
     var found = false;
+    var typeFound = false;
     var foundIntersectionId = false;
-    testPoints = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
-		  [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
-    _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
-	_.each(linedefs, function(line, idx) {
-	    if (isIntersect(line[0],line[1],testPoints[0],testPoints[1])) {
-		found = idx;
-		foundIntersectionId = intersectionId;
+    //var satVector = getLineBB(this.movementLine);// new SAT.Vector(this.movementLine[0], this.movementLine[1]);
+    //var lookahead
+    _.each(sharedCarState.cars, function(carObj, carId) {
+	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	    
+	    var collision = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
+	    if (collision) {
+		console.log("CAR HIT!!!");
+		found = carObj.carId;
+		typeFound = 'car';
 		return
 	    }
-	});
+	}
+    }, this);
+
+    if (found !== false) {
+	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
+    }
+
+    if (checkCollision2(this.lookaheadBBPoly, sharedCarState.theBike.bbPoly)) {
+	//console.log("BIKE HIT!!!");
+	found = -1;
+	typeFound = 'bike';
+	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
+    }
+
+    _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
+	_.each(linedefs, function(line, idx) {
+	    if (isIntersect(line[0],line[1],this.movementLine[0],this.movementLine[1])) {
+		found = idx;
+		foundIntersectionId = intersectionId;
+		typeFound = 'stopsign'
+		return
+	    }
+	}, this);
 	if (found !== false) {
 	    return 
 	}
-    });
-    return {found: found, intersectionId: foundIntersectionId}
+    }, this);
+    return {found: found, intersectionId: foundIntersectionId, type: typeFound}
 }
 
 

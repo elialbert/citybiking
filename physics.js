@@ -55,13 +55,19 @@ function checkCollisions(theBike, collisionObjects, posChange, carMode) {
     var bike = new SAT.Vector(theBike.position.x+posChange.frontOffsetX, theBike.position.y+posChange.frontOffsetY);
     //console.log(theBike.position.x + ", " + theBike.position.y);
     _.each(collisionObjects, function(obj) {
-	var bbPoly = obj.bbPoly;
-	if (SAT.pointInPolygon(bike, bbPoly)) {
+	if (checkCollision(bike, obj.bbPoly)) {
 	    //console.log("hit! " + bike.y);
 	    posChange.speed = posChange.speed / 1.9;
 	    obj.hit = true;
 	}
     });
+}
+
+function checkCollision(point, bbPoly) {
+    return SAT.pointInPolygon(point, bbPoly)
+}
+function checkCollision2(vector, bbPoly) {
+    return SAT.testPolygonPolygon(vector, bbPoly)
 }
 
 function setupBBs(collisionObjects, stage, skipDraw, carMode) {
@@ -97,6 +103,14 @@ function BBFromSprite(sprite) {
     // take a pixi sprite, return a SAT.js polygon
     // SAT.js polygon requires a position and then counterclockwise points referenced off of initial position
     return new SAT.Polygon(new SAT.Vector(sprite.position.x,sprite.position.y), sprite.polygonPoints);    
+}
+
+function BBFromPoints(pos, points) {
+    var pp = [];
+    _.each(points, function(point) {
+	pp.push(new SAT.Vector(point[0],point[1]));
+    });
+    return new SAT.Polygon(new SAT.Vector(pos[0],pos[1]), pp);
 }
 
 function getLineBB(points) {
