@@ -83,57 +83,92 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
 }
 
 MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
-    var checkResult = this.checkNeedsToWait(sharedCarState, trigX, trigY);
-    var lookaheadResult = checkResult.lookaheadResult;
-    var curIntersection = sharedCarState.carsInIntersection[this.obj.carId];
-
-
+    var lookaheadResult = this.doLookahead(trigX, trigY);
     if (this.intersectionClearedCounter > 1) {
 	this.intersectionClearedCounter -= 1;
     }
-    else if ((this.intersectionClearedCounter <= 1) && (this.intersectionClearedCounter > 0)) {
-	// notify shared state of intersection unblockage
-	console.log("finished countdown to remove car " + this.obj.carId + " from queue for " + curIntersection); 
-	sharedCarState.stopSignQueues[curIntersection].splice(0,1); // assumes the released car will always be first
-	delete sharedCarState.carsInIntersection[this.obj.carId]
-	this.intersectionClearedCounter = 0;
+    else if (this.intersectionClearedCounter == 1) {
+	this.clearIntersection(sharedCarState);
     }
     if (lookaheadResult.found !== false) {
-	if (this.stopsignCounter === 0 && !sharedCarState.carsInIntersection[this.obj.carId]) { // starting intersection dance - add car to intersection queue
-	    console.log("adding car " + this.obj.carId + " to queue for " + lookaheadResult.intersectionId + " (stopsign): " + lookaheadResult.found);
-	    sharedCarState.stopSignQueues[lookaheadResult.intersectionId].push(this.obj.carId);
-	    sharedCarState.carsInIntersection[this.obj.carId] = lookaheadResult.intersectionId;
-	}
+	var needsToWait = this.checkIntersection(sharedCarState, lookaheadResult.intersectionId);
 	this.obj.state = 'slowing';
 	var speedTarget = .05;
 	this.stopsignCounter += 1;
 	if ((this.stopsignCounter > 100) &&
 	    (this.curSpeed <= (speedTarget+.01)) &&
-	    (checkResult.needsToWait !== true)) { // time to move and notify shared state of intersection blockage
+	    (needsToWait !== true)) { // time to move and notify shared state of intersection blockage
 	    this.stopsignCounter = 0; 
 	    this.deleteIntersectionStopsigns(lookaheadResult.intersectionId);
 	    console.log("killing stopsigns at intersection " + lookaheadResult.intersectionId + " for car " + this.obj.carId);
 	    this.obj.state = 'moving'
-	    this.intersectionClearedCounter = 200/this.obj.def.speed;
+	    this.intersectionClearedCounter = Math.floor(200/this.obj.def.speed);
 	    console.log("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
 	}
 	return speedTarget;	
     }
-
 }
 
-MovementAI.prototype.checkNeedsToWait = function(sharedCarState, trigX, trigY) {
-    var lookaheadResult = this.doLookahead(trigX, trigY);
-    //console.log("lookaheadresult found is " + lookaheadResult.found + " and obj state is " + this.obj.state);
-    if (lookaheadResult.found !== false) {
-	var firstInQueue = sharedCarState.stopSignQueues[lookaheadResult.intersectionId][0];	
-	var needsToWait = ((firstInQueue !== undefined) && (firstInQueue !== this.obj.carId));
-    }
-    else {
-	needsToWait = false;
-    }
-    return {lookaheadResult: lookaheadResult, needsToWait: needsToWait}
+// right now just stop signs. soon to add lights, cars, peds, bikes. whew.
+// for non intersection waiting, return false for intersectionId
+MovementAI.prototype.doLookahead = function(trigX, trigY) {
+    var lookaheadX = trigX * 40;
+    var lookaheadY = trigY * 40;
+    var found = false;
+    var foundIntersectionId = false;
+    testPoints = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
+		  [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
+    _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
+	_.each(linedefs, function(line, idx) {
+	    if (isIntersect(line[0],line[1],testPoints[0],testPoints[1])) {
+		found = idx;
+		foundIntersectionId = intersectionId;
+		return
+	    }
+	});
+	if (found !== false) {
+	    return 
+	}
+    });
+    return {found: found, intersectionId: foundIntersectionId}
 }
+
+
+MovementAI.prototype.checkIntersection = function(sharedCarState, intersectionId) {
+    if (intersectionId === false) {
+	return true
+    }
+    if (this.stopsignCounter === 0 && (sharedCarState.carsInIntersection[this.obj.carId] == undefined)) { // starting intersection dance - add car to intersection queue
+	console.log("adding car " + this.obj.carId + " to queue for " + intersectionId); 
+	sharedCarState.stopSignQueues[intersectionId].push(this.obj.carId);
+	sharedCarState.carsInIntersection[this.obj.carId] = intersectionId;
+    }
+    var firstInQueue = sharedCarState.stopSignQueues[intersectionId][0];	
+    return ((firstInQueue !== undefined) && (firstInQueue !== this.obj.carId));
+    // currently returning true if no intersection (unimplemented) or if another car is there first
+    // returns false if the current car is first in line
+    // if needstowait is false and the stopsigncounter is high enough and curcar is slow enough
+    // than we kill the stopsign
+}
+
+MovementAI.prototype.clearIntersection = function(sharedCarState) {
+    // notify shared state of intersection unblockage
+    var curIntersection = sharedCarState.carsInIntersection[this.obj.carId];
+    console.log("finished countdown to remove car " + this.obj.carId + " from queue for " + curIntersection); 
+    sharedCarState.stopSignQueues[curIntersection].splice(0,1); // assumes the released car will always be first
+    delete sharedCarState.carsInIntersection[this.obj.carId]
+    this.intersectionClearedCounter = 0;
+}
+
+// temporarily remove all stop signs, since they have a habit of triggering from the wrong side
+// once the car has entered the intersection
+MovementAI.prototype.deleteIntersectionStopsigns = function(intersectionId) {
+    var numStopsigns = this.obj.stopSignLines[intersectionId].length;
+    _.each(_.range(numStopsigns), function(idx) {
+	this.obj.stopSignLines[intersectionId][idx] = [[-5000,-5000],[-5000,-5000]]; // remove stop signs for intersection for this car. maintain indices.
+    }, this);
+}
+
 
 MovementAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
     //console.log("in redopath with curcoords " + curCoords + " and nextcoords " + nextCoords);
@@ -192,34 +227,3 @@ MovementAI.prototype.doPath = function(coords, next) {
     }
 }
 
-// right now just stop signs. soon to add lights, cars, peds, bikes. whew.
-MovementAI.prototype.doLookahead = function(trigX, trigY) {
-    var lookaheadX = trigX * 40;
-    var lookaheadY = trigY * 40;
-    var found = false;
-    var foundIntersectionId = false;
-    testPoints = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
-		  [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
-    _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
-	_.each(linedefs, function(line, idx) {
-	    if (isIntersect(line[0],line[1],testPoints[0],testPoints[1])) {
-		found = idx;
-		foundIntersectionId = intersectionId;
-		return
-	    }
-	});
-	if (found !== false) {
-	    return 
-	}
-    });
-    return {found: found, intersectionId: foundIntersectionId}
-}
-
-// temporarily remove all stop signs, since they have a habit of triggering from the wrong side
-// once the car has entered the intersection
-MovementAI.prototype.deleteIntersectionStopsigns = function(intersectionId) {
-    var numStopsigns = this.obj.stopSignLines[intersectionId].length;
-    _.each(_.range(numStopsigns), function(idx) {
-	this.obj.stopSignLines[intersectionId][idx] = [[-5000,-5000],[-5000,-5000]]; // remove stop signs for intersection for this car. maintain indices.
-    }, this);
-}
