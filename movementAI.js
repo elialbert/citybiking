@@ -83,28 +83,14 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
 }
 
 MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
+    this.checkExitIntersection(sharedCarState);
     var lookaheadResult = this.doLookahead(trigX, trigY);
-    if (this.intersectionClearedCounter > 1) {
-	this.intersectionClearedCounter -= 1;
-    }
-    else if (this.intersectionClearedCounter == 1) {
-	this.clearIntersection(sharedCarState);
-    }
     if (lookaheadResult.found !== false) {
-	var needsToWait = this.checkIntersection(sharedCarState, lookaheadResult.intersectionId);
+	var needsToWait = this.checkEnterIntersection(sharedCarState, lookaheadResult.intersectionId);
 	this.obj.state = 'slowing';
 	var speedTarget = .05;
 	this.stopsignCounter += 1;
-	if ((this.stopsignCounter > 100) &&
-	    (this.curSpeed <= (speedTarget+.01)) &&
-	    (needsToWait !== true)) { // time to move and notify shared state of intersection blockage
-	    this.stopsignCounter = 0; 
-	    this.deleteIntersectionStopsigns(lookaheadResult.intersectionId);
-	    console.log("killing stopsigns at intersection " + lookaheadResult.intersectionId + " for car " + this.obj.carId);
-	    this.obj.state = 'moving'
-	    this.intersectionClearedCounter = Math.floor(200/this.obj.def.speed);
-	    console.log("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
-	}
+	this.checkFinishStopsign(speedTarget, needsToWait, lookaheadResult.intersectionId);
 	return speedTarget;	
     }
 }
@@ -134,7 +120,7 @@ MovementAI.prototype.doLookahead = function(trigX, trigY) {
 }
 
 
-MovementAI.prototype.checkIntersection = function(sharedCarState, intersectionId) {
+MovementAI.prototype.checkEnterIntersection = function(sharedCarState, intersectionId) {
     if (intersectionId === false) {
 	return true
     }
@@ -151,13 +137,37 @@ MovementAI.prototype.checkIntersection = function(sharedCarState, intersectionId
     // than we kill the stopsign
 }
 
-MovementAI.prototype.clearIntersection = function(sharedCarState) {
-    // notify shared state of intersection unblockage
-    var curIntersection = sharedCarState.carsInIntersection[this.obj.carId];
-    console.log("finished countdown to remove car " + this.obj.carId + " from queue for " + curIntersection); 
-    sharedCarState.stopSignQueues[curIntersection].splice(0,1); // assumes the released car will always be first
-    delete sharedCarState.carsInIntersection[this.obj.carId]
-    this.intersectionClearedCounter = 0;
+MovementAI.prototype.checkExitIntersection = function(sharedCarState) {
+    // intersectionclearedcounter currently set as sideeffect of this.checkFinishStopsign
+    if (this.intersectionClearedCounter > 1) {
+	this.intersectionClearedCounter -= 1;
+    }
+    else if (this.intersectionClearedCounter == 1) {
+	// notify shared state of intersection unblockage
+	var curIntersection = sharedCarState.carsInIntersection[this.obj.carId];
+	console.log("finished countdown to remove car " + this.obj.carId + " from queue for " + curIntersection); 
+	sharedCarState.stopSignQueues[curIntersection].splice(0,1); // assumes the released car will always be first
+	delete sharedCarState.carsInIntersection[this.obj.carId]
+	this.intersectionClearedCounter = 0;
+    }
+}
+
+MovementAI.prototype.checkFinishStopsign = function(speedTarget, needsToWait, intersectionId) {
+    // return value not currently in use but might be cleaner to use it soon instead of setting
+    // intersectionClearedCounter here
+    if ((this.stopsignCounter > 100) &&
+	(this.curSpeed <= (speedTarget+.01)) &&
+	(needsToWait !== true)) 
+    { // time to move and notify shared state of intersection blockage
+	this.stopsignCounter = 0; 
+	console.log("killing stopsigns at intersection " + intersectionId + " for car " + this.obj.carId);
+	this.deleteIntersectionStopsigns(intersectionId);
+	this.obj.state = 'moving'
+	this.intersectionClearedCounter = Math.floor(200/this.obj.def.speed);
+	console.log("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
+	return true
+    }
+    return false
 }
 
 // temporarily remove all stop signs, since they have a habit of triggering from the wrong side
@@ -168,7 +178,6 @@ MovementAI.prototype.deleteIntersectionStopsigns = function(intersectionId) {
 	this.obj.stopSignLines[intersectionId][idx] = [[-5000,-5000],[-5000,-5000]]; // remove stop signs for intersection for this car. maintain indices.
     }, this);
 }
-
 
 MovementAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
     //console.log("in redopath with curcoords " + curCoords + " and nextcoords " + nextCoords);
