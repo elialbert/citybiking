@@ -13,8 +13,8 @@ function Car(sprite, lights, def, stopSignLines, carId) {
     this.lastInScene = null;
     this.sceneChangeCount = -1; //because we start null
     this.restartTimer = 20;
-    this.stopSignLines = stopSignLines
-    this.stopSignLinesCopy = copyStopsignLines(stopSignLines)
+    this.stopSignLines = copyStopsignLines(stopSignLines);
+    this.stopSignLinesCopy = copyStopsignLines(stopSignLines);
     this.movementAI = new MovementAI(this, stopSignLines);
 }
 

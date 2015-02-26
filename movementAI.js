@@ -1,6 +1,6 @@
 function MovementAI(obj, stopSignLines) {
     this.obj = obj;
-    this.stopSignLines = stopSignLines;
+    //this.stopSignLines = stopSignLines;
     this.angleInfos = this.preparePaths();
     this.lastDiff = 100;
     this.turnIncrement = 0;
@@ -86,6 +86,8 @@ MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
     var checkResult = this.checkNeedsToWait(sharedCarState, trigX, trigY);
     var lookaheadResult = checkResult.lookaheadResult;
     var curIntersection = sharedCarState.carsInIntersection[this.obj.carId];
+
+
     if (this.intersectionClearedCounter > 1) {
 	this.intersectionClearedCounter -= 1;
     }
@@ -105,13 +107,12 @@ MovementAI.prototype.checkObstacles = function(trigX, trigY, sharedCarState) {
 	this.obj.state = 'slowing';
 	var speedTarget = .05;
 	this.stopsignCounter += 1;
-	
 	if ((this.stopsignCounter > 100) &&
 	    (this.curSpeed <= (speedTarget+.01)) &&
 	    (checkResult.needsToWait !== true)) { // time to move and notify shared state of intersection blockage
 	    this.stopsignCounter = 0; 
 	    this.deleteIntersectionStopsigns(lookaheadResult.intersectionId);
-	    console.log("killing stopsign " + lookaheadResult.found + " for car " + this.obj.carId);
+	    console.log("killing stopsigns at intersection " + lookaheadResult.intersectionId + " for car " + this.obj.carId);
 	    this.obj.state = 'moving'
 	    this.intersectionClearedCounter = 200/this.obj.def.speed;
 	    console.log("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
@@ -199,7 +200,7 @@ MovementAI.prototype.doLookahead = function(trigX, trigY) {
     var foundIntersectionId = false;
     testPoints = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
 		  [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
-    _.each(this.stopSignLines, function(linedefs, intersectionId) {
+    _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
 	_.each(linedefs, function(line, idx) {
 	    if (isIntersect(line[0],line[1],testPoints[0],testPoints[1])) {
 		found = idx;
@@ -207,7 +208,7 @@ MovementAI.prototype.doLookahead = function(trigX, trigY) {
 		return
 	    }
 	});
-	if (found) {
+	if (found !== false) {
 	    return 
 	}
     });
