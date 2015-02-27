@@ -22,7 +22,7 @@ var defaultLevel = {
 	{coords: [340,360], rotation: 90, intersection: 1},
     ],
     carDefs: [
-	/*
+	
 	{coordPath: [
 	    [380,-50],	 
 	    [380, 330],
@@ -35,7 +35,7 @@ var defaultLevel = {
 	 fillColor: 0x9933FF,
 	 height: 24,
 	},
-	*/
+	
 	{coordPath: [
 	    [-5,330],
 	    [400,330],
@@ -43,10 +43,10 @@ var defaultLevel = {
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: 2,
+	 speed: 3,
 	 fillColor: 0x4D4DFF,
 	},
-	/*
+	
 	
 	{coordPath: [
 	    [420,605],
@@ -57,6 +57,6 @@ var defaultLevel = {
 	 speed: 2,
 	 fillColor: 0x4D4DFF,
 	},	
-	*/
+	
     ],
 };

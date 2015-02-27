@@ -7,6 +7,10 @@ function MovementAI(obj, stopSignLines) {
     this.curSpeed = this.obj.def.speed;
     this.stopsignCounter = 0;
     this.intersectionClearedCounter = 0;
+    this.slowingCounter = 0;
+    this.acceleratingCounter = 0;
+    this.slowingCoefficient = -.004 * this.obj.def.speed;
+    this.acceleratingCoefficient = .0025 * this.obj.def.speed;
 }
 
 MovementAI.prototype.calcMovement = function(sharedCarState) {
@@ -26,18 +30,36 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	speedTarget = this.obj.def.speed / 2;
     }
     else if (this.obj.state == 'moving') {
-	//var speed = this.obj.def.speed;
 	speedTarget = this.obj.def.speed;
     }
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
-    this.storeProjectedMovementLine(angle, trigX, trigY, this.obj.def.speed*20); // this value is tricky. was formerly hardcoded to 40. but should be based on speed I think.
+    this.storeProjectedMovementLine(angle, trigX, trigY, this.obj.def.speed*40); // this value is tricky. was formerly hardcoded to 40. but should be based on speed I think.
     speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
 
-    //console.log("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget);
-    deltaSpeed = (speedTarget - this.curSpeed) / 6;
+    if (this.obj.state == 'slowing') {
+	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
+	//console.log("slow ds " + deltaSpeed + " for slowingcounter " + this.slowingCounter);
+	this.slowingCounter += 1;
+    }
+    else if ((this.obj.state == 'moving') && (this.curSpeed < 1)) {
+	var deltaSpeed = this.acceleratingCoefficient*Math.sqrt(this.acceleratingCounter);
+	//console.log("accel ds " + deltaSpeed);
+	this.acceleratingCounter += 1;
+    }
+    else if ((this.obj.state == 'moving') || (this.obj.state == 'turning')) {
+	this.acceleratingCounter = 0;
+	this.slowingCounter = 0;
+	deltaSpeed = (speedTarget - this.curSpeed) / 6;
+	//console.log("normal ds " + deltaSpeed);
+    }
+
+    //console.log("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget + ", deltaspeed is " + deltaSpeed);
     //console.log("deltaspeed is " + deltaSpeed);
     this.curSpeed += deltaSpeed
+    if (this.curSpeed<0) {
+	this.curSpeed = 0.00001;
+    }
     var changeX = trigX * this.curSpeed;
     var changeY = trigY * this.curSpeed;
     //console.log("changex is " + changeX + ", changeY is " + changeY);
