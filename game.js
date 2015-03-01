@@ -3,7 +3,7 @@ function init() {
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    level = nostopsignsLevel;
+    level = defaultLevel;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     setupResult = buildLevel(stage, level);
     background = setupResult.background;

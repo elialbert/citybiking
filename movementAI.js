@@ -35,17 +35,10 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
     this.storeProjectedMovementLine(angle, trigX, trigY, this._getLookaheadSpeed(this.curSpeed)*40); // this value is tricky. was formerly hardcoded to 40. but should be based on speed I think.
-    //if (this.obj.carId == 1) {
-	//console.log("car 1 state is " + this.obj.state);
-    //}
     speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
-    if (this.obj.carId === 1) {
-	console.log("now car 1 state is " + this.obj.state);
-    }
 
     if ((this.obj.state == 'slowing') || (this.obj.state == 'turning and slowing')) {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
-	//console.log("slow ds " + deltaSpeed + " for slowingcounter " + this.slowingCounter);
 	this.slowingCounter += 1;
     }
     else if ((this.obj.state == 'moving') && (this.curSpeed < 1)) {
@@ -196,9 +189,15 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	//    console.log("now y for car 1 is " + carObj.movementAI.lookaheadBBPoly.pos.y);
 	    //var alsad = 1;
 	//}
-	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  
-	    var collision = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly) || 
-		checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
+	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  	    
+	    var collisionLookahead = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
+	    var collisionNormal = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
+	    if (this.curSpeed >= 1) {
+		var collision = (collisionLookahead || collisionNormal);
+	    }
+	    else {
+		var collision = collisionNormal;
+	    }
 	    if (collision) {
 		//if ((this.obj.carId === 1) && (carObj.carId == 2)) {
 		  //  console.log("CAR " + this.obj.carId + "/" + carObj.carId + " HIT!!!");

@@ -149,12 +149,13 @@ function buildLevel(stage, level) {
 	carSprite.position.y = y;
 	carSprite.anchor.x = .5;
 	carSprite.anchor.y = .5;
+	var widthscalar = 1.5;
 	var polygonPoints = [
-	    new SAT.Vector(-width/2,-height/2),
-	    new SAT.Vector(-width/2,height/2),
-	    new SAT.Vector(width/2,height/2),
-	    new SAT.Vector(width/2,-height/2),
-	    new SAT.Vector(-width/2,-height/2),
+	    new SAT.Vector(-width/widthscalar,-height/2),
+	    new SAT.Vector(-width/widthscalar,height/2),
+	    new SAT.Vector(width/widthscalar,height/2),
+	    new SAT.Vector(width/widthscalar,-height/2),
+	    new SAT.Vector(-width/widthscalar,-height/2),
 	]
 	carSprite.polygonPoints = polygonPoints;
 	lights = drawCarLights(carSprite, width);
