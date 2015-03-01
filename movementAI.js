@@ -130,8 +130,8 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
 		      [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
 
     // attempt to create lookahead polygonpoints for real lookahead bbpoly
-    var intersectAngle = 90 - angle;
-    var width = (this.obj.def.width || 8) / 2
+    var intersectAngle = -1*(90 - angle);
+    var width = (this.obj.def.width || 8) // use twice the width
     var upperLeftX = width * Math.cos(toRadians(intersectAngle))
     var upperLeftY = width * Math.sin(toRadians(intersectAngle))
 
@@ -146,14 +146,19 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
 
     this.lookaheadBBPoly = BBFromPoints([this.obj.sprite.position.x+lookaheadX, this.obj.sprite.position.y+lookaheadY], [
 	[upperLeftX,upperLeftY],
-	[lowerLeftX-lookaheadX, lowerLeftY-lookaheadY],
-	[lowerRightX-lookaheadX, lowerRightY-lookaheadY],
+	//[lowerLeftX, lowerLeftY],
+	//[lowerRightX, lowerRightY],
+	[lowerLeftX-(lookaheadX/2), lowerLeftY-(lookaheadY/2)], 
+	[lowerRightX-(lookaheadX), lowerRightY-(lookaheadY)],//gotta add a /2 eventually
 	[upperRightX, upperRightY],
 	[upperLeftX, upperLeftY]
     ]);
 
     this.bbPoly = BBFromSprite(this.obj.sprite);
  
+    // draw the bbpolys for testing
+    drawLinesFromBBPoly(this.obj.sprite, this.bbPoly, 0, 0xFF0000);
+    drawLinesFromBBPoly(this.obj.sprite, this.lookaheadBBPoly, 1, 0xFFFF00);
 }
 
 // check, in this order: cars, bike, stopsigns (soon: stoplights, peds)

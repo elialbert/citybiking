@@ -63,58 +63,26 @@ function checkCollisions(theBike, collisionObjects, posChange, carMode) {
     });
 }
 
+function checkBikeCollisions(theBike, collisionObjects, posChange) {
+    if ((theBike.bbPoly === undefined)) {
+	return 
+    }
+    _.each(collisionObjects, function(obj) {
+	if ((obj.movementAI.bbPoly === undefined)) {
+	    return 
+	}
+	if (checkCollision2(theBike.bbPoly, obj.movementAI.bbPoly)) {
+	    posChange.speed = posChange.speed / 1.9;
+	    obj.hit = true;	    
+	}
+    });
+}
+
 function checkCollision(point, bbPoly) {
     return SAT.pointInPolygon(point, bbPoly)
 }
-function checkCollision2(vector, bbPoly) {
-    return SAT.testPolygonPolygon(vector, bbPoly)
-}
-
-function setupBBs(collisionObjects, stage, skipDraw, carMode) {
-    _.each(collisionObjects, function(obj) {
-	if (carMode) {
-	    obj.bbPoly = BBFromSprite(obj.sprite);
-	}
-	else {
-	    obj.bbPoly = BBFromSprite(obj);
-	};
-	if (skipDraw) {
-	    return 
-	}
-	// draw red lines around bbs for testing:
-	var ttt = obj.bbPoly;
-	var g = new PIXI.Graphics();
-	g.lineStyle(2, 0xff0000, 1);
-	if (carMode) {
-	    g.moveTo(ttt.pos.x-6,ttt.pos.y-12);
-	}
-	else {
-	    g.moveTo(ttt.pos.x,ttt.pos.y);
-	}
-	_.each(ttt.points, function(point) {
-	    //console.log("X: " + (ttt.pos.x+point.x) + ", Y: " + (ttt.pos.y+point.y));
-	    g.lineTo(ttt.pos.x+point.x,ttt.pos.y+point.y);
-	});
-	stage.addChild(g);	
-    });
-}
-
-function BBFromSprite(sprite) {
-    // take a pixi sprite, return a SAT.js polygon
-    // SAT.js polygon requires a position and then counterclockwise points referenced off of initial position
-    return new SAT.Polygon(new SAT.Vector(sprite.position.x,sprite.position.y), sprite.polygonPoints);    
-}
-
-function BBFromPoints(pos, points) {
-    var pp = [];
-    _.each(points, function(point) {
-	pp.push(new SAT.Vector(point[0],point[1]));
-    });
-    return new SAT.Polygon(new SAT.Vector(pos[0],pos[1]), pp);
-}
-
-function getLineBB(points) {
-    return new SAT.Polygon(new SAT.Vector(points[0][0], points[0][1]), [new SAT.Vector(points[0][0],points[0][1]), new SAT.Vector(points[1][0],points[1][1])]);
+function checkCollision2(bbPoly1, bbPoly2) {
+    return SAT.testPolygonPolygon(bbPoly1, bbPoly2)
 }
 
 function CCW(p1, p2, p3) {

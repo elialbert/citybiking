@@ -3,7 +3,7 @@ function init() {
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    level = defaultLevel;
+    level = nostopsignsLevel;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     setupResult = buildLevel(stage, level);
     background = setupResult.background;
@@ -33,7 +33,9 @@ function init() {
 	theBike.position.y += posChange.changeY;
 	theBike.rotation = toRadians(posChange.direction - 270);
 	checkCollisions(theBike, staticCollisionObjects, posChange);
+	checkBikeCollisions(theBike, dynamicCollisionObjects, posChange);
 	theBike.bbPoly = BBFromSprite(theBike);
+	drawLinesFromBBPoly(theBike, theBike.bbPoly, 2, 0xFF0000);
     };
     function doCarMovement() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)

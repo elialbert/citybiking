@@ -16,12 +16,21 @@ function setupBike(x,y) {
     theBike.position.y = y;
     theBike.anchor.x = .5;
     theBike.anchor.y = .5;
+    /*
     var polygonPoints = [
 	new SAT.Vector(-width/2,-height/2),
 	new SAT.Vector(-width/2,height/2),
 	new SAT.Vector(width/2,height/2),
 	new SAT.Vector(width/2,-height/2),
 	new SAT.Vector(-width/2,-height/2),
+    ]
+    */
+    var polygonPoints = [
+	new SAT.Vector(-width,-height),
+	new SAT.Vector(-width,height),
+	new SAT.Vector(width,height),
+	new SAT.Vector(width,-height),
+	new SAT.Vector(-width,-height),
     ]
     theBike.polygonPoints = polygonPoints;
 
@@ -106,7 +115,7 @@ function buildLevel(stage, level) {
 		stopSignLines[key] = [];
 		graphics.beginFill(0x000000, 1);
 		_.each(intersectionDef, function(coord, idx) {
-		    if (idx == 0) {
+		    if (idx === 0) {
 			graphics.moveTo(coord[0], coord[1]);
 		    }
 		    else {
