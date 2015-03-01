@@ -16,19 +16,18 @@ function drawLinesFromBBPoly(sprite, bbPoly, num, color) {
     });
 
     oldSprite = sprite.redLines[num];
-    redLineSprite = new PIXI.Sprite(g.generateTexture());
+    redLineSprite = g//new PIXI.Sprite(g.generateTexture());
 
     if (sprite.parent.children.indexOf(oldSprite) !== -1) {
 	sprite.parent.removeChild(oldSprite);
     }
-    redLineSprite.position.x = sprite.position.x;
-    redLineSprite.position.y = sprite.position.y;
-    redLineSprite.anchor.x = .5;
-    redLineSprite.anchor.y = .5;
+    //redLineSprite.position.x = bbPoly.pos.x;
+    //redLineSprite.position.y = bbPoly.pos.y;
+    //redLineSprite.anchor.x = .5;
+    //redLineSprite.anchor.y = .5;
 
     sprite.redLines[num] = redLineSprite;
     sprite.parent.addChild(redLineSprite);
-    window.ttt = redLineSprite;
 }
 
 function setupBBs(collisionObjects, stage, skipDraw, carMode) {

@@ -162,16 +162,16 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
 	[upperLeftX,upperLeftY],
 	//[lowerLeftX, lowerLeftY],
 	//[lowerRightX, lowerRightY],
-	[lowerLeftX-(lookaheadX/2), lowerLeftY-(lookaheadY/2)], 
+	[lowerLeftX-(lookaheadX), lowerLeftY-(lookaheadY)], 
 	[lowerRightX-(lookaheadX), lowerRightY-(lookaheadY)],//gotta add a /2 eventually
 	[upperRightX, upperRightY],
 	[upperLeftX, upperLeftY]
     ]);
 
     this.bbPoly = BBFromSprite(this.obj.sprite);
-    if (this.obj.carId == 1) {
-	console.log("lookahead bbpoly pos for 1 is " + this.lookaheadBBPoly.pos.y);
-    }
+    //if (this.obj.carId == 1) {
+	//console.log("lookahead bbpoly pos for 1 is " + this.lookaheadBBPoly.pos.y);
+    //}
  
     // draw the bbpolys for testing
     drawLinesFromBBPoly(this.obj.sprite, this.bbPoly, 0, 0xFF0000);
@@ -189,14 +189,16 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
     var foundIntersectionId = false;
 
     _.each(sharedCarState.cars, function(carObj, carId) {
-	if ((this.obj.carId === 2) && (carObj.carId == 1) &&(carObj.movementAI.bbPoly)) {
-	    console.log("now y for car 1 is " + carObj.movementAI.lookaheadBBPoly.pos.y);
+	//if ((this.obj.carId === 1) && (carObj.carId == 2) &&(carObj.movementAI.bbPoly)) {
+	//    console.log("now y for car 1 is " + carObj.movementAI.lookaheadBBPoly.pos.y);
 	    //var alsad = 1;
-	}
+	//}
 	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  
-	    var collision = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
+	    var collision = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
 	    if (collision) {
-		//console.log("CAR " + this.obj.carId + "/" + carObj.carId + " HIT!!!");
+		if ((this.obj.carId === 1) && (carObj.carId == 2)) {
+		    console.log("CAR " + this.obj.carId + "/" + carObj.carId + " HIT!!!");
+		}
 		found = carObj.carId;
 		typeFound = 'car';
 		return
