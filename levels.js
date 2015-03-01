@@ -81,7 +81,7 @@ var nostopsignsLevel = {
     stopSigns: [
     ],
     carDefs: [
-	/*
+	
 	{coordPath: [
 	    [380,-50],	 
 	    [380, 330],
@@ -94,7 +94,7 @@ var nostopsignsLevel = {
 	 fillColor: 0x9933FF,
 	 height: 24,
 	},
-	*/
+	
 	{coordPath: [
 	    [-5,330],
 	    [400,330],
@@ -106,7 +106,7 @@ var nostopsignsLevel = {
 	 fillColor: 0x4D4DFF,
 	},
 	
-	/*
+	
 	{coordPath: [
 	    [420,605],
 	    [420, -5],
@@ -116,6 +116,6 @@ var nostopsignsLevel = {
 	 speed: 2,
 	 fillColor: 0x4D4DFF,
 	},	
-	*/
+	
     ],
 };
