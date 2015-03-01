@@ -9,6 +9,7 @@ function MovementAI(obj, stopSignLines) {
     this.intersectionClearedCounter = 0;
     this.slowingCounter = 0;
     this.acceleratingCounter = 0;
+    this.hitCounter = 0;
     this.slowingCoefficient = -.004 * this.obj.def.speed;
     this.acceleratingCoefficient = .0025 * this.obj.def.speed;
 }
@@ -16,7 +17,14 @@ function MovementAI(obj, stopSignLines) {
 MovementAI.prototype.calcMovement = function(sharedCarState) {
     var speedTarget = this.obj.def.speed;
     if (this.obj.hit) { // temporary - need to handle better, including clearing intersection if nec
-	return {changeX: 0, changeY: 0, state: 'hit'}
+	this.hitCounter += 1;
+	if (this.hitCounter > 400) {
+	    this.hitCounter = 0;
+	    this.obj.hit = false;
+	}
+	else {
+	    return {changeX: 0, changeY: 0, state: 'hit'}
+	}
     };
     var angleInfo = this.angleInfos[this.obj.coordPathIndex];
     if (!angleInfo) {
