@@ -24,7 +24,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     var angle = angleInfo.angle;
     this.obj.state = this.checkDestination(angleInfo);
-    if (this.obj.state == 'turning') {
+    if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
 	//console.log("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
 	speedTarget = this.obj.def.speed / 2;
@@ -35,9 +35,15 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
     this.storeProjectedMovementLine(angle, trigX, trigY, this.obj.def.speed*40); // this value is tricky. was formerly hardcoded to 40. but should be based on speed I think.
+    //if (this.obj.carId == 1) {
+	//console.log("car 1 state is " + this.obj.state);
+    //}
     speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
+    if (this.obj.carId === 8) {
+	console.log("now car 0 state is " + this.obj.state);
+    }
 
-    if (this.obj.state == 'slowing') {
+    if ((this.obj.state == 'slowing') || (this.obj.state == 'turning and slowing')) {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
 	//console.log("slow ds " + deltaSpeed + " for slowingcounter " + this.slowingCounter);
 	this.slowingCounter += 1;
@@ -77,7 +83,7 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
 	var diffx = Math.abs(nextCoords[0] - this.obj.sprite.position.x);
 	var diffy = Math.abs(nextCoords[1] - this.obj.sprite.position.y);
 	var diff = diffx + diffy;
-	if ((angleInfo.needsTurn && diff < 25 || this.obj.state == 'turning')) {
+	if ((angleInfo.needsTurn && diff < 25) || (this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 	    this.lastDiff = diff;
 	    this.turnIncrement += 1;
 	    if (this.turnIncrement > angleInfo.numIncrements) {
@@ -114,7 +120,12 @@ MovementAI.prototype.checkObstacles = function(sharedCarState) {
 	    var needsToWait = this.checkEnterIntersection(sharedCarState, lookaheadResult.intersectionId);
 	    speedTarget = .05;
 	}
-	this.obj.state = 'slowing';
+	if (this.obj.state === 'turning') {
+	    this.obj.state = 'turning and slowing';
+	}
+	else {
+	    this.obj.state = 'slowing';
+	}
 	if (lookaheadResult.type == 'stopsign') {
 	    this.stopsignCounter += 1;
 	    this.checkFinishStopsign(speedTarget, needsToWait, lookaheadResult.intersectionId);
@@ -144,6 +155,9 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
     var lowerRightX = upperRightX;
     var lowerRightY = upperRightY;
 
+    //if (this.obj.carId == 1) {
+//	console.log("lookahead bbpoly pos for 1 is " + (this.obj.sprite.position.x+lookaheadX) + "," + (this.obj.sprite.position.y+lookaheadY));
+  //  }
     this.lookaheadBBPoly = BBFromPoints([this.obj.sprite.position.x+lookaheadX, this.obj.sprite.position.y+lookaheadY], [
 	[upperLeftX,upperLeftY],
 	//[lowerLeftX, lowerLeftY],
@@ -155,6 +169,9 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
     ]);
 
     this.bbPoly = BBFromSprite(this.obj.sprite);
+    if (this.obj.carId == 1) {
+	console.log("lookahead bbpoly pos for 1 is " + this.lookaheadBBPoly.pos.y);
+    }
  
     // draw the bbpolys for testing
     drawLinesFromBBPoly(this.obj.sprite, this.bbPoly, 0, 0xFF0000);
@@ -170,19 +187,26 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
     var found = false;
     var typeFound = false;
     var foundIntersectionId = false;
-    //var satVector = getLineBB(this.movementLine);// new SAT.Vector(this.movementLine[0], this.movementLine[1]);
-    //var lookahead
+
     _.each(sharedCarState.cars, function(carObj, carId) {
-	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	    
-	    var collision = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
+	if ((this.obj.carId === 2) && (carObj.carId == 1) &&(carObj.movementAI.bbPoly)) {
+	    console.log("now y for car 1 is " + carObj.movementAI.lookaheadBBPoly.pos.y);
+	    //var alsad = 1;
+	}
+	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  
+	    var collision = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
 	    if (collision) {
-		console.log("CAR HIT!!!");
+		//console.log("CAR " + this.obj.carId + "/" + carObj.carId + " HIT!!!");
 		found = carObj.carId;
 		typeFound = 'car';
 		return
 	    }
 	}
     }, this);
+
+    //if (this.obj.carId === 2) {
+	//console.log("car 2 found is " + found);
+    //}
 
     if (found !== false) {
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}

@@ -43,6 +43,7 @@ function init() {
 	var res = runCars(dynamicCollisionObjects, sharedCarState);
 	if (res != false) {
 	    dynamicCollisionObjects[res[0]] = res[1];
+	    sharedCarState.cars[res[1].carId] = res[1];
 	}
     };
 
