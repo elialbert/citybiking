@@ -200,6 +200,10 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  	    
 	    var collisionLookahead = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
 	    var collisionNormal = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
+	    var collisionCrash = checkCollision2(this.bbPoly, carObj.movementAI.bbPoly);
+	    if (collisionCrash === true) {
+		this.obj.hit = true;
+	    }
 	    if (this.curSpeed >= 1) {
 		var collision = (collisionLookahead || collisionNormal);
 	    }
