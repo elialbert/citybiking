@@ -1,6 +1,5 @@
 function MovementAI(obj, stopSignLines) {
     this.obj = obj;
-    //this.stopSignLines = stopSignLines;
     this.angleInfos = this.preparePaths();
     this.lastDiff = 100;
     this.turnIncrement = 0;
@@ -221,7 +220,11 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
     }
 
     _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
-	_.each(linedefs, function(line, idx) {
+	_.each(linedefs, function(linedef, idx) {
+	    var line = linedef.points
+	    if (linedef.state === false) {
+		return
+	    }
 	    if (isIntersect(line[0],line[1],this.movementLine[0],this.movementLine[1])) {
 		found = idx;
 		foundIntersectionId = intersectionId;
@@ -292,7 +295,8 @@ MovementAI.prototype.checkFinishStopsign = function(speedTarget, needsToWait, in
 MovementAI.prototype.deleteIntersectionStopsigns = function(intersectionId) {
     var numStopsigns = this.obj.stopSignLines[intersectionId].length;
     _.each(_.range(numStopsigns), function(idx) {
-	this.obj.stopSignLines[intersectionId][idx] = [[-5000,-5000],[-5000,-5000]]; // remove stop signs for intersection for this car. maintain indices.
+	// this.obj.stopSignLines[intersectionId][idx] = [[-5000,-5000],[-5000,-5000]]; // remove stop signs for intersection for this car. maintain indices.
+	this.obj.stopSignLines[intersectionId][idx].state = false;
     }, this);
 }
 

@@ -108,7 +108,11 @@ function setupSharedCarState(setupResult, cars, theBike) {
 function copyStopsignLines(d) {
     var n = {};
     _.each(d, function(v, k) {
-	n[k] = v.slice();
+	var newv = [];
+	_.each(v, function(el) {
+	    newv.push($.extend(true, {}, el));
+	});
+	n[k] = newv;
     });
     return n
 }

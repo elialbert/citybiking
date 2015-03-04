@@ -43,6 +43,7 @@ function buildLevel(stage, level) {
     var staticCollisionObjects = [];
     var dynamicCollisionObjects = [];
     var stopSignLines = {}; // dict of intersection id to list of stopsign coords at that intersection
+    var trafficLightLines = {}; // similar
     var curblist = [];
     var graphics = new PIXI.Graphics();
     graphics = drawObjects(graphics, stage, staticCollisionObjects, level);
@@ -50,17 +51,14 @@ function buildLevel(stage, level) {
 	    dynamicCollisionObjects: dynamicCollisionObjects, 
 	    stage: stage,
 	    stopSignLines: stopSignLines,
+	    trafficLightLines: trafficLightLines,
 	   }
 
 
     function drawObjects(graphics, stage, staticCollisionObjects, level) {
 	// takes the middle of the road start and finish
-	var roadDefs = level.roadDefs;
-	var intersectionList = level.intersectionDefs;
-	var carDefs = level.carDefs;
-	var stopSigns = level.stopSigns;
-	drawIntersections(graphics, intersectionList, stopSignLines); // basically just fill in black in the polygons in the list for now
-	_.each(roadDefs, function(roadDef, idx) {
+	drawIntersections(graphics, level.intersectionDefs, stopSignLines); // basically just fill in black in the polygons in the list for now
+	_.each(level.roadDefs, function(roadDef, idx) {
 	    drawRoad(graphics, stage, staticCollisionObjects, roadDef);
 	});
 	// make sure curbs render on top
@@ -68,11 +66,15 @@ function buildLevel(stage, level) {
 	    stage.addChild(curb);
 	});
 
-	_.each(stopSigns, function(stopSign) {
+	_.each(level.stopSigns, function(stopSign) {
 	    drawStopSign(stopSign, stage);
 	});
 
-	_.each(carDefs, function(carDef, idx) {
+	_.each(level.trafficLights, function(trafficLight) {
+	    drawTrafficLight(trafficLight, stage);
+	});
+
+	_.each(level.carDefs, function(carDef, idx) {
 	    drawCar(carDef, stage, idx);
 	});
 
@@ -113,6 +115,7 @@ function buildLevel(stage, level) {
 	function drawIntersections(graphics, intersectionDefs, stopSignLines) {
 	    _.each(intersectionDefs, function(intersectionDef, key) {
 		stopSignLines[key] = [];
+		trafficLightLines[key] = [];
 		graphics.beginFill(0x000000, 1);
 		_.each(intersectionDef, function(coord, idx) {
 		    if (idx === 0) {
@@ -229,10 +232,26 @@ function buildLevel(stage, level) {
 	stage.addChild(sg);
 	stage.addChild(text);
 	// now the white line
+	intersectionWhiteLine(x,y,rotation,stopSignLines,stopSignDef.intersection,stage);
+    };
+
+    function drawTrafficLight(trafficLightDef) {
+	var coords = trafficLightDef.coords;
+	var rotation = trafficLightDef.rotation;
+	var tfg = new PIXI.Graphics();
+	var x = coords[0];
+	var y = coords[1];
+	tfg.lineStyle(2, 0x000000, 1);
+	tfg.beginFill(0x000000, 1);
+	tfg.drawCircle(x,y,7);
+	stage.addChild(tfg);
+	intersectionWhiteLine(x,y,rotation,trafficLightLines,trafficLightDef.intersection,stage);
+    };
+    
+    function intersectionWhiteLine(x,y,rotation,infoDict,intersection,stage) {
 	var wl = new PIXI.Graphics();
 	wl.lineStyle(4, 0xFFFFFF, 1);
 	offsets = [-Math.cos(toRadians(rotation)), -Math.sin(toRadians(rotation))];
-	// console.log("offsets are " + offsets);
 	var xStart = x+(15*offsets[0]);
 	var yStart = y+(15*offsets[1]);
 	var xEnd = x+(55*offsets[0]);
@@ -240,10 +259,10 @@ function buildLevel(stage, level) {
 	wl.moveTo(xStart,yStart);
 	wl.lineTo(xEnd,yEnd);
 	points = [[xStart,yStart],[xEnd,yEnd]];
-	stopSignLines[stopSignDef.intersection].push(points);
+	infoDict[intersection].push({state:true,points:points});
 	stage.addChild(wl);
     };
-    
+
     function drawCurb(roadDef,xstart,ystart,xfinish,yfinish) {
     	var curb1 = new PIXI.Graphics();
 	var polygonPoints = [];
