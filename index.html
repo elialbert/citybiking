@@ -2,13 +2,8 @@
 <html>
 <head>
     <title>bike practice game</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #000000;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
     <script src="SAT.min.js"></script>
     <script src="pixi.dev.js"></script>
@@ -22,6 +17,12 @@
 
 </head>
 <body onload="init();">
+  <div id="controls">
+    <form action="">
+      <input class="optioninput" type="radio" name="debug" value="true" checked="checked"><span class="inputtext">Debug Mode On</span><br>
+      <input class="optioninput" type="radio" name="debug" value="false"><span class="inputtext">Debug Mode Off</span>
+    </form>
+  </div>
   <div align="center">
     <canvas id="game-canvas" width="800" height="800"></canvas>
   </div>

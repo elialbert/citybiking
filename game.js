@@ -1,4 +1,6 @@
+var globalOptions = {debugMode:false};
 function init() {
+    setupDebugMode();
     var stage = new PIXI.Stage(0x3D3D5C); 
     stage.interactive = true;
     // create a renderer instance.
@@ -35,7 +37,9 @@ function init() {
 	checkCollisions(theBike, staticCollisionObjects, posChange);
 	checkBikeCollisions(theBike, dynamicCollisionObjects, posChange);
 	theBike.bbPoly = BBFromSprite(theBike);
-	drawLinesFromBBPoly(theBike, theBike.bbPoly, 2, 0xFF0000);
+	if (globalOptions.debugMode) {
+	    drawLinesFromBBPoly(theBike, theBike.bbPoly, 2, 0xFF0000);
+	}
     };
     function doCarMovement() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)
@@ -53,31 +57,61 @@ function setupKeys(input) {
     document.addEventListener('keydown', function(event) {
 	if(event.keyCode == 37) {
 	    input.left = true;
+	    event.preventDefault();
 	}
 	else if(event.keyCode == 39) {
 	    input.right = true
+	    event.preventDefault();
 	}
 	else if(event.keyCode == 38) {
 	    input.up = true;
+	    event.preventDefault();
 	}
 	else if(event.keyCode == 40) {
 	    input.down = true;
+	    event.preventDefault();
 	}
 
     });
     document.addEventListener('keyup', function(event) {
 	if(event.keyCode == 37) {
 	    input.left = false;
+	    event.preventDefault();
 	}
 	else if(event.keyCode == 39) {
 	    input.right = false;
+	    event.preventDefault();
 	}
 	else if(event.keyCode == 38) {
 	    input.up = false;
+	    event.preventDefault();
 	}
 	else if(event.keyCode == 40) {
 	    input.down = false;
+	    event.preventDefault();
 	}
     });
 
+}
+
+function setupDebugMode() {
+    $(document).ready(function() {
+	var strdebugMode = $("input:radio[name=debug]").val();
+	if (strdebugMode === 'true') {
+	    globalOptions.debugMode = true;
+	}
+	else {
+		globalOptions.debugMode = false;
+	}
+
+	$("input:radio[name=debug]").click(function() {
+	    var strdebugMode = $(this).val();
+	    if (strdebugMode === 'true') {
+		globalOptions.debugMode = true;
+	    }
+	    else {
+		globalOptions.debugMode = false;
+	    }
+	});
+    });
 }

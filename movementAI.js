@@ -34,7 +34,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     this.obj.state = this.checkDestination(angleInfo);
     if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
-	//console.log("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
+	//consoleLog("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
 	speedTarget = this.obj.def.speed / 2;
     }
     else if (this.obj.state == 'moving') {
@@ -51,25 +51,25 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     else if ((this.obj.state == 'moving') && (this.curSpeed < 1)) {
 	var deltaSpeed = this.acceleratingCoefficient*Math.sqrt(this.acceleratingCounter);
-	//console.log("accel ds " + deltaSpeed);
+	//consoleLog("accel ds " + deltaSpeed);
 	this.acceleratingCounter += 1;
     }
     else if ((this.obj.state == 'moving') || (this.obj.state == 'turning')) {
 	this.acceleratingCounter = 0;
 	this.slowingCounter = 0;
 	deltaSpeed = (speedTarget - this.curSpeed) / 6;
-	//console.log("normal ds " + deltaSpeed);
+	//consoleLog("normal ds " + deltaSpeed);
     }
 
-    //console.log("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget + ", deltaspeed is " + deltaSpeed);
-    //console.log("deltaspeed is " + deltaSpeed);
+    //consoleLog("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget + ", deltaspeed is " + deltaSpeed);
+    //consoleLog("deltaspeed is " + deltaSpeed);
     this.curSpeed += deltaSpeed
     if (this.curSpeed<0) {
 	this.curSpeed = 0.00001;
     }
     var changeX = trigX * this.curSpeed;
     var changeY = trigY * this.curSpeed;
-    //console.log("changex is " + changeX + ", changeY is " + changeY);
+    //consoleLog("changex is " + changeX + ", changeY is " + changeY);
     return {changeX: changeX, 
 	    changeY: changeY, 
 	    rotation: toRadians(angle-270), 
@@ -80,7 +80,7 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
     // check if coord has been reached
     var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
     if (nextCoords) {
-	// console.log("diffx: " + Math.abs(nextCoords[0] - this.obj.sprite.position.x) + ", diffy: " + Math.abs(nextCoords[1] - this.obj.sprite.position.y))
+	// consoleLog("diffx: " + Math.abs(nextCoords[0] - this.obj.sprite.position.x) + ", diffy: " + Math.abs(nextCoords[1] - this.obj.sprite.position.y))
 	var diffx = Math.abs(nextCoords[0] - this.obj.sprite.position.x);
 	var diffy = Math.abs(nextCoords[1] - this.obj.sprite.position.y);
 	var diff = diffx + diffy;
@@ -140,7 +140,7 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
     var lookaheadY = trigY * forwardDistance;
     var lookbehindX = trigX * 10;
     var lookbehindY = trigY * 10;
-    // deprecated?:
+    // movementline only used by stop sign collision test, could be replaced with bb
     this.movementLine = [[this.obj.sprite.position.x,this.obj.sprite.position.y],
 		      [this.obj.sprite.position.x+lookaheadX,this.obj.sprite.position.y+lookaheadY]];
 
@@ -159,9 +159,6 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
     var lowerRightX = upperRightX+lookbehindX;
     var lowerRightY = upperRightY+lookbehindY;
 
-    //if (this.obj.carId == 1) {
-//	console.log("lookahead bbpoly pos for 1 is " + (this.obj.sprite.position.x+lookaheadX) + "," + (this.obj.sprite.position.y+lookaheadY));
-  //  }
     this.lookaheadBBPoly = BBFromPoints([this.obj.sprite.position.x+lookaheadX, this.obj.sprite.position.y+lookaheadY], [
 	[upperLeftX,upperLeftY],
 	//[lowerLeftX, lowerLeftY],
@@ -173,13 +170,11 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
     ]);
 
     this.bbPoly = BBFromSprite(this.obj.sprite);
-    //if (this.obj.carId == 1) {
-	//console.log("lookahead bbpoly pos for 1 is " + this.lookaheadBBPoly.pos.y);
-    //}
- 
     // draw the bbpolys for testing
-    drawLinesFromBBPoly(this.obj.sprite, this.bbPoly, 0, 0xFF0000);
-    drawLinesFromBBPoly(this.obj.sprite, this.lookaheadBBPoly, 1, 0xFFFF00);
+    if (globalOptions.debugMode) {
+	drawLinesFromBBPoly(this.obj.sprite, this.bbPoly, 0, 0xFF0000);
+	drawLinesFromBBPoly(this.obj.sprite, this.lookaheadBBPoly, 1, 0xFFFF00);
+    }
 }
 
 // check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
@@ -193,10 +188,6 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
     var foundIntersectionId = false;
 
     _.each(sharedCarState.cars, function(carObj, carId) {
-	//if ((this.obj.carId === 1) && (carObj.carId == 2) &&(carObj.movementAI.bbPoly)) {
-	//    console.log("now y for car 1 is " + carObj.movementAI.lookaheadBBPoly.pos.y);
-	    //var alsad = 1;
-	//}
 	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  	    
 	    var collisionLookahead = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
 	    var collisionNormal = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
@@ -211,9 +202,6 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 		var collision = collisionNormal;
 	    }
 	    if (collision) {
-		//if ((this.obj.carId === 1) && (carObj.carId == 2)) {
-		  //  console.log("CAR " + this.obj.carId + "/" + carObj.carId + " HIT!!!");
-		//}
 		found = carObj.carId;
 		typeFound = 'car';
 		return
@@ -221,16 +209,12 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	}
     }, this);
 
-    //if (this.obj.carId === 2) {
-	//console.log("car 2 found is " + found);
-    //}
-
     if (found !== false) {
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
 
     if (checkCollision2(this.lookaheadBBPoly, sharedCarState.theBike.bbPoly)) {
-	//console.log("BIKE HIT!!!");
+	//consoleLog("BIKE HIT!!!");
 	found = -1;
 	typeFound = 'bike';
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
@@ -258,7 +242,7 @@ MovementAI.prototype.checkEnterIntersection = function(sharedCarState, intersect
 	return true
     }
     if (this.stopsignCounter === 0 && (sharedCarState.carsInIntersection[this.obj.carId] == undefined)) { // starting intersection dance - add car to intersection queue
-	console.log("adding car " + this.obj.carId + " to queue for " + intersectionId); 
+	consoleLog("adding car " + this.obj.carId + " to queue for " + intersectionId); 
 	sharedCarState.stopSignQueues[intersectionId].push(this.obj.carId);
 	sharedCarState.carsInIntersection[this.obj.carId] = intersectionId;
     }
@@ -278,7 +262,7 @@ MovementAI.prototype.checkExitIntersection = function(sharedCarState) {
     else if (this.intersectionClearedCounter == 1) {
 	// notify shared state of intersection unblockage
 	var curIntersection = sharedCarState.carsInIntersection[this.obj.carId];
-	console.log("finished countdown to remove car " + this.obj.carId + " from queue for " + curIntersection); 
+	consoleLog("finished countdown to remove car " + this.obj.carId + " from queue for " + curIntersection); 
 	sharedCarState.stopSignQueues[curIntersection].splice(0,1); // assumes the released car will always be first
 	delete sharedCarState.carsInIntersection[this.obj.carId]
 	this.intersectionClearedCounter = 0;
@@ -293,11 +277,11 @@ MovementAI.prototype.checkFinishStopsign = function(speedTarget, needsToWait, in
 	(needsToWait !== true)) 
     { // time to move and notify shared state of intersection blockage
 	this.stopsignCounter = 0; 
-	console.log("killing stopsigns at intersection " + intersectionId + " for car " + this.obj.carId);
+	consoleLog("killing stopsigns at intersection " + intersectionId + " for car " + this.obj.carId);
 	this.deleteIntersectionStopsigns(intersectionId);
 	this.obj.state = 'moving'
 	this.intersectionClearedCounter = Math.floor(200/this.obj.def.speed);
-	console.log("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
+	consoleLog("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
 	return true
     }
     return false
@@ -313,9 +297,9 @@ MovementAI.prototype.deleteIntersectionStopsigns = function(intersectionId) {
 }
 
 MovementAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
-    //console.log("in redopath with curcoords " + curCoords + " and nextcoords " + nextCoords);
+    //consoleLog("in redopath with curcoords " + curCoords + " and nextcoords " + nextCoords);
     var angle = this.doPath(curCoords, nextCoords);
-    //console.log("new angle for idx " + idx + " is " + angle);
+    //consoleLog("new angle for idx " + idx + " is " + angle);
     this.angleInfos[idx].angle = angle; 
 }
 
@@ -341,7 +325,7 @@ MovementAI.prototype.preparePaths = function() {
 		angleDiff = angleDiffNew;
 		counterclockwise = true;
 	    }
-	    //console.log("ad: " + angleDiff + "adn: " + angleDiffNew);
+	    //consoleLog("ad: " + angleDiff + "adn: " + angleDiffNew);
 	    if (angleDiff > 5) {
 		info.needsTurn = true;
 		info.turnIncrement = 2;
@@ -362,9 +346,9 @@ MovementAI.prototype.doPath = function(coords, next) {
     if (next != null) {
 	var deltaX = next[0]-coords[0];
 	var deltaY = next[1]-coords[1];
-	//console.log("deltax is " + deltaX + ", deltaY is " + deltaY);
+	//consoleLog("deltax is " + deltaX + ", deltaY is " + deltaY);
 	var angle = (toDegrees(Math.atan2(deltaY, deltaX))-360) % 360;
-	//console.log("found angle " + angle);
+	//consoleLog("found angle " + angle);
 	return angle;
     }
 }

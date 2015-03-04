@@ -87,3 +87,9 @@ function toRadians (angle) {
 function toDegrees(radians) {
     return radians * (180/Math.PI);
 }
+
+function consoleLog(msg) {
+    if (globalOptions.debugMode) {
+	console.log(msg);
+    }
+}
