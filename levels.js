@@ -188,3 +188,5 @@ var trafficLightsLevel = {
 	
     ],
 };
+
+allLevels = {'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel}

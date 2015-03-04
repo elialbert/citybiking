@@ -19,8 +19,12 @@
 <body onload="init();">
   <div id="controls">
     <form action="">
-      <input class="optioninput" type="radio" name="debug" value="true" checked="checked"><span class="inputtext">Debug Mode On</span><br>
-      <input class="optioninput" type="radio" name="debug" value="false"><span class="inputtext">Debug Mode Off</span>
+      <label><span class="inputtext">Debug Mode:</span></label><br/>
+      <input class="optioninput" type="radio" name="debug" value="true" checked="checked"><span class="inputtext">On</span><br>
+      <input class="optioninput" type="radio" name="debug" value="false"><span class="inputtext">Off</span>
+      <p/>
+      <label><span class="inputtext">Level Select:</span></label><br/>
+      <div id="levelchoices"></div>
     </form>
   </div>
   <div align="center">

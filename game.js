@@ -1,11 +1,14 @@
-var globalOptions = {debugMode:false};
-function init() {
-    setupDebugMode();
+var globalOptions = {debugMode:true, level: trafficLightsLevel};
+function init(renderer) {
     var stage = new PIXI.Stage(0x3D3D5C); 
     stage.interactive = true;
     // create a renderer instance.
-    var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    level = trafficLightsLevel;
+    if (!renderer) {
+	addLevelChoices();
+	var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
+    }
+    setupOptions(renderer);
+    level = globalOptions.level;
     resetTime = level.resetTime || 3000;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     setupResult = buildLevel(stage, level);
@@ -132,16 +135,8 @@ function setupKeys(input) {
 
 }
 
-function setupDebugMode() {
+function setupOptions(renderer) {
     $(document).ready(function() {
-	var strdebugMode = $("input:radio[name=debug]").val();
-	if (strdebugMode === 'true') {
-	    globalOptions.debugMode = true;
-	}
-	else {
-		globalOptions.debugMode = false;
-	}
-
 	$("input:radio[name=debug]").click(function() {
 	    var strdebugMode = $(this).val();
 	    if (strdebugMode === 'true') {
@@ -150,6 +145,24 @@ function setupDebugMode() {
 	    else {
 		globalOptions.debugMode = false;
 	    }
+	    init(renderer);
 	});
+	$("input:radio[name=levelchoice]").click(function() {
+	    var strLevel = $(this).val();
+	    globalOptions.level = allLevels[strLevel];
+	    init(renderer);
+	});
+
     });
+}
+
+
+function addLevelChoices() {
+    choiceDiv = $("#levelchoices");
+    var choices = '';
+    _.each(allLevels, function(level, name, idx) {
+	choices += '<input class="optioninput" type="radio" name="levelchoice" value="' + name + '"><span class="inputtext">' + name + '</span><br/>';
+    });
+    choiceDiv.html(choices);
+    $("input:radio[name=levelchoice]").filter('[value=trafficlights]').prop('checked',true);
 }
