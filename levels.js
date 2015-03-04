@@ -234,13 +234,13 @@ var diagonalLevel = {
     ],
     trafficLights: [
 	{coords: [386,301], rotation: 315, intersection: 1, grouping: 2,
-	greenVal:0, yellowVal:1200, redVal:1500},
+	greenVal:600, yellowVal:2800, redVal:0},
 	{coords: [300,218], rotation: 225, intersection: 1, grouping: 1,
-	greenVal:1500, yellowVal:2700, redVal:0},
+	greenVal:0, yellowVal:500, redVal:600},
 	{coords: [214,300], rotation: 135, intersection: 1, grouping: 2,
-	greenVal:0, yellowVal:1200, redVal:1500},
+	greenVal:600, yellowVal:2800, redVal:0},
 	{coords: [300,388], rotation: 45, intersection: 1, grouping: 1,
-	greenVal:1500, yellowVal:2700, redVal:0},
+	greenVal:0, yellowVal:500, redVal:600},
 	
     ],
 

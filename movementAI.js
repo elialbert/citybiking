@@ -10,7 +10,7 @@ function MovementAI(obj, stopSignLines) {
     this.acceleratingCounter = 0;
     this.hitCounter = 0;
     this.slowingCoefficient = -.004 * this.obj.def.speed;
-    this.acceleratingCoefficient = .0025 * this.obj.def.speed;
+    this.acceleratingCoefficient = .0005 * this.obj.def.speed;
 }
 
 MovementAI.prototype.calcMovement = function(sharedCarState) {
@@ -33,7 +33,6 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     this.obj.state = this.checkDestination(angleInfo);
     if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
-	//consoleLog("new angle is " + angle + ", turnincrment is " + this.turnIncrement);
 	speedTarget = this.obj.def.speed / 2;
     }
     else if (this.obj.state == 'moving') {
@@ -47,6 +46,11 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     if ((this.obj.state == 'slowing') || (this.obj.state == 'turning and slowing')) {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
 	this.slowingCounter += 1;
+	if (this.obj.state == 'turning and slowing') {
+	    deltaSpeed = deltaSpeed * 4;
+	    speedTarget = speedTarget / 2;
+	}
+	
     }
     else if ((this.obj.state == 'moving') && (this.curSpeed < 1)) {
 	var deltaSpeed = this.acceleratingCoefficient*Math.sqrt(this.acceleratingCounter);
@@ -60,8 +64,6 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	//consoleLog("normal ds " + deltaSpeed);
     }
 
-    //consoleLog("cur speed is " + this.curSpeed + ", speedtarget is " + speedTarget + ", deltaspeed is " + deltaSpeed);
-    //consoleLog("deltaspeed is " + deltaSpeed);
     this.curSpeed += deltaSpeed
     if (this.curSpeed<0) {
 	this.curSpeed = 0.00001;
@@ -85,7 +87,9 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
 	var diff = diffx + diffy;
 	if ((angleInfo.needsTurn && diff < 25) || (this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 	    this.lastDiff = diff;
-	    this.turnIncrement += 1;
+	    if (this.obj.state == 'turning') {
+		this.turnIncrement += 1; // helpful but could cause issues going forward
+	    }
 	    if (this.turnIncrement > angleInfo.numIncrements) {
 		this.obj.coordPathIndex += 1;
 		this.lastDiff = 100;
@@ -147,24 +151,28 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
     // create lookahead polygonpoints for real lookahead bbpoly
     var intersectAngle = -1*(90 - angle);
     var width = (this.obj.def.width || 8) // use twice the width
-    var upperLeftX = width * Math.cos(toRadians(intersectAngle))
-    var upperLeftY = width * Math.sin(toRadians(intersectAngle))
 
-    var lowerLeftX = upperLeftX+lookbehindX;//width * Math.cos(toRadians(intersectAngle))
-    var lowerLeftY = upperLeftY+lookbehindY;//width * Math.sin(toRadians(intersectAngle))
+    var extraWidth = 1.1
+    if (this.obj.state == 'turning') {
+	extraWidth = 2.5;
+    }
+
+    var upperLeftX = extraWidth*width * Math.cos(toRadians(intersectAngle))
+    var upperLeftY = extraWidth*width * Math.sin(toRadians(intersectAngle))
+
+    var lowerLeftX = width * extraWidth * Math.cos(toRadians(intersectAngle))+lookbehindX;
+    var lowerLeftY = width * extraWidth * Math.sin(toRadians(intersectAngle))+lookbehindY;
 
     var upperRightX = -upperLeftX;
     var upperRightY = -upperLeftY;
 
-    var lowerRightX = upperRightX+lookbehindX;
-    var lowerRightY = upperRightY+lookbehindY;
+    var lowerRightX = -1 * width * extraWidth * Math.cos(toRadians(intersectAngle))+lookbehindX;
+    var lowerRightY = -1 * width * extraWidth * Math.sin(toRadians(intersectAngle))+lookbehindY;
 
     this.lookaheadBBPoly = BBFromPoints([this.obj.sprite.position.x+lookaheadX, this.obj.sprite.position.y+lookaheadY], [
 	[upperLeftX,upperLeftY],
-	//[lowerLeftX, lowerLeftY],
-	//[lowerRightX, lowerRightY],
 	[lowerLeftX-(lookaheadX), lowerLeftY-(lookaheadY)], 
-	[lowerRightX-(lookaheadX), lowerRightY-(lookaheadY)],//gotta add a /2 eventually
+	[lowerRightX-(lookaheadX), lowerRightY-(lookaheadY)],
 	[upperRightX, upperRightY],
 	[upperLeftX, upperLeftY]
     ]);
