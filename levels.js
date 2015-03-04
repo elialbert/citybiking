@@ -189,4 +189,62 @@ var trafficLightsLevel = {
     ],
 };
 
-allLevels = {'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel}
+var diagonalLevel = {
+    roadDefs: [
+	{xStart:0,yStart:0, xFinish:266, yFinish:266, roadWidth:100, sidewalkWidth:17},
+	{xStart:0,yStart:600, xFinish:266, yFinish:334, roadWidth:100, sidewalkWidth:17},
+	{xStart:334,yStart:266, xFinish:700, yFinish:-100, roadWidth:100, sidewalkWidth:17},
+	{xStart:334,yStart:334, xFinish:700, yFinish:700, roadWidth:100, sidewalkWidth:17},
+    ],
+    bikeCoords: [10, 570],
+    intersectionDefs: {1:
+		       [
+			   [300,220],
+			   [220,300],
+			   [300,380],
+			   [380,300],
+			   [300,220]
+		       ]
+		      },
+    stopSigns: [
+    ],
+    carDefs: [
+	
+	{coordPath: [
+	    [-30,-5],	 
+	    [270, 295],
+	    [705, -55],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 3,
+	 fillColor: 0x9933FF,
+	 height: 24,
+	},
+	
+	{coordPath: [
+	    [730,710],
+	    [-5,-35],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	 fillColor: 0x4D4DFF,
+	},
+    ],
+    trafficLights: [
+	{coords: [386,301], rotation: 315, intersection: 1, grouping: 2,
+	greenVal:0, yellowVal:1200, redVal:1500},
+	{coords: [300,218], rotation: 225, intersection: 1, grouping: 1,
+	greenVal:1500, yellowVal:2700, redVal:0},
+	{coords: [214,300], rotation: 135, intersection: 1, grouping: 2,
+	greenVal:0, yellowVal:1200, redVal:1500},
+	{coords: [300,388], rotation: 45, intersection: 1, grouping: 1,
+	greenVal:1500, yellowVal:2700, redVal:0},
+	
+    ],
+
+};
+
+
+allLevels = {'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel}

@@ -2,6 +2,9 @@ var globalOptions = {debugMode:true, level: trafficLightsLevel};
 function init(renderer) {
     var stage = new PIXI.Stage(0x3D3D5C); 
     stage.interactive = true;
+    stage.click = function(mouseData) {
+	consoleLog("click at " + mouseData.global.x + ", " + mouseData.global.y);
+    }
     // create a renderer instance.
     if (!renderer) {
 	addLevelChoices();
