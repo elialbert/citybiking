@@ -95,7 +95,8 @@ function setupSharedCarState(setupResult, cars, theBike) {
 	      cars: {}, 
 	      allStopsignIntersections: allStopsignIntersections,
 	      carsInIntersection: {},
-	      theBike: theBike};
+	      theBike: theBike,
+	      trafficLightLines: setupResult.trafficLightLines};
     _.each(allStopsignIntersections, function(intersectionId) {
 	ss.stopSignQueues[intersectionId] = [];
     });

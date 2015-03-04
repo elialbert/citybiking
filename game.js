@@ -5,7 +5,8 @@ function init() {
     stage.interactive = true;
     // create a renderer instance.
     var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    level = defaultLevel;
+    level = trafficLightsLevel;
+    resetTime = level.resetTime || 3000;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
     setupResult = buildLevel(stage, level);
     background = setupResult.background;
@@ -21,12 +22,18 @@ function init() {
     stage.addChild(theBike);
 
     requestAnimFrame( animate );
+    var counter = 0;
     function animate() {
         requestAnimFrame( animate );
+	doEnvironment();
 	doBikeMovement();
 	doCarMovement();	
 	// render the stage   
 	renderer.render(stage);
+	counter += 1;
+	if (counter > resetTime) {
+	    counter = 0;
+	}
     }
 
     function doBikeMovement() {
@@ -51,7 +58,39 @@ function init() {
 	}
     };
 
+    function doEnvironment() {
+	var tf = sharedCarState.trafficLightLines;
+	_.each(tf, function(trafficLights, intersectionId) {
+	    _.each(trafficLights, function(def) {
+		var tint = null;
+		if (counter == def.greenVal) {
+		    var tint = 0x00CC00;
+		    def.state = 'green';
+		}
+		else if (counter == def.yellowVal) {
+		    var tint = 0xFFFF00;
+		    def.state = 'yellow';
+		}
+		else if (counter == def.redVal) {
+		    var tint = 0xFF0000;
+		    def.state = 'red';
+		}
+		if (tint) {
+		    consoleLog("setting tint to " + tint);
+		    var tfg = new PIXI.Graphics();
+		    tfg.lineStyle(2, 0x000000, 1);
+		    tfg.beginFill(tint, 1);
+		    tfg.drawCircle(def.x,def.y,7);
+		    tfg.endFill();
+		    stage.addChild(tfg);
+		}
+	    });
+	});
+    }
+
+
 }
+
 
 function setupKeys(input) {
     document.addEventListener('keydown', function(event) {

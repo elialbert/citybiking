@@ -232,7 +232,7 @@ function buildLevel(stage, level) {
 	stage.addChild(sg);
 	stage.addChild(text);
 	// now the white line
-	intersectionWhiteLine(x,y,rotation,stopSignLines,stopSignDef.intersection,stage);
+	intersectionWhiteLine(x,y,rotation,stopSignLines,stopSignDef, stage);
     };
 
     function drawTrafficLight(trafficLightDef) {
@@ -244,11 +244,12 @@ function buildLevel(stage, level) {
 	tfg.lineStyle(2, 0x000000, 1);
 	tfg.beginFill(0x000000, 1);
 	tfg.drawCircle(x,y,7);
+	tfg.endFill();
 	stage.addChild(tfg);
-	intersectionWhiteLine(x,y,rotation,trafficLightLines,trafficLightDef.intersection,stage);
+	intersectionWhiteLine(x,y,rotation,trafficLightLines,trafficLightDef, stage);
     };
     
-    function intersectionWhiteLine(x,y,rotation,infoDict,intersection,stage) {
+    function intersectionWhiteLine(x,y,rotation,infoDict,def,stage) {
 	var wl = new PIXI.Graphics();
 	wl.lineStyle(4, 0xFFFFFF, 1);
 	offsets = [-Math.cos(toRadians(rotation)), -Math.sin(toRadians(rotation))];
@@ -259,7 +260,7 @@ function buildLevel(stage, level) {
 	wl.moveTo(xStart,yStart);
 	wl.lineTo(xEnd,yEnd);
 	points = [[xStart,yStart],[xEnd,yEnd]];
-	infoDict[intersection].push({state:true,points:points});
+	infoDict[def.intersection].push({state:true, points:points, grouping:def.grouping, greenVal:def.greenVal, yellowVal:def.yellowVal, redVal:def.redVal, x:x,y:y});
 	stage.addChild(wl);
     };
 
