@@ -123,6 +123,7 @@ MovementAI.prototype.checkObstacles = function(sharedCarState) {
 	if (this.obj.state === 'turning') {
 	    this.obj.state = 'turning and slowing';
 	}
+	// should do something here with cardefs when this.obj.state == trafficlight around propensity to stop on yellow
 	else {
 	    this.obj.state = 'slowing';
 	}
@@ -221,7 +222,7 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 
     _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
 	_.each(linedefs, function(linedef, idx) {
-	    var line = linedef.points
+	    var line = linedef.points;
 	    if (linedef.state === false) {
 		return
 	    }
@@ -236,6 +237,22 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	    return 
 	}
     }, this);
+
+    _.each(sharedCarState.trafficLightLines, function(trafficLights, intersectionId) {
+	_.each(trafficLights, function(linedef, idx) {
+	    var line = linedef.points;
+	    if (linedef.state === 'green') {
+		return
+	    }
+	    if (isIntersect(line[0],line[1],this.movementLine[0],this.movementLine[1])) {
+		found = idx;
+		foundIntersectionId = intersectionId;
+		typeFound = 'trafficlight'
+		return
+	    }
+	}, this);	       
+    }, this);
+
     return {found: found, intersectionId: foundIntersectionId, type: typeFound}
 }
 

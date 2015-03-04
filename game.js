@@ -76,7 +76,6 @@ function init() {
 		    def.state = 'red';
 		}
 		if (tint) {
-		    consoleLog("setting tint to " + tint);
 		    var tfg = new PIXI.Graphics();
 		    tfg.lineStyle(2, 0x000000, 1);
 		    tfg.beginFill(tint, 1);
