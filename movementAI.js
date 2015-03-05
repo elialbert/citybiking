@@ -221,10 +221,20 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
 
-    if (checkCollision2(this.lookaheadBBPoly, sharedCarState.theBike.bbPoly)) {
+    if (checkCollision2(this.lookaheadBBPoly, sharedCarState.theBike.sprite.bbPoly)) {
 	//consoleLog("BIKE HIT!!!");
 	found = -1;
 	typeFound = 'bike';
+	if (this.curSpeed > .1) {
+	    sharedCarState.theBike.gotHonked();
+	}
+	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
+    }
+    if (checkCollision2(this.bbPoly, sharedCarState.theBike.sprite.bbPoly)) {
+	//consoleLog("BIKE HIT!!!");
+	found = -1;
+	typeFound = 'bike';
+	sharedCarState.theBike.gotHit();
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
 

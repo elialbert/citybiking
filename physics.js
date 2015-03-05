@@ -63,17 +63,19 @@ function checkCollisions(theBike, collisionObjects, posChange, carMode) {
     });
 }
 
-function checkBikeCollisions(theBike, collisionObjects, posChange) {
-    if ((theBike.bbPoly === undefined)) {
+function checkBikeCollisions(bikeObj, collisionObjects, posChange) {
+    var bikeSprite = bikeObj.sprite;
+    if ((bikeSprite.bbPoly === undefined)) {
 	return 
     }
     _.each(collisionObjects, function(obj) {
 	if ((obj.movementAI.bbPoly === undefined)) {
 	    return 
 	}
-	if (checkCollision2(theBike.bbPoly, obj.movementAI.bbPoly)) {
+	if (checkCollision2(bikeSprite.bbPoly, obj.movementAI.bbPoly)) {
 	    posChange.speed = posChange.speed / 1.9;
 	    obj.hit = true;	    
+	    bikeObj.hitCar();
 	}
     });
 }

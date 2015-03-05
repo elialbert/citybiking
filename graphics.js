@@ -33,8 +33,8 @@ function setupBike(x,y) {
 	new SAT.Vector(-width,-height),
     ]
     theBike.polygonPoints = polygonPoints;
-
-    return theBike
+    var bikeObj = new Bike(theBike);
+    return bikeObj
 }
 
 // take a road center starting point, specify points along its course

@@ -37,20 +37,21 @@ function reset(renderer, stage) {
 
 function init(renderer, stage) {
     level = globalOptions.level;
-    resetTime = level.resetTime || 3000;
-    var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
+    var resetTime = level.resetTime || 3000;
+    var bikeObj = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
+    var bikeSprite = bikeObj.sprite
     setupResult = buildLevel(stage, level);
     background = setupResult.background;
     var staticCollisionObjects = setupResult.staticCollisionObjects;
     var dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
-    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects, theBike);
+    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects, bikeObj);
     setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
 
     var input = {up: false, down: false, left: false, right: false}
     var posChange = {changeX:0, changeY:0, direction:270, speed:0}
     setupKeys(input);
-    stage.addChild(theBike);
+    stage.addChild(bikeSprite);
 
     globalOptions.stop=false;
     requestAnimFrame( animate );
@@ -68,24 +69,25 @@ function init(renderer, stage) {
 	counter += 1;
 	if (counter > resetTime) {
 	    counter = 0;
+	    bikeObj.collisionResetCounter = 0;	  
 	}
     }
 
     function doBikeMovement() {
 	posChange = moveBike(posChange.direction,posChange.speed,input)
-	theBike.position.x += posChange.changeX;
-	theBike.position.y += posChange.changeY;
-	theBike.rotation = toRadians(posChange.direction - 270);
-	checkCollisions(theBike, staticCollisionObjects, posChange);
-	checkBikeCollisions(theBike, dynamicCollisionObjects, posChange);
-	theBike.bbPoly = BBFromSprite(theBike);
+	bikeSprite.position.x += posChange.changeX;
+	bikeSprite.position.y += posChange.changeY;
+	bikeSprite.rotation = toRadians(posChange.direction - 270);
+	checkCollisions(bikeSprite, staticCollisionObjects, posChange);
+	checkBikeCollisions(bikeObj, dynamicCollisionObjects, posChange);
+	bikeSprite.bbPoly = BBFromSprite(bikeSprite);
 	if (globalOptions.debugMode) {
-	    drawLinesFromBBPoly(theBike, theBike.bbPoly, 2, 0xFF0000);
+	    drawLinesFromBBPoly(bikeSprite, bikeSprite.bbPoly, 2, 0xFF0000);
 	}
     };
     function doCarMovement() {
 	setupBBs(dynamicCollisionObjects, stage, true, true)
-	checkCollisions(theBike, dynamicCollisionObjects, posChange, true);
+	checkCollisions(bikeSprite, dynamicCollisionObjects, posChange, true);
 	var res = runCars(dynamicCollisionObjects, sharedCarState);
 	if (res != false) {
 	    dynamicCollisionObjects[res[0]] = res[1];

@@ -6,6 +6,6 @@ body {
 .inputtext {
     color: white;
 }
-#controls {
+.floatleft {
     float:left;
 }

@@ -11,13 +11,14 @@
     <script src="utils.js"></script>
     <script src="movementAI.js"></script>
     <script src="cars.js"></script>
+    <script src="bike.js"></script>
     <script src="graphics.js"></script>
     <script src="physics.js"></script>
     <script src="game.js"></script>
 
 </head>
 <body onload="start();">
-  <div id="controls">
+  <div id="controls" class="floatleft">
     <form action="">
       <label><span class="inputtext">Debug Mode:</span></label><br/>
       <input class="optioninput" type="radio" name="debug" value="true" checked="checked"><span class="inputtext">On</span><br>
@@ -26,6 +27,12 @@
       <label><span class="inputtext">Level Select:</span></label><br/>
       <div id="levelchoices"></div>
     </form>
+  <p/>
+  <div id="stats" class="floatleft inputtext">
+  </div>
+
+
+
   </div>
   <div align="center">
     <canvas id="game-canvas" width="800" height="800"></canvas>
