@@ -1,16 +1,41 @@
-var globalOptions = {debugMode:true, level: trafficLightsLevel};
-function init(renderer) {
+var globalOptions = {debugMode:true, level: trafficLightsLevel, stop:false};
+
+function start(renderer, stage) {
+    globalOptions.stop = true;
+    // create a renderer instance.
+
+    if (!renderer) {
+	addLevelChoices();
+	var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
+	var stage = new PIXI.Stage(0x3D3D5C); 
+	stage.interactive = true;
+	stage.click = function(mouseData) {
+	    consoleLog("click at " + mouseData.global.x + ", " + mouseData.global.y);
+	}
+	setupOptions(renderer, stage);
+	init(renderer, stage);
+    }
+}
+
+function reset(renderer, stage) {
+    if (stage) {
+	for (var i = stage.children.length - 1; i >= 0; i--) {
+	    stage.removeChild(stage.children[i]);
+	};
+    }
+    stage.removeStageReference();
+    delete stage;
     var stage = new PIXI.Stage(0x3D3D5C); 
     stage.interactive = true;
     stage.click = function(mouseData) {
 	consoleLog("click at " + mouseData.global.x + ", " + mouseData.global.y);
     }
-    // create a renderer instance.
-    if (!renderer) {
-	addLevelChoices();
-	var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
-    }
-    setupOptions(renderer);
+    setupOptions(renderer, stage);
+    init(renderer, stage);
+    return stage
+}
+
+function init(renderer, stage) {
     level = globalOptions.level;
     resetTime = level.resetTime || 3000;
     var theBike = setupBike(level.bikeCoords[0],level.bikeCoords[1]);
@@ -27,9 +52,13 @@ function init(renderer) {
     setupKeys(input);
     stage.addChild(theBike);
 
+    globalOptions.stop=false;
     requestAnimFrame( animate );
     var counter = 0;
     function animate() {
+	if (globalOptions.stop) {
+	    return reset(renderer, stage)
+	}
         requestAnimFrame( animate );
 	doEnvironment();
 	doBikeMovement();
@@ -138,7 +167,7 @@ function setupKeys(input) {
 
 }
 
-function setupOptions(renderer) {
+function setupOptions(renderer, stage) {
     $(document).ready(function() {
 	$("input:radio[name=debug]").click(function() {
 	    var strdebugMode = $(this).val();
@@ -148,12 +177,12 @@ function setupOptions(renderer) {
 	    else {
 		globalOptions.debugMode = false;
 	    }
-	    init(renderer);
+	    start(renderer, stage);
 	});
 	$("input:radio[name=levelchoice]").click(function() {
 	    var strLevel = $(this).val();
 	    globalOptions.level = allLevels[strLevel];
-	    init(renderer);
+	    start(renderer, stage);
 	});
 
     });
