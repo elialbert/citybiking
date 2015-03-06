@@ -341,7 +341,6 @@ MovementAI.prototype.checkFinishStopsign = function(speedTarget, needsToWait, in
 MovementAI.prototype.deleteIntersectionStopsigns = function(intersectionId) {
     var numStopsigns = this.obj.stopSignLines[intersectionId].length;
     _.each(_.range(numStopsigns), function(idx) {
-	// this.obj.stopSignLines[intersectionId][idx] = [[-5000,-5000],[-5000,-5000]]; // remove stop signs for intersection for this car. maintain indices.
 	this.obj.stopSignLines[intersectionId][idx].state = false;
     }, this);
 }
