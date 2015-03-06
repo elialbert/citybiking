@@ -56,6 +56,9 @@ function buildLevel(stage, level) {
 	_.each(curblist, function(curb) {
 	    stage.addChild(curb);
 	});
+	_.each(level.parkedCars, function(parkedCar, idx) {
+	    drawParkedCar(stage, staticCollisionObjects, parkedCar);
+	});
 
 	_.each(level.stopSigns, function(stopSign) {
 	    drawStopSign(stopSign, stage);
@@ -192,6 +195,44 @@ function buildLevel(stage, level) {
 	});
 	return {rearLights: [lightSprites[0],lightSprites[1]], headLights:[lightSprites[2],lightSprites[3]]}
 
+    };
+
+    function drawParkedCar(stage, staticCollisionObjects, parkedCar) {
+	var car = new PIXI.Graphics();
+	var polygonPoints = [];
+	var width = parkedCar.width || 8;
+	var height = parkedCar.height || 16;
+	var color = parkedCar.color;
+	if (color == 'random') {
+	    color = parseInt(getRandomColor(),16);
+	}
+	car.lineStyle(2, color, 1);
+	car.beginFill(color, 1);
+	var x = parkedCar.coords[0];
+	var y = parkedCar.coords[1];
+	car.moveTo(x, y); 
+	car.lineTo(x, y-height);
+	car.lineTo(x+width, y-height);
+	car.lineTo(x+width, y);
+	car.lineTo(x, y);
+	car.endFill();
+	texture = car.generateTexture()
+	carSprite = new PIXI.Sprite(texture)
+	carSprite.position.x = x;
+	carSprite.position.y = y;
+	carSprite.anchor.x = .5;
+	carSprite.anchor.y = .5;
+	var polygonPoints = [
+	    new SAT.Vector(-width,-height),
+	    new SAT.Vector(-width,height),
+	    new SAT.Vector(width,height),
+	    new SAT.Vector(width,-height),
+	    new SAT.Vector(-width,-height),
+	]
+	carSprite.polygonPoints = polygonPoints;
+	carSprite.rotation = toRadians(parkedCar.rotation || 180);
+	stage.addChild(carSprite);
+	staticCollisionObjects.push(carSprite)
     };
 
 

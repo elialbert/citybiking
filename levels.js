@@ -177,15 +177,47 @@ var trafficLightsLevel = {
 	
 	
 	{coordPath: [
-	    [420,605],
-	    [420, -5],
+	    [410,605],
+	    [410, -5],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2,
 	 fillColor: 0x4D4DFF,
-	},	
-	
+	},		
+    ],
+    parkedCars: [
+	{
+	    coords: [442,430],
+	    rotation: 180,
+	    color: 'random',
+	},
+	{
+	    coords: [442,180],
+	    rotation: 180,
+	    color: 'random',
+	},
+	{
+	    coords: [442,158],
+	    rotation: 180,
+	    color: 'random',
+	},
+	{
+	    coords: [442,452],
+	    rotation: 180,
+	    color: 'random',
+	},
+	{
+	    coords: [442,136],
+	    rotation: 180,
+	    color: 'random',
+	},
+	{
+	    coords: [442,110],
+	    rotation: 180,
+	    color: 'random',
+	},
+
     ],
 };
 

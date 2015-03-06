@@ -27,7 +27,7 @@ Bike.prototype.gotHit = function() {
 Bike.prototype.hitSomething = function(thing) {
     if (this.doCollisionResetCounter()) {
 	this.stats.numHit += 1;
-	this.writeStats("You hit a " + thing + "!");
+	this.writeStats("You crashed!");
     }
 }
 

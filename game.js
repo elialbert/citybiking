@@ -47,7 +47,7 @@ function init(renderer, stage) {
     var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects, bikeObj, level.intersectionDefs);
     setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
-    var initialBikeRotation = level.bikeRotation || 180
+    var initialBikeRotation = level.bikeRotation || 0
     var input = {up: false, down: false, left: false, right: false}
     var posChange = {changeX:0, changeY:0, direction:270-initialBikeRotation, speed:0}
     setupKeys(input);
