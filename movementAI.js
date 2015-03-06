@@ -227,6 +227,7 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	typeFound = 'bike';
 	if (this.curSpeed > .1) {
 	    sharedCarState.theBike.gotHonked();
+	    this.obj.drawHonk();
 	}
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
@@ -237,7 +238,7 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	sharedCarState.theBike.gotHit();
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
-
+    
     _.each(sharedCarState.intersections, function(intersectionPoly, intersectionId) {
 	if (checkInIntersection(this.bbPoly, intersectionPoly)) {
 	    foundIntersectionId = intersectionId;
@@ -246,7 +247,7 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
     if (foundIntersectionId !== false) {
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
-
+    
     _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
 	_.each(linedefs, function(linedef, idx) {
 	    var line = linedef.points;

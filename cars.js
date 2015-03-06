@@ -66,6 +66,43 @@ Car.prototype.run = function(sharedCarState) {
     }
 };
 
+Car.prototype.drawHonk = function() {
+    if (this.startedHonk) {
+	return
+    }
+    this.startedHonk = true;
+    var g = new PIXI.Graphics()
+    var that = this;
+    g.lineStyle(3, 0xFF0000, 1);
+    g.beginFill(0xFF0000, 0);	 
+    g.drawCircle(0,0,20);	
+    g.endFill();
+
+    var honkOn = false;
+    setTimeout(function() {
+	run(10);
+    }, 300);
+    var run = function(counter) {
+	var interval = setInterval(function() {
+	    if (!honkOn) {
+		that.sprite.addChild(g);
+	    }
+	    else {
+		that.sprite.removeChild(g);
+	    }
+	    honkOn = !honkOn;
+	    counter -= 1;
+	    if (!counter) {
+		setTimeout(function() {
+		    that.startedHonk = false;
+		}, 500);
+		clearInterval(interval);
+	    }
+	}, 100);
+    }
+
+};
+
 function runCars(cars, sharedCarState) {
     found = false
     _.each(cars, function(car, idx) {
