@@ -24,10 +24,10 @@ Bike.prototype.gotHit = function() {
     }
 }
 
-Bike.prototype.hitCar = function() {
+Bike.prototype.hitSomething = function(thing) {
     if (this.doCollisionResetCounter()) {
 	this.stats.numHit += 1;
-	this.writeStats("You hit a car!");
+	this.writeStats("You hit a " + thing + "!");
     }
 }
 

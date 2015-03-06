@@ -51,14 +51,16 @@ function moveBike(direction, speed, input) {
 	    speed:speed}
 }
 
-function checkCollisions(theBike, collisionObjects, posChange, carMode) { 
-    var bike = new SAT.Vector(theBike.position.x+posChange.frontOffsetX, theBike.position.y+posChange.frontOffsetY);
-    //console.log(theBike.position.x + ", " + theBike.position.y);
+function checkCollisions(bikeObj, collisionObjects, posChange, carMode) { 
+    var bikeSprite = bikeObj.sprite;
+    var bike = new SAT.Vector(bikeSprite.position.x+posChange.frontOffsetX, bikeSprite.position.y+posChange.frontOffsetY);
+    //console.log(bikeSprite.position.x + ", " + bikeSprite.position.y);
     _.each(collisionObjects, function(obj) {
 	if (checkCollision(bike, obj.bbPoly)) {
 	    //console.log("hit! " + bike.y);
 	    posChange.speed = posChange.speed / 1.9;
 	    obj.hit = true;
+	    bikeObj.hitSomething("curb")
 	}
     });
 }
@@ -75,7 +77,7 @@ function checkBikeCollisions(bikeObj, collisionObjects, posChange) {
 	if (checkCollision2(bikeSprite.bbPoly, obj.movementAI.bbPoly)) {
 	    posChange.speed = posChange.speed / 1.9;
 	    obj.hit = true;	    
-	    bikeObj.hitCar();
+	    bikeObj.hitSomething("car");
 	}
     });
 }
