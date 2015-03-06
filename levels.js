@@ -6,6 +6,7 @@ var defaultLevel = {
 	{xStart:450,yStart:300, xFinish:800, yFinish:300, roadWidth:100, sidewalkWidth:17},
     ],
     bikeCoords: [438, 550],
+    bikeRotation: 90,
     intersectionDefs: {1: // intersection coords should form a counterclockwise polygon
 		       [
 			   [350,250],
@@ -197,6 +198,7 @@ var diagonalLevel = {
 	{xStart:334,yStart:334, xFinish:700, yFinish:700, roadWidth:100, sidewalkWidth:17},
     ],
     bikeCoords: [10, 570],
+    bikeRotation: 290,
     intersectionDefs: {1:
 		       [
 			   [300,220],
