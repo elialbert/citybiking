@@ -16,15 +16,6 @@ function setupBike(x,y) {
     theBike.position.y = y;
     theBike.anchor.x = .5;
     theBike.anchor.y = .5;
-    /*
-    var polygonPoints = [
-	new SAT.Vector(-width/2,-height/2),
-	new SAT.Vector(-width/2,height/2),
-	new SAT.Vector(width/2,height/2),
-	new SAT.Vector(width/2,-height/2),
-	new SAT.Vector(-width/2,-height/2),
-    ]
-    */
     var polygonPoints = [
 	new SAT.Vector(-width,-height),
 	new SAT.Vector(-width,height),

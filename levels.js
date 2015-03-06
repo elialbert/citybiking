@@ -6,13 +6,13 @@ var defaultLevel = {
 	{xStart:450,yStart:300, xFinish:800, yFinish:300, roadWidth:100, sidewalkWidth:17},
     ],
     bikeCoords: [438, 550],
-    intersectionDefs: {1:
+    intersectionDefs: {1: // intersection coords should form a counterclockwise polygon
 		       [
 			   [350,250],
-			   [450,250],
+			   [350,350],
 			   [450,350],
-			   [250,350],
-			   [350,250]
+			   [450,250],
+			   [350,250],
 		       ]
 		      },
     stopSigns: [
@@ -72,10 +72,10 @@ var nostopsignsLevel = {
     intersectionDefs: {1:
 		       [
 			   [350,250],
-			   [450,250],
+			   [350,350],
 			   [450,350],
-			   [250,350],
-			   [350,250]
+			   [450,250],
+			   [350,250],
 		       ]
 		      },
     stopSigns: [
@@ -131,10 +131,10 @@ var trafficLightsLevel = {
     intersectionDefs: {1:
 		       [
 			   [350,250],
-			   [450,250],
+			   [350,350],
 			   [450,350],
-			   [250,350],
-			   [350,250]
+			   [450,250],
+			   [350,250],
 		       ]
 		      },
     stopSigns: [

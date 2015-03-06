@@ -238,6 +238,15 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
 
+    _.each(sharedCarState.intersections, function(intersectionPoly, intersectionId) {
+	if (checkInIntersection(this.bbPoly, intersectionPoly)) {
+	    foundIntersectionId = intersectionId;
+	}
+    }, this);
+    if (foundIntersectionId !== false) {
+	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
+    }
+
     _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
 	_.each(linedefs, function(linedef, idx) {
 	    var line = linedef.points;
@@ -270,6 +279,7 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	    }
 	}, this);	       
     }, this);
+
 
     return {found: found, intersectionId: foundIntersectionId, type: typeFound}
 }

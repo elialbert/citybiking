@@ -88,7 +88,7 @@ function doCarRestart(car) {
     return [true, newcar]
 }
 
-function setupSharedCarState(setupResult, cars, bike) {
+function setupSharedCarState(setupResult, cars, bike, intersectionDefs) {
     allStopsignIntersections = _.uniq(_.map(setupResult.stopSignLines, function(v,k) { return k}));
     var ss = {stopSignLines: setupResult.stopSignLines, 
 	      stopSignQueues: {}, 
@@ -96,7 +96,9 @@ function setupSharedCarState(setupResult, cars, bike) {
 	      allStopsignIntersections: allStopsignIntersections,
 	      carsInIntersection: {},
 	      theBike: bike,
-	      trafficLightLines: setupResult.trafficLightLines};
+	      trafficLightLines: setupResult.trafficLightLines,
+	      intersections: setupIntersectionDefs(intersectionDefs),
+	     };
     _.each(allStopsignIntersections, function(intersectionId) {
 	ss.stopSignQueues[intersectionId] = [];
     });

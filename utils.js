@@ -79,6 +79,18 @@ function getLineBB(points) {
     return new SAT.Polygon(new SAT.Vector(points[0][0], points[0][1]), [new SAT.Vector(points[0][0],points[0][1]), new SAT.Vector(points[1][0],points[1][1])]);
 }
 
+function setupIntersectionDefs(intersectionDefs) {
+    var prepared = {}
+    _.each(intersectionDefs, function(def,intersectionId) {
+	var polygonPoints = [];
+	firstPoint = def[0];
+	_.each(def, function(point) {
+	    polygonPoints.push(new SAT.Vector(point[0]-firstPoint[0],point[1]-firstPoint[1]));
+	});
+	prepared[intersectionId] = new SAT.Polygon(new SAT.Vector(firstPoint[0],firstPoint[1]),polygonPoints);
+    });
+    return prepared
+}
 
 function toRadians (angle) {
     return angle * (Math.PI / 180);

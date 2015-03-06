@@ -44,7 +44,7 @@ function init(renderer, stage) {
     background = setupResult.background;
     var staticCollisionObjects = setupResult.staticCollisionObjects;
     var dynamicCollisionObjects = setupResult.dynamicCollisionObjects;
-    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects, bikeObj);
+    var sharedCarState = setupSharedCarState(setupResult, dynamicCollisionObjects, bikeObj, level.intersectionDefs);
     setupBBs(staticCollisionObjects, stage, true, false);
     stage = setupResult.stage
 
