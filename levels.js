@@ -166,8 +166,8 @@ var trafficLightsLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [400,330],
-	    [410,-50]
+	    [395,330],
+	    [405,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
