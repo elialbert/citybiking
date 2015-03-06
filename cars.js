@@ -125,13 +125,14 @@ function doCarRestart(car) {
     return [true, newcar]
 }
 
-function setupSharedCarState(setupResult, cars, bike, intersectionDefs) {
+function setupSharedCarState(setupResult, cars, staticCollisionObjects, bike, intersectionDefs) {
     allStopsignIntersections = _.uniq(_.map(setupResult.stopSignLines, function(v,k) { return k}));
     var ss = {stopSignLines: setupResult.stopSignLines, 
 	      stopSignQueues: {}, 
 	      cars: {}, 
 	      allStopsignIntersections: allStopsignIntersections,
 	      carsInIntersection: {},
+	      staticCollisionObjects: staticCollisionObjects,
 	      theBike: bike,
 	      trafficLightLines: setupResult.trafficLightLines,
 	      intersections: setupIntersectionDefs(intersectionDefs),

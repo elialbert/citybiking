@@ -142,10 +142,10 @@ var trafficLightsLevel = {
     trafficLights: [
 	{coords: [460,360], rotation: 0, intersection: 1, grouping: 2,
 	greenVal:0, yellowVal:1200, redVal:1500},
-	{coords: [460,240], rotation: 270, intersection: 1, grouping: 1,
-	greenVal:1500, yellowVal:2700, redVal:0},
 	{coords: [340,240], rotation: 180, intersection: 1, grouping: 2,
 	greenVal:0, yellowVal:1200, redVal:1500},
+	{coords: [460,240], rotation: 270, intersection: 1, grouping: 1,
+	greenVal:1500, yellowVal:2700, redVal:0},
 	{coords: [340,360], rotation: 90, intersection: 1, grouping: 1,
 	greenVal:1500, yellowVal:2700, redVal:0},
     ],

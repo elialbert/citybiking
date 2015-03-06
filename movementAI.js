@@ -124,6 +124,11 @@ MovementAI.prototype.checkObstacles = function(sharedCarState) {
 	    var needsToWait = this.checkEnterIntersection(sharedCarState, lookaheadResult.intersectionId);
 	    speedTarget = .05;
 	}
+	else if (lookaheadResult.type == 'static collision') {
+	    this.obj.hit = true;
+	    consoleLog("found static collision");
+	    return 0
+	}
 	if (this.obj.state === 'turning') {
 	    this.obj.state = 'turning and slowing';
 	}
@@ -281,6 +286,13 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	}, this);	       
     }, this);
 
+    _.each(sharedCarState.staticCollisionObjects, function(staticObj, idx) {
+	if (checkCollision2(this.bbPoly, staticObj.bbPoly)) {
+	    found = true;
+	    typeFound = 'static collision';
+	}
+
+    }, this);
 
     return {found: found, intersectionId: foundIntersectionId, type: typeFound}
 }
