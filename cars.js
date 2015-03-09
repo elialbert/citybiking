@@ -2,12 +2,13 @@ function Car(sprite, lights, def, stopSignLines, carId) {
     // lights are a hash with array keys (with [left,right]) of rearLights and headLights 
     this.sprite = sprite;
     this.lights = lights;
-    this.startingCoords = def.coordPath[0];
-    this.coordPath = def.coordPath;
+    this.coordPath = copyCoordPath(def.coordPath);
+    this.startingCoords = this.coordPath[0];
     this.coordPathIndex = 0;
     this.type = def.type;
     this.carId = carId;
     this.state = 'new';
+    this.lastState = 'new'
     this.def = def;
     this.hit = false;
     this.lastInScene = null;
@@ -159,6 +160,15 @@ function copyStopsignLines(d) {
 	    newv.push($.extend(true, {}, el));
 	});
 	n[k] = newv;
+    });
+    return n
+}
+
+function copyCoordPath(p) {
+    var n = [];
+    _.each(p, function(el) {
+	var newel = el.slice(0);
+	n.push(newel);
     });
     return n
 }

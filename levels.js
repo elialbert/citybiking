@@ -38,7 +38,7 @@ var defaultLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [380,330],
+	    [412,330],
 	    [412,-50]
 	],
 	 type: 'normal',
@@ -97,7 +97,7 @@ var nostopsignsLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [380,330],
+	    [410,330],
 	    [410,-50]
 	],
 	 type: 'normal',
@@ -152,10 +152,10 @@ var trafficLightsLevel = {
     carDefs: [
 	
 	{coordPath: [
-	    [380,-50],	 
+	    [380,-50],
+	    [380, 100, 'pause',50],
 	    [380, 330],
-	    [680, 330],
-	    [805, 330]
+	    [800, 320],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -166,8 +166,8 @@ var trafficLightsLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [370,330],
-	    [405,-50]
+	    [410,330],
+	    [410,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -184,7 +184,8 @@ var trafficLightsLevel = {
 	 sceneIncrementRestart: 2,
 	 speed: 2,
 	 fillColor: 0x4D4DFF,
-	},		
+	},
+	
     ],
     parkedCars: [
 	{
@@ -245,7 +246,7 @@ var diagonalLevel = {
 	
 	{coordPath: [
 	    [-30,-5],	 
-	    [265, 290],
+	    [297, 308],
 	    [705, -55],
 	],
 	 type: 'normal',

@@ -9,6 +9,8 @@ function MovementAI(obj, stopSignLines) {
     this.slowingCounter = 0;
     this.acceleratingCounter = 0;
     this.hitCounter = 0;
+    this.pauseCounter = 0;
+    this.lastAngle = this.angleInfos[0].angle;
     this.slowingCoefficient = -.004 * this.obj.def.speed;
     this.acceleratingCoefficient = .0005 * this.obj.def.speed;
 }
@@ -31,8 +33,19 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     var angle = angleInfo.angle;
     this.obj.state = this.checkDestination(angleInfo);
-    if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
-	angle = angle + this.turnIncrement*angleInfo.turnIncrement;
+    if (this.obj.state == 'turning') {
+	var angleChange = angleInfo.turnIncrement;
+	if (this.obj.lastState == 'turning and slowing') {
+	    if (this.curSpeed < .3) {
+		angleChange = .005;
+	    }
+	    else {
+		angleChange = angleChange/3;// / 1.5;
+	    }
+	}
+	
+	angle = (this.lastAngle || angle) + angleChange;
+	this.lastAngle = angle;
 	speedTarget = this.obj.def.speed / 2;
     }
     else if (this.obj.state == 'moving') {
@@ -40,17 +53,15 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
-    this.storeProjectedMovementLine(angle, trigX, trigY, this._getLookaheadSpeed(this.curSpeed)*40); // this value is tricky. was formerly hardcoded to 40. but should be based on speed I think.
+    this.storeProjectedMovementLine(angle, trigX, trigY, this._getLookaheadSpeed(this.curSpeed)*40);
     speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
-
     if ((this.obj.state == 'slowing') || (this.obj.state == 'turning and slowing')) {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
 	this.slowingCounter += 1;
-	if (this.obj.state == 'turning and slowing') {
-	    deltaSpeed = deltaSpeed * 4;
-	    speedTarget = speedTarget / 2;
+	if (this.obj.state == 'turning and slowing') {	  
+	    deltaSpeed = deltaSpeed * 2;
+	    speedTarget = speedTarget / 4;
 	}
-	
     }
     else if ((this.obj.state == 'moving') && (this.curSpeed < 1)) {
 	var deltaSpeed = this.acceleratingCoefficient*Math.sqrt(this.acceleratingCounter);
@@ -70,6 +81,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     var changeX = trigX * this.curSpeed;
     var changeY = trigY * this.curSpeed;
+    this.obj.lastState = this.obj.state;
     //consoleLog("changex is " + changeX + ", changeY is " + changeY);
     return {changeX: changeX, 
 	    changeY: changeY, 
@@ -81,32 +93,24 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
     // check if coord has been reached
     var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
     if (nextCoords) {
-	// consoleLog("diffx: " + Math.abs(nextCoords[0] - this.obj.sprite.position.x) + ", diffy: " + Math.abs(nextCoords[1] - this.obj.sprite.position.y))
+	//consoleLog("diffx: " + Math.abs(nextCoords[0] - this.obj.sprite.position.x) + ", diffy: " + Math.abs(nextCoords[1] - this.obj.sprite.position.y))
 	var diffx = Math.abs(nextCoords[0] - this.obj.sprite.position.x);
 	var diffy = Math.abs(nextCoords[1] - this.obj.sprite.position.y);
 	var diff = diffx + diffy;
-	if ((angleInfo.needsTurn && diff < 25) || (this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
+	if ((angleInfo.needsTurn && diff < 20*this.obj.def.speed) || (this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 	    this.lastDiff = diff;
-	    if (this.obj.state == 'turning') {
+	    if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
 		this.turnIncrement += 1; // helpful but could cause issues going forward
 	    }
-	    if (this.turnIncrement > angleInfo.numIncrements) {
-		this.obj.coordPathIndex += 1;
-		this.lastDiff = 100;
-		this.turnIncrement = 0;
-		this.redoPath(this.obj.coordPathIndex, 
-			      [this.obj.sprite.position.x,this.obj.sprite.position.y], 
-			      this.obj.coordPath[this.obj.coordPathIndex+1]);
+	    //console.log("angle achieved? " + this.lastAngle + ": " + angleInfo.nextAngle + "("+(Math.abs(this.lastAngle - angleInfo.nextAngle)%360)+")");	    
+	    if ((Math.abs(this.lastAngle - angleInfo.nextAngle)%360) < 2) {
+		this.nextPathCoord(true);
 		return 'moving'
 	    }
 	    return 'turning'
 	}	
-	else if ((diff > this.lastDiff) && (diff < 2)) {
-	    this.obj.coordPathIndex += 1;
-	    this.lastDiff = 100;
-	    this.obj.sprite.position.x = nextCoords[0];
-	    this.obj.sprite.position.y = nextCoords[1];
-	    this.turnIncrement = 0;
+	else if ((diff > this.lastDiff) && (diff < this.obj.def.speed*2)) {
+	    this.nextPathCoord(false)
 	}
 	else {
 	    this.lastDiff = diff;
@@ -115,9 +119,34 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
     return 'moving'
 }
 
+MovementAI.prototype.nextPathCoord = function(turnMode) {
+    var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
+    this.obj.coordPathIndex += 1;
+    this.lastDiff = 100;
+    this.turnIncrement = 0;
+    if (!turnMode) {
+	this.obj.sprite.position.x = nextCoords[0];
+	this.obj.sprite.position.y = nextCoords[1];
+    }
+    else {
+	var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
+	this.redoPath(this.obj.coordPathIndex, 
+		      [this.obj.sprite.position.x,this.obj.sprite.position.y], 
+		      nextCoords);
+    }
+
+}
+
 MovementAI.prototype.checkObstacles = function(sharedCarState) {
     this.checkExitIntersection(sharedCarState);
     var lookaheadResult = this.doLookahead(sharedCarState);
+
+    extraStateResult = this.prepareExtraState();
+    if (extraStateResult === 'pause') {
+	this.obj.state = 'slowing'
+	return .05;
+    }
+
     if (lookaheadResult.found !== false) {
 	var speedTarget = .0001;
 	if (lookaheadResult.type == 'stopsign') {
@@ -297,6 +326,22 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
     return {found: found, intersectionId: foundIntersectionId, type: typeFound}
 }
 
+MovementAI.prototype.prepareExtraState = function(extraState) {
+    var extraState = this.obj.coordPath[this.obj.coordPathIndex][2];
+    if (extraState == 'pause') {
+	var pauseLength = this.obj.coordPath[this.obj.coordPathIndex][3] || 1000;
+	this.pauseCounter += 1;
+	if (this.pauseCounter > pauseLength) {
+	    this.pauseCounter = 0;
+	    this.obj.coordPath[this.obj.coordPathIndex].splice(2,2);
+	    this.slowingCounter = 0;
+	}
+	else {
+	    return 'pause'
+	}
+    }
+}
+
 
 MovementAI.prototype.checkEnterIntersection = function(sharedCarState, intersectionId) {
     if (intersectionId === false) {
@@ -369,7 +414,7 @@ MovementAI.prototype.preparePaths = function() {
     var coordPath = this.obj.coordPath;
     _.each(coordPath, function(coords, idx) {
 	var next = coordPath[idx+1];
-	var angle = this.doPath(coords, next)
+	var angle = this.doPath(coords, next);
 	if (angle != null) {
 	    angleList.push(angle);
 	}
@@ -389,7 +434,7 @@ MovementAI.prototype.preparePaths = function() {
 	    //consoleLog("ad: " + angleDiff + "adn: " + angleDiffNew);
 	    if (angleDiff > 5) {
 		info.needsTurn = true;
-		info.turnIncrement = 1.6;
+		info.turnIncrement = 1.6;//4 / (this.obj.def.speed + 1);
 		if ((angleList[idx+1] < angle) || counterclockwise) {
 		    info.turnIncrement = -1*info.turnIncrement;
 		} // possible counterclockwise should just negate whatevers above?
@@ -398,8 +443,7 @@ MovementAI.prototype.preparePaths = function() {
 	    }
 	}
 	angleInfo.push(info);
-    });
-    // console.dir(angleInfo);
+    }, this);
     return angleInfo
 }
 
