@@ -303,4 +303,4 @@ var diagonalLevel = {
 };
 
 
-allLevels = {'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel}
+

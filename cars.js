@@ -143,6 +143,7 @@ function setupSharedCarState(setupResult, cars, staticCollisionObjects, bike, in
 	      cars: {}, 
 	      allStopsignIntersections: allStopsignIntersections,
 	      carsInIntersection: {},
+	      carsAtStopsign: {},
 	      staticCollisionObjects: staticCollisionObjects,
 	      theBike: bike,
 	      trafficLightLines: setupResult.trafficLightLines,

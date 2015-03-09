@@ -132,8 +132,9 @@ function buildLevel(stage, level) {
 	carDef.width=width;
 	var height = carDef.height || 16;
 	carDef.height=height;
-	car.lineStyle(2, carDef.fillColor, 1);
-	car.beginFill(carDef.fillColor, 1);
+	var color = carDef.fillColor || parseInt(getRandomColor(),16);
+	car.lineStyle(2, color, 1);
+	car.beginFill(color, 1);
 	var x = startingCoords[0];
 	var y = startingCoords[1];
 	car.moveTo(x, y); 
@@ -163,8 +164,8 @@ function buildLevel(stage, level) {
 	else {
 	    lights = {}
 	}
-	leftDoor = drawCarDoor(carSprite,x,y,carDef.fillColor,width,height, 2,'left');
-	rightDoor = drawCarDoor(carSprite,x,y,carDef.fillColor,width,height, 2,'right');
+	leftDoor = drawCarDoor(carSprite,x,y,color,width,height, 2,'left');
+	rightDoor = drawCarDoor(carSprite,x,y,color,width,height, 2,'right');
 	doors = {'left':{'sprite':leftDoor,'open':false}, 'right':{'sprite':rightDoor, 'open':false}};
 	carObj = new Car(carSprite, lights, doors, carDef, stopSignLines, carId);
 	if (carDef.type != 'parked') {
@@ -173,6 +174,17 @@ function buildLevel(stage, level) {
 	    carSprite.addChild(lights.headLights[0]);
 	    carSprite.addChild(lights.headLights[1]);
 	}
+	if (globalOptions.debugMode) {
+	    var text = new PIXI.Text(carId, {font:"10px Arial", fill: "white", align:"center", strokeThickness: 1, stroke: "white", });
+	    text.anchor.x=.5;
+	    text.anchor.y=.5;
+	    texture = text.generateTexture();
+	    textSprite = new PIXI.Sprite(texture);
+	    textSprite.position.x+=10;
+	    //textSprite.position.y=y;
+	    carSprite.addChild(textSprite);
+	}
+
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
     };

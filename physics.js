@@ -109,7 +109,7 @@ function checkCollision2(bbPoly1, bbPoly2) {
 function checkInIntersection(carPoly, intersectionPoly) {
     var response = new SAT.Response();
     var collided = SAT.testPolygonPolygon(carPoly, intersectionPoly, response)
-    return response.aInB && collided;
+    return collided;
 }
 
 function CCW(p1, p2, p3) {

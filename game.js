@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:true, level: trafficLightsLevel, stop:false};
+var globalOptions = {debugMode:false, level: rushHourLevel, stop:false};
 
 function start(renderer, stage) {
     globalOptions.stop = true;
@@ -199,5 +199,5 @@ function addLevelChoices() {
 	choices += '<input class="optioninput" type="radio" name="levelchoice" value="' + name + '"><span class="inputtext">' + name + '</span><br/>';
     });
     choiceDiv.html(choices);
-    $("input:radio[name=levelchoice]").filter('[value=trafficlights]').prop('checked',true);
+    $("input:radio[name=levelchoice]").filter('[value=rushhour]').prop('checked',true);
 }
