@@ -389,7 +389,7 @@ MovementAI.prototype.preparePaths = function() {
 	    //consoleLog("ad: " + angleDiff + "adn: " + angleDiffNew);
 	    if (angleDiff > 5) {
 		info.needsTurn = true;
-		info.turnIncrement = 2;
+		info.turnIncrement = 1.6;
 		if ((angleList[idx+1] < angle) || counterclockwise) {
 		    info.turnIncrement = -1*info.turnIncrement;
 		} // possible counterclockwise should just negate whatevers above?

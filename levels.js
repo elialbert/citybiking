@@ -38,8 +38,8 @@ var defaultLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [400,330],
-	    [410,-50]
+	    [380,330],
+	    [412,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -97,7 +97,7 @@ var nostopsignsLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [400,330],
+	    [380,330],
 	    [410,-50]
 	],
 	 type: 'normal',
@@ -166,7 +166,7 @@ var trafficLightsLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [395,330],
+	    [370,330],
 	    [405,-50]
 	],
 	 type: 'normal',
