@@ -186,6 +186,28 @@ var trafficLightsLevel = {
 	 fillColor: 0x4D4DFF,
 	},
 	
+	{coordPath: [
+	    [442,70, 'pause',50],
+	    [442,60, 'left door',10000],
+	    [442,50, 'pause',50000],
+	],
+	 type: 'parked',
+	 sceneIncrementRestart: 3,
+	 speed: 0,
+	 fillColor: 0xFFFFFF,
+	},
+	
+	{coordPath: [
+	    [360,50, 'pause',50],
+	    [360,60, 'left door',200],
+	    [360,70, 'pause',50000],
+	],
+	 type: 'parked',
+	 sceneIncrementRestart: 3,
+	 speed: 0,
+	 fillColor: 0xFFFFFF,
+	},
+	
     ],
     parkedCars: [
 	{

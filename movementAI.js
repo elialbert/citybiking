@@ -10,7 +10,12 @@ function MovementAI(obj, stopSignLines) {
     this.acceleratingCounter = 0;
     this.hitCounter = 0;
     this.pauseCounter = 0;
-    this.lastAngle = this.angleInfos[0].angle;
+    if (this.angleInfos[0]) {
+	this.lastAngle = this.angleInfos[0].angle;
+    }
+    else {
+	this.lastAngle = 0;
+    }
     this.slowingCoefficient = -.004 * this.obj.def.speed;
     this.acceleratingCoefficient = .0005 * this.obj.def.speed;
 }
@@ -30,8 +35,12 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     var angleInfo = this.angleInfos[this.obj.coordPathIndex];
     if (!angleInfo) {
 	angleInfo = this.angleInfos[this.obj.coordPathIndex - 1];
+	var angle = this.lastAngle || 0;
     }
-    var angle = angleInfo.angle;
+    else {
+	var angle = angleInfo.angle;
+    }
+
     this.obj.state = this.checkDestination(angleInfo);
     if (this.obj.state == 'turning') {
 	var angleChange = angleInfo.turnIncrement;
@@ -53,7 +62,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
-    this.storeProjectedMovementLine(angle, trigX, trigY, this._getLookaheadSpeed(this.curSpeed)*40);
+    this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY, this._getLookaheadSpeed(this.curSpeed)*40);
     speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
     if ((this.obj.state == 'slowing') || (this.obj.state == 'turning and slowing')) {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
@@ -173,7 +182,7 @@ MovementAI.prototype.checkObstacles = function(sharedCarState) {
     }
 }
 
-MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, forwardDistance) {
+MovementAI.prototype.storeProjectedMovementLine = function(sharedCarState, angle, trigX, trigY, forwardDistance) {
     var lookaheadX = trigX * forwardDistance;
     var lookaheadY = trigY * forwardDistance;
     var lookbehindX = trigX * 10;
@@ -191,17 +200,19 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
 	extraWidth = 2.5;
     }
 
-    var upperLeftX = extraWidth*width * Math.cos(toRadians(intersectAngle))
-    var upperLeftY = extraWidth*width * Math.sin(toRadians(intersectAngle))
+    var intersectTrigX = Math.cos(toRadians(intersectAngle))
+    var intersectTrigY = Math.sin(toRadians(intersectAngle))
+    var upperLeftX = extraWidth*width * intersectTrigX
+    var upperLeftY = extraWidth*width * intersectTrigY
 
-    var lowerLeftX = width * extraWidth * Math.cos(toRadians(intersectAngle))+lookbehindX;
-    var lowerLeftY = width * extraWidth * Math.sin(toRadians(intersectAngle))+lookbehindY;
+    var lowerLeftX = width * extraWidth * intersectTrigX+lookbehindX;
+    var lowerLeftY = width * extraWidth * intersectTrigY+lookbehindY;
 
     var upperRightX = -upperLeftX;
     var upperRightY = -upperLeftY;
 
-    var lowerRightX = -1 * width * extraWidth * Math.cos(toRadians(intersectAngle))+lookbehindX;
-    var lowerRightY = -1 * width * extraWidth * Math.sin(toRadians(intersectAngle))+lookbehindY;
+    var lowerRightX = -1 * width * extraWidth * intersectTrigX+lookbehindX;
+    var lowerRightY = -1 * width * extraWidth * intersectTrigY+lookbehindY;
 
     this.lookaheadBBPoly = BBFromPoints([this.obj.sprite.position.x+lookaheadX, this.obj.sprite.position.y+lookaheadY], [
 	[upperLeftX,upperLeftY],
@@ -210,6 +221,8 @@ MovementAI.prototype.storeProjectedMovementLine = function(angle, trigX, trigY, 
 	[upperRightX, upperRightY],
 	[upperLeftX, upperLeftY]
     ]);
+
+    this.prepareDoors(sharedCarState, intersectTrigX, intersectTrigY);
 
     this.bbPoly = BBFromSprite(this.obj.sprite);
     // draw the bbpolys for testing
@@ -335,6 +348,27 @@ MovementAI.prototype.prepareExtraState = function(extraState) {
 	    this.pauseCounter = 0;
 	    this.obj.coordPath[this.obj.coordPathIndex].splice(2,2);
 	    this.slowingCounter = 0;
+	    if (this.obj.def.speed === 0) {
+		this.obj.coordPathIndex += 1;
+	    }
+	}
+	else {
+	    return 'pause'
+	}
+    }
+    if ((extraState == 'left door') || (extraState == 'right door')) {
+	if (this.pauseCounter == 0) {
+	    this.obj.changeDoor(extraState, true);
+	}
+	var pauseLength = this.obj.coordPath[this.obj.coordPathIndex][3] || 1000;
+	this.pauseCounter += 1;
+	if (this.pauseCounter > pauseLength) {
+	    this.pauseCounter = 0;
+	    this.obj.changeDoor(extraState, false);
+	    this.obj.coordPath[this.obj.coordPathIndex].splice(2,2);
+	    if (this.obj.def.speed === 0) {
+		this.obj.coordPathIndex += 1;
+	    }
 	}
 	else {
 	    return 'pause'
@@ -463,4 +497,27 @@ MovementAI.prototype._getLookaheadSpeed = function(curSpeed) {
 	return curSpeed
     }
     return 1
+}
+
+MovementAI.prototype.prepareDoors = function(sharedCarState, intersectTrigX, intersectTrigY) {
+    _.each(['left','right'], function(doorSide, idx) {
+	door = this.obj.doors[doorSide].sprite;
+	if (this.obj.doors[doorSide].open) {
+	    globalPos = door.toGlobal(this.obj.sprite.parent);
+	    lenDoor = this.obj.def.height/2;
+	    deltaX = lenDoor*intersectTrigX;
+	    deltaY = lenDoor*intersectTrigY;
+	    var rotation = {'left':60, 'right':300}[doorSide]
+	    var directionModifier = {'left':1, 'right':-1}[doorSide]
+	    door.rotation=toRadians(rotation);
+	    doorLine = [[globalPos.x, globalPos.y],
+			[globalPos.x+deltaX*directionModifier, globalPos.y+deltaY*directionModifier]];
+	    this.obj.doors[doorSide].doorLine = doorLine;
+	    //console.log("doorline: " + doorLine);
+	}
+	else {
+	    door.rotation=toRadians(0);
+	}
+	sharedCarState.doors[this.obj.carId] = this.obj.doors;
+    }, this);
 }

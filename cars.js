@@ -1,7 +1,8 @@
-function Car(sprite, lights, def, stopSignLines, carId) {
+function Car(sprite, lights, doors, def, stopSignLines, carId) {
     // lights are a hash with array keys (with [left,right]) of rearLights and headLights 
     this.sprite = sprite;
     this.lights = lights;
+    this.doors = doors;
     this.coordPath = copyCoordPath(def.coordPath);
     this.startingCoords = this.coordPath[0];
     this.coordPathIndex = 0;
@@ -49,7 +50,11 @@ Car.prototype.animateSprites = function(movement, reset) {
 	    lightSprite.alpha = .4;
 	}
     });
+};
 
+Car.prototype.changeDoor = function(doorDef, openBool) {
+    doorSide = doorDef.split(' ')[0];
+    this.doors[doorSide].open = openBool;
 };
 
 Car.prototype.run = function(sharedCarState) {
@@ -106,7 +111,7 @@ Car.prototype.drawHonk = function() {
 
 Car.prototype.getNewCar = function() {
     var car = this
-    return new Car(car.sprite, car.lights, car.def, car.stopSignLinesCopy, car.carId);
+    return new Car(car.sprite, car.lights, car.doors, car.def, car.stopSignLinesCopy, car.carId);
 }
 
 function runCars(cars, sharedCarState) {
@@ -142,6 +147,7 @@ function setupSharedCarState(setupResult, cars, staticCollisionObjects, bike, in
 	      theBike: bike,
 	      trafficLightLines: setupResult.trafficLightLines,
 	      intersections: setupIntersectionDefs(intersectionDefs),
+	      doors: {},
 	     };
     _.each(allStopsignIntersections, function(intersectionId) {
 	ss.stopSignQueues[intersectionId] = [];

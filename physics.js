@@ -51,6 +51,23 @@ function moveBike(direction, speed, input) {
 	    speed:speed}
 }
 
+function checkDoorCollisions(bikeObj, doors, posChange) {
+    var bikeSprite = bikeObj.sprite;
+    var bikeline = [[bikeSprite.position.x+posChange.frontOffsetX, bikeSprite.position.y+posChange.frontOffsetY],
+		    [bikeSprite.position.x, bikeSprite.position.y]];
+    _.each(doors, function(door, carId) {
+	_.each(door, function(doorObj, doorSide) {
+	    if ((doorObj.open) && (doorObj.doorLine)) {
+		if (isIntersect(bikeline[0],bikeline[1],doorObj.doorLine[0], doorObj.doorLine[1])) {
+		    console.log("BIKE HIT DOOR!");
+		    posChange.speed = posChange.speed / 1.9;
+		    bikeObj.hitSomething("door");
+		}
+	    }
+	});
+    });
+};
+
 function checkCollisions(bikeObj, collisionObjects, posChange, carMode) { 
     var bikeSprite = bikeObj.sprite;
     var bike = new SAT.Vector(bikeSprite.position.x+posChange.frontOffsetX, bikeSprite.position.y+posChange.frontOffsetY);

@@ -129,7 +129,9 @@ function buildLevel(stage, level) {
 	var car = new PIXI.Graphics();
 	var polygonPoints = [];
 	var width = carDef.width || 8;
+	carDef.width=width;
 	var height = carDef.height || 16;
+	carDef.height=height;
 	car.lineStyle(2, carDef.fillColor, 1);
 	car.beginFill(carDef.fillColor, 1);
 	var x = startingCoords[0];
@@ -140,8 +142,8 @@ function buildLevel(stage, level) {
 	car.lineTo(x+width, y);
 	car.lineTo(x, y);
 	car.endFill();
-	texture = car.generateTexture()
-	carSprite = new PIXI.Sprite(texture)
+	texture = car.generateTexture();
+	carSprite = new PIXI.Sprite(texture);
 	carSprite.position.x = x;
 	carSprite.position.y = y;
 	carSprite.anchor.x = .5;
@@ -155,15 +157,46 @@ function buildLevel(stage, level) {
 	    new SAT.Vector(-width/widthscalar,-height/2),
 	]
 	carSprite.polygonPoints = polygonPoints;
-	lights = drawCarLights(carSprite, width);
-	carObj = new Car(carSprite, lights, carDef, stopSignLines, carId);
-	carSprite.addChild(lights.rearLights[0]);
-	carSprite.addChild(lights.rearLights[1]);
-	carSprite.addChild(lights.headLights[0]);
-	carSprite.addChild(lights.headLights[1]);
+	if (carDef.type != 'parked') {
+	    lights = drawCarLights(carSprite, width);
+	}
+	else {
+	    lights = {}
+	}
+	leftDoor = drawCarDoor(carSprite,x,y,carDef.fillColor,width,height, 2,'left');
+	rightDoor = drawCarDoor(carSprite,x,y,carDef.fillColor,width,height, 2,'right');
+	doors = {'left':{'sprite':leftDoor,'open':false}, 'right':{'sprite':rightDoor, 'open':false}};
+	carObj = new Car(carSprite, lights, doors, carDef, stopSignLines, carId);
+	if (carDef.type != 'parked') {
+	    carSprite.addChild(lights.rearLights[0]);
+	    carSprite.addChild(lights.rearLights[1]);
+	    carSprite.addChild(lights.headLights[0]);
+	    carSprite.addChild(lights.headLights[1]);
+	}
 	stage.addChild(carSprite);
 	dynamicCollisionObjects.push(carObj);
     };
+
+    function drawCarDoor(carSprite, x,y,color,width,height,extra,side) {
+	carDoor = new PIXI.Graphics();
+	carDoor.lineStyle(2, color, 1);
+	carDoor.moveTo(x,y-height);
+	carDoor.lineTo(x, y-height/2);
+	texture = carDoor.generateTexture();
+	doorSprite = new PIXI.Sprite(texture);
+	if (side == 'left') {
+	    var offsetX = -width/2-extra;//carSprite.polygonPoints[idx].x;
+	    var offsetY = -height/2-extra;//carSprite.polygonPoints[idx].y;
+	}
+	else {
+	    var offsetX = width/2-extra;
+	    var offsetY = -height/2-extra;
+	}
+	doorSprite.position.x = offsetX;
+	doorSprite.position.y = offsetY;
+	carSprite.addChild(doorSprite);
+	return doorSprite
+    }
 
     function drawCarLights(carSprite, width) {
 	// use polygon points to pick corners for 4 lights:

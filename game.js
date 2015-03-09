@@ -80,6 +80,7 @@ function init(renderer, stage) {
 	bikeSprite.position.y += posChange.changeY;
 	bikeSprite.rotation = toRadians(posChange.direction - 270);
 	checkCollisions(bikeObj, staticCollisionObjects, posChange);
+	checkDoorCollisions(bikeObj, sharedCarState.doors, posChange);
 	checkBikeCollisions(bikeObj, dynamicCollisionObjects, posChange);
 	bikeSprite.bbPoly = BBFromSprite(bikeSprite);
 	if (globalOptions.debugMode) {
