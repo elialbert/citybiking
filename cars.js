@@ -103,6 +103,11 @@ Car.prototype.drawHonk = function() {
 
 };
 
+Car.prototype.getNewCar = function() {
+    var car = this
+    return new Car(car.sprite, car.lights, car.def, car.stopSignLinesCopy, car.carId);
+}
+
 function runCars(cars, sharedCarState) {
     found = false
     _.each(cars, function(car, idx) {
@@ -121,7 +126,7 @@ function doCarRestart(car) {
 	return [false, false]
     };
     car.animateSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
-    var newcar = new Car(car.sprite, car.lights, car.def, car.stopSignLinesCopy, car.carId);
+    var newcar = car.getNewCar();
     return [true, newcar]
 }
 

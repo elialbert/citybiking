@@ -245,7 +245,7 @@ var diagonalLevel = {
 	
 	{coordPath: [
 	    [-30,-5],	 
-	    [270, 295],
+	    [265, 290],
 	    [705, -55],
 	],
 	 type: 'normal',
