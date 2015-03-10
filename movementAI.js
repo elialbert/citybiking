@@ -29,9 +29,68 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	    this.obj.hit = false;
 	}
 	else {
-	    return {changeX: 0, changeY: 0, state: 'hit'}
+	    return {changeX: 0, changeY: 0, state: 'hit', lookaheadState: 'slowing'}
 	}
     };
+    var angle = this.lastAngle;
+    var trigX = Math.cos(toRadians(angle));
+    var trigY = Math.sin(toRadians(angle));
+
+    var angleInfo = this.angleInfos[this.obj.coordPathIndex];
+    if (!angleInfo) {
+	angleInfo = this.angleInfos[this.obj.coordPathIndex - 1];
+    }
+    // sets up bbpolys
+    this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY);
+    // sets up this.obj.lookaheadState - uses previous this.obj.angleState to know which bbpoly to use
+    speedTarget = this.checkObstacles(sharedCarState, angleInfo) || speedTarget;
+    // sets up this.obj.angleState 
+    angleResult = this.calcAngle(sharedCarState, speedTarget);
+    speedTarget = angleResult.speedTarget;
+    angle = angleResult.angle;
+    //if (this.obj.carId === 2) {
+//	console.log("checkobs speedtarget for 1 is " + speedTarget + " and lookahead state is " + this.obj.lookaheadState);
+  //  }
+
+    if (this.obj.lookaheadState == 'slowing') {
+	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
+	this.slowingCounter += 1;
+	if (this.obj.angleState == 'turning') {	  
+	    deltaSpeed = deltaSpeed * 8;
+	    speedTarget = speedTarget / 8;
+	}
+    }
+    else if ((this.obj.lookaheadState == 'moving') && (this.curSpeed < 1)) {
+	var deltaSpeed = this.acceleratingCoefficient*Math.sqrt(this.acceleratingCounter);
+	consoleLog("accel ds " + deltaSpeed);
+	this.acceleratingCounter += 1;
+    }
+    else if (this.obj.lookaheadState == 'moving') {
+	this.acceleratingCounter = 0;
+	this.slowingCounter = 0;
+	deltaSpeed = (speedTarget - this.curSpeed) / 6;
+    }
+
+    if (this.obj.carId === 0) {
+	consoleLog("car 0 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
+    }
+
+    this.curSpeed += deltaSpeed
+    if (this.curSpeed<0) {
+	this.curSpeed = 0.00001;
+    }
+    var changeX = trigX * this.curSpeed;
+    var changeY = trigY * this.curSpeed;
+
+    //consoleLog("changex is " + changeX + ", changeY is " + changeY);
+    return {changeX: changeX, 
+	    changeY: changeY, 
+	    rotation: toRadians(angle-270), 
+	    lookaheadState: this.obj.lookaheadState,
+	    state: this.obj.state}
+};
+
+MovementAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
     var angleInfo = this.angleInfos[this.obj.coordPathIndex];
     if (!angleInfo) {
 	angleInfo = this.angleInfos[this.obj.coordPathIndex - 1];
@@ -41,80 +100,39 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	var angle = angleInfo.angle;
     }
     var waitingForLeft = false
-    this.obj.state = this.checkDestination(angleInfo);
-    if (this.obj.state == 'turning') {
-	var angleChange = angleInfo.turnIncrement;
-	if (angleInfo.leftTurn) {
-	    waitingForLeft = this.checkWaitingForLeft(sharedCarState)
-	    if (waitingForLeft){
-		this.obj.state = 'turning and slowing';
-		waitingforLeft = true;
-	    }
+    this.obj.angleState = this.checkDestination(angleInfo);
+    if (this.obj.angleState == 'turning') {
+	if (this.curSpeed < 1) {
+	    var angleChange = (angleInfo.turnIncrement/1.4) * this.curSpeed;
 	}
-	if (this.obj.lastState == 'turning and slowing') {
+	else {
+	    var angleChange = angleInfo.turnIncrement;
+	}
+	if (this.obj.lookaheadState == 'slowing') {
 	    if (this.curSpeed < .3) {
-		if (waitingForLeft) {
+		if (angleInfo.leftTurn) {
 		    angleChange=0;
 		}
-		else {
-		    angleChange = .0005;
-		}
+		//else {
+		//    angleChange = .005;
+		//}
 	    }
-	    else {
-		angleChange = angleChange/3;// / 1.5;
-	    }
+	    //else {
+		//angleChange = angleChange/3;// / 1.5;
+	    //}
 	}
 	
 	angle = (this.lastAngle || angle) + angleChange;
 	this.lastAngle = angle;
-	speedTarget = this.obj.def.speed / 2;
+	speedTarget = Math.max((this.obj.def.speed / 2), 1)
+	return {angle:angle, speedTarget: speedTarget}
     }
-    else if (this.obj.state == 'moving') {
-	speedTarget = this.obj.def.speed;
+    else if (this.obj.lookaheadState == 'moving') {
+	speedTarget = speedTarget || this.obj.def.speed;
     }
-    var trigX = Math.cos(toRadians(angle));
-    var trigY = Math.sin(toRadians(angle));
-
-    this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY);
-    speedTarget = this.checkObstacles(sharedCarState) || speedTarget;
-    if ((this.obj.state == 'slowing') || (this.obj.state == 'turning and slowing')) {
-	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
-	this.slowingCounter += 1;
-	if (this.obj.state == 'turning and slowing') {	  
-	    deltaSpeed = deltaSpeed * 8;
-	    speedTarget = speedTarget / 8;
-	}
-    }
-    else if ((this.obj.state == 'moving') && (this.curSpeed < 1)) {
-	var deltaSpeed = this.acceleratingCoefficient*Math.sqrt(this.acceleratingCounter);
-	//consoleLog("accel ds " + deltaSpeed);
-	this.acceleratingCounter += 1;
-    }
-    else if ((this.obj.state == 'moving') || (this.obj.state == 'turning')) {
-	this.acceleratingCounter = 0;
-	this.slowingCounter = 0;
-	deltaSpeed = (speedTarget - this.curSpeed) / 6;
-	//consoleLog("normal ds " + deltaSpeed);
-    }
-
-    //if (this.obj.carId === 3) {
-	//consoleLog("car 3 speedtarget: " + speedTarget + ", state: " + this.obj.state);
-    //}
-
-    this.curSpeed += deltaSpeed
-    if (this.curSpeed<0) {
-	this.curSpeed = 0.00001;
-    }
-    var changeX = trigX * this.curSpeed;
-    var changeY = trigY * this.curSpeed;
-    this.obj.lastState = this.obj.state;
-    //consoleLog("changex is " + changeX + ", changeY is " + changeY);
-    return {changeX: changeX, 
-	    changeY: changeY, 
-	    rotation: toRadians(angle-270), 
-	    state: this.obj.state}
-};
-
+    return {angle:angle, speedTarget: speedTarget}
+}
+    
 MovementAI.prototype.checkDestination = function(angleInfo) {
     // check if coord has been reached
     var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
@@ -123,11 +141,8 @@ MovementAI.prototype.checkDestination = function(angleInfo) {
 	var diffx = Math.abs(nextCoords[0] - this.obj.sprite.position.x);
 	var diffy = Math.abs(nextCoords[1] - this.obj.sprite.position.y);
 	var diff = diffx + diffy;
-	if ((angleInfo.needsTurn && diff < 20*this.obj.def.speed) || (this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
+	if ((angleInfo.needsTurn && (diff < 20*(Math.max(this.obj.def.speed,2)))) || (this.obj.angleState == 'turning')) {
 	    this.lastDiff = diff;
-	    if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing')) {
-		this.turnIncrement += 1; // helpful but could cause issues going forward
-	    }
 	    //console.log("angle achieved? " + this.lastAngle + ": " + angleInfo.nextAngle + "("+(Math.abs(this.lastAngle - angleInfo.nextAngle)%360)+")");	    
 	    if ((Math.abs(this.lastAngle - angleInfo.nextAngle)%360) < 2) {
 		this.nextPathCoord(true);
@@ -163,13 +178,12 @@ MovementAI.prototype.nextPathCoord = function(turnMode) {
 
 }
 
-MovementAI.prototype.checkObstacles = function(sharedCarState) {
+MovementAI.prototype.checkObstacles = function(sharedCarState, angleInfo) {
     this.checkExitIntersection(sharedCarState);
-    var lookaheadResult = this.doLookahead(sharedCarState);
-
+    var lookaheadResult = this.doLookahead(sharedCarState, angleInfo);
     extraStateResult = this.prepareExtraState();
     if (extraStateResult === 'pause') {
-	this.obj.state = 'slowing'
+	this.obj.lookaheadState = 'slowing'
 	return .05;
     }
 
@@ -184,30 +198,24 @@ MovementAI.prototype.checkObstacles = function(sharedCarState) {
 	    consoleLog("found static collision");
 	    return 0
 	}
-	if (this.obj.state === 'turning') {
-	    this.obj.state = 'turning and slowing';
-	}
-	// should do something here with cardefs when this.obj.state == trafficlight around propensity to stop on yellow
-	else {
-	    this.obj.state = 'slowing';
-	}
+	this.obj.lookaheadState = 'slowing';
 	if (lookaheadResult.type == 'stopsign') {
 	    this.stopsignCounter += 1;
 	    this.checkFinishStopsign(speedTarget, needsToWait, lookaheadResult.intersectionId);
 	}
 	return speedTarget;	
     }
+    else {
+	this.obj.lookaheadState = 'moving';
+    }
 }
 
 MovementAI.prototype.storeProjectedMovementLine = function(sharedCarState, angle, trigX, trigY) {
     var forwardDistanceNormal = this._getLookaheadSpeed(sharedCarState, this.curSpeed)*40
     var forwardDistanceLong = this._getLookaheadSpeed(sharedCarState, this.curSpeed)*80
-    var extraWidth = 1.1
-    if (this.obj.state == 'turning') {
-	extraWidth = 2.5;
-    }
     this.lookaheadBBPoly = this.calculateLookahead(forwardDistanceNormal, 1.1, angle, trigX, trigY, true);
     this.longBBPoly = this.calculateLookahead(forwardDistanceLong, 2.5, angle, trigX, trigY, false);
+    this.longAndWideBBPoly = this.calculateLookahead(forwardDistanceLong*1.5, 2.5, angle, trigX, trigY, false);
     var intersectAngle = -1*(90 - angle);
     var intersectTrigX = Math.cos(toRadians(intersectAngle))
     var intersectTrigY = Math.sin(toRadians(intersectAngle))
@@ -261,7 +269,8 @@ MovementAI.prototype.calculateLookahead = function(forwardDistance, extraWidth, 
 
 // check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
 // for non intersection waiting, return false for intersectionId
-MovementAI.prototype.doLookahead = function(sharedCarState) {
+MovementAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
+    var foundIntersectionId = false;
     // basically draw a projected movement line forward, and ask for the movement line from other objs
     // compare if the lines cross or not
     // return if conflict found, what type of conflict, and any additional info (like intersectionId)
@@ -269,27 +278,16 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	intersectionBBPolyCheck = this.bbPoly;
 	if (this.curSpeed > 1.6) {
 	    intersectionBBPolyCheck = this.longBBPoly;
-	    if (this.obj.carId === 6) {
-		console.log("using long bbpoly")
-	    }
 	}
 	else if (this.curSpeed > .1) {
-	    if (this.obj.carId === 6) {
-		console.log("using loookahead bbpoly")
-	    }
-
 	    intersectionBBPolyCheck = this.lookaheadBBPoly;
 	}
 	
 	if (checkInIntersection(intersectionBBPolyCheck, intersectionPoly)) {
 	    foundIntersectionId = intersectionId;
 	    sharedCarState.carsInIntersection[this.obj.carId] = intersectionId;
-	    if (this.obj.carId==6) {
-		console.log("adding " + this.obj.carId + " to intersection");
-	    }
 	}
 	else {
-	    //console.log("deleting " + this.obj.carId + " from intersection");
 	    delete sharedCarState.carsInIntersection[this.obj.carId]
 	}
     }, this);
@@ -298,51 +296,70 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 
     var found = false;
     var typeFound = false;
-    var foundIntersectionId = false;
     _.each(sharedCarState.cars, function(carObj, carId) {
 	if (found) {
 	    return
 	}
 	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  	    
 	    var collisionLookahead = false;
-	    if ((carObj.movementAI.curSpeed >= .3) && (this.obj.state == 'turning')) {
-		var collisionLookahead = checkCollision2(this.longBBPoly, carObj.movementAI.lookaheadBBPoly);
-		if (collisionLookahead) {
-		    if (this.obj.carId === 83 && carObj.carId === 8) {
-		    consoleLog("car " + this.obj.carId + " collision lookahead with car " + carObj.carId);
+	    if ((carObj.movementAI.curSpeed >= .3) && (this.obj.angleState == 'turning')) {
+		var turningBBPoly = this.longBBPoly;
+		if (angleInfo.leftTurn) {
+		    // gotta make sure it's not a stop sign intersection
+		    if (sharedCarState.stopSignQueues[foundIntersectionId].length) {
+			if (this.obj.carId === 0) {
+			    console.log("stopsign left")
 			}
+			turningBBPoly = this.lookaheadBBPoly;
+		    }
+		    else {
+			turningBBPoly = this.longAndWideBBPoly;
+		    }
+		}
+		var collisionLookahead = checkCollision2(turningBBPoly, carObj.movementAI.lookaheadBBPoly);
+		if (collisionLookahead) {
+		    if (this.obj.carId === 0) {
+			consoleLog("car " + this.obj.carId + " collision lookahead with car " + carObj.carId);
+		    }
 		}
 	    }
 	    var collisionNormal = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
 	    if (collisionNormal) {
-		    if (this.obj.carId === 38 && carObj.carId === 8) {
-		consoleLog("car " + this.obj.carId + ": " + this.obj.sprite.position.x + " collision normal with car " + carObj.carId + ": " + carObj.sprite.position.x);
+		    if (this.obj.carId === 0) {
+		consoleLog("car " + this.obj.carId + " collision normal with car " + carObj.carId);
 			}
 	    }
 
 	    var collisionExtra = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
 	    if (collisionExtra) {
-		    if (this.obj.carId === 38 && carObj.carId === 8) {
-		consoleLog("car " + this.obj.carId + ": " + this.obj.sprite.position.x + " collision extra with car " + carObj.carId + ": " + carObj.sprite.position.x);}
+		    if (this.obj.carId === 0) {
+			consoleLog("car " + this.obj.carId + " collision extra with car " + carObj.carId);
+		    }
 	    }
 
 	    var collisionCrash = checkCollision2(this.bbPoly, carObj.movementAI.bbPoly);
 	    if (collisionCrash) {
-		    if (this.obj.carId === 38 && carObj.carId === 8) {
-		consoleLog("car " + this.obj.carId + " collision crash with car " + carObj.carId);
-}
+		    if (this.obj.carId === 0) {
+			consoleLog("car " + this.obj.carId + " collision crash with car " + carObj.carId);
+		    }
 	    }
 
 	    if (collisionCrash === true) {
 		this.obj.hit = true;
 	    }
+
 	    if ((this.curSpeed >= .6) && (carObj.movementAI.curSpeed >= .6)) {
 		var collision = (collisionExtra || collisionNormal);
 	    }
-	    if ((this.curSpeed >= .3) && (!collision) && (carObj.movementAI.curSpeed >= .1)){
+	    if (((this.curSpeed >= .3) || ((this.obj.angleState == 'turning') && (angleInfo.leftTurn)))
+		 && (!collision) && (carObj.movementAI.curSpeed >= .1)){
 		var collision = (collisionLookahead || collisionNormal);
+		if (this.obj.carId === 0 && collision) {
+		    console.log("car 0 found turning collision");
+		    }
+
 	    }
-	    else {
+	    else if (!collision) {
 		var collision = collisionNormal;
 	    }
 	    if (collision) {
@@ -374,11 +391,7 @@ MovementAI.prototype.doLookahead = function(sharedCarState) {
 	sharedCarState.theBike.gotHit();
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
-    
-    if (foundIntersectionId !== false) {
-	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
-    }
-    
+        
     _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
 	_.each(linedefs, function(linedef, idx) {
 	    var line = linedef.points;
@@ -503,7 +516,7 @@ MovementAI.prototype.checkFinishStopsign = function(speedTarget, needsToWait, in
 	this.stopsignCounter = 0; 
 	consoleLog("killing stopsigns at intersection " + intersectionId + " for car " + this.obj.carId);
 	this.deleteIntersectionStopsigns(intersectionId);
-	this.obj.state = 'moving'
+	this.obj.lookaheadState = 'moving'
 	this.intersectionClearedCounter = Math.floor(200/this.obj.def.speed);
 	consoleLog("starting countdown to remove car " + this.obj.carId + " from intersection stopsign queue");
 	return true
@@ -586,12 +599,6 @@ MovementAI.prototype._getLookaheadSpeed = function(sharedCarState, curSpeed) {
     }
     return 1
 }
-
-/*
-    if ((this.obj.state == 'turning') || (this.obj.state == 'turning and slowing') && (curSpeed > 1)) {
-	return 2
-    }
-*/
 
 MovementAI.prototype.prepareDoors = function(sharedCarState, intersectTrigX, intersectTrigY) {
     _.each(['left','right'], function(doorSide, idx) {

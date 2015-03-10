@@ -9,7 +9,9 @@ function Car(sprite, lights, doors, def, stopSignLines, carId) {
     this.type = def.type;
     this.carId = carId;
     this.state = 'new';
-    this.lastState = 'new'
+    this.angleState = 'new';
+    this.lookaheadState = 'moving';
+    this.lastState = 'new';
     this.def = def;
     this.hit = false;
     this.lastInScene = null;
@@ -43,7 +45,7 @@ Car.prototype.animateSprites = function(movement, reset) {
 
     // DO THE LIGHTS
     _.each(this.lights.rearLights, function(lightSprite) {
-	if (movement.state == 'slowing') {
+	if (movement.lookaheadState == 'slowing') {
 	    lightSprite.alpha = 1;
 	}
 	else {

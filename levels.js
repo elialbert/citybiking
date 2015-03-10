@@ -25,9 +25,9 @@ var defaultLevel = {
 	
 	{coordPath: [
 	    [380,-50],	 
-	    [380, 330],
-	    [680, 330],
-	    [805, 330]
+	    [380, 320],
+	    [680, 320],
+	    [805, 320]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -84,9 +84,9 @@ var nostopsignsLevel = {
 	
 	{coordPath: [
 	    [380,-50],	 
-	    [380, 330],
-	    [680, 330],
-	    [805, 330]
+	    [380, 320],
+	    [680, 320],
+	    [805, 320]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -97,8 +97,8 @@ var nostopsignsLevel = {
 	
 	{coordPath: [
 	    [-5,330],
-	    [410,330],
-	    [410,-50]
+	    [420,330],
+	    [420,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
