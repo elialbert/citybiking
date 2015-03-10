@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:true, level: defaultLevel, stop:false};
+var globalOptions = {debugMode:false, level: rushHourLevel, stop:false};
 
 function start(renderer, stage) {
     globalOptions.stop = true;

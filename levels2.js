@@ -67,8 +67,8 @@ var rushHourLevel = {
 	
 	{coordPath: [
 	    [-5,320],
-	    [415,320],
-	    [420,-50]
+	    [420,320],
+	    [415,-50]
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
