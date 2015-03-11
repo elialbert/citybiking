@@ -214,6 +214,7 @@ var rushHourLevel = {
 
 var busyIntersectionsLevel = {
     levelSize: [1200,800],
+    roadWidth: 130,
     roadDefs: [
 	// intersection 1
 	{xStart:0,yStart:400, xFinish:250, yFinish:400, roadWidth:130, sidewalkWidth:17},
@@ -266,7 +267,6 @@ var busyIntersectionsLevel = {
 
     ],
     carDefs: [
-
 	{coordPath: [
 	    [-5,427],	 
 	    [1205, 427],
@@ -274,6 +274,25 @@ var busyIntersectionsLevel = {
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 3,
+	},
+	{coordPath: [
+	    [-35,451],	 
+	    [1205, 451],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 1,
+	 height: 20,
+	 width: 10,
+	},
+	{coordPath: [
+	    [-95,451],	 
+	    [736, 451],
+	    [736, 805],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.5,
 	},
 
 	{coordPath: [
@@ -312,7 +331,6 @@ var busyIntersectionsLevel = {
 	 sceneIncrementRestart: 2, 
 	 speed: 2,
 	},	
-	
 	{coordPath: [
 	    [354,805],	 
 	    [354, 450],
@@ -323,7 +341,79 @@ var busyIntersectionsLevel = {
 	 sceneIncrementRestart: 2, 
 	 speed: 2,
 	},	
-	
+	{coordPath: [
+	    [1205,351],	 
+	    [803, 351],
+	    [803, -5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 1,
+	 height: 22,
+	 width: 10,
+	},	
+	{coordPath: [
+	    [1225,351],	 
+	    [600,351, 'pause',50],	 
+	    [-20, 351],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 2.5,
+	},	
+	{coordPath: [
+	    [751,-5],	 
+	    [751,424],	 
+	    [1205, 424],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 2,
+	},	
+	{coordPath: [
+	    [751,-45],	 
+	    [751,805],	 
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 1,
+	 height: 24,
+	 width: 10,
+	},	
+	{coordPath: [
+	    [730,-95],	 
+	    [730,384],	 
+	    [310,384],	 
+	    [310,805],	 
+	],
+	 type: 'normal', //#12
+	 sceneIncrementRestart: 2, 
+	 speed: 2,
+	 height: 12,
+	},	
+	{coordPath: [
+	    [728,-25],	 
+	    [728,353],	 
+	    [353, 350],
+	    [357, -5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 2,
+	},	
+	{coordPath: [
+	    [778,875],	 
+	    [778,372],	 
+	    [351, 365],
+	    [351, -5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 1,
+	 height: 28,
+	 width: 12,
+	},	
+
     ],
     parkedCars: [
 	// right intersection right side

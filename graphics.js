@@ -61,11 +61,11 @@ function buildLevel(stage, level) {
 	});
 
 	_.each(level.stopSigns, function(stopSign) {
-	    drawStopSign(stopSign, stage);
+	    drawStopSign(stopSign, stage, (level.roadWidth || 110));
 	});
 
 	_.each(level.trafficLights, function(trafficLight) {
-	    drawTrafficLight(trafficLight, stage);
+	    drawTrafficLight(trafficLight, stage, (level.roadWidth || 110));
 	});
 
 	_.each(level.carDefs, function(carDef, idx) {
@@ -281,7 +281,7 @@ function buildLevel(stage, level) {
     };
 
 
-    function drawStopSign(stopSignDef) {
+    function drawStopSign(stopSignDef, stage, width) {
 	var coords = stopSignDef.coords;
 	var rotation = stopSignDef.rotation;
 	var sg = new PIXI.Graphics();
@@ -309,10 +309,10 @@ function buildLevel(stage, level) {
 	stage.addChild(sg);
 	stage.addChild(text);
 	// now the white line
-	intersectionWhiteLine(x,y,rotation,stopSignLines,stopSignDef, stage);
+	intersectionWhiteLine(x,y,rotation,stopSignLines,stopSignDef, stage, width/2);
     };
 
-    function drawTrafficLight(trafficLightDef) {
+    function drawTrafficLight(trafficLightDef, stage, width) {
 	var coords = trafficLightDef.coords;
 	var rotation = trafficLightDef.rotation;
 	var tfg = new PIXI.Graphics();
@@ -323,17 +323,17 @@ function buildLevel(stage, level) {
 	tfg.drawCircle(x,y,7);
 	tfg.endFill();
 	stage.addChild(tfg);
-	intersectionWhiteLine(x,y,rotation,trafficLightLines,trafficLightDef, stage);
+	intersectionWhiteLine(x,y,rotation,trafficLightLines,trafficLightDef, stage, width/2);
     };
     
-    function intersectionWhiteLine(x,y,rotation,infoDict,def,stage) {
+    function intersectionWhiteLine(x,y,rotation,infoDict,def,stage, width) {
 	var wl = new PIXI.Graphics();
 	wl.lineStyle(4, 0xFFFFFF, 1);
 	offsets = [-Math.cos(toRadians(rotation)), -Math.sin(toRadians(rotation))];
 	var xStart = x+(15*offsets[0]);
 	var yStart = y+(15*offsets[1]);
-	var xEnd = x+(55*offsets[0]);
-	var yEnd = y+(55*offsets[1]);
+	var xEnd = x+(width*offsets[0]);
+	var yEnd = y+(width*offsets[1]);
 	wl.moveTo(xStart,yStart);
 	wl.lineTo(xEnd,yEnd);
 	points = [[xStart,yStart],[xEnd,yEnd]];
