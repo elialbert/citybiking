@@ -14,6 +14,7 @@ function Car(sprite, lights, doors, def, stopSignLines, carId) {
     this.lastState = 'new';
     this.def = def;
     this.hit = false;
+    this.sequentialHitCounter = 0;
     this.lastInScene = null;
     this.sceneChangeCount = -1; //because we start null
     this.restartTimer = 20;
@@ -60,7 +61,13 @@ Car.prototype.changeDoor = function(doorDef, openBool) {
 };
 
 Car.prototype.run = function(sharedCarState) {
-    //this.calcMovement();
+    if (this.sequentialHitCounter > 10) {	    
+	console.log("car " + this.carId + " got stuck; restarting");
+	this.restartTimer = -5;
+    }
+    if (this.movementAI.curSpeed > 1) {
+	this.sequentialHitCounter = 0;
+    }
     var movementResult = this.movementAI.calcMovement(sharedCarState);
     this.animateSprites(movementResult);
     // decide if car should be restarted
@@ -134,6 +141,7 @@ function doCarRestart(car, sharedCarState) {
 	return [false, false]
     };
     car.animateSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
+    car.bbPoly = BBFromSprite(car.sprite);
     var collisionResult = false;
     _.each(sharedCarState.cars, function(carObj, carId) {
 	if (collisionResult || (carObj.carId === car.carId)) {
@@ -145,9 +153,10 @@ function doCarRestart(car, sharedCarState) {
 	    collisionResult = [false, false]
 	}
     });
-    //if (collisionResult) {
-//	return collisionResult;
-  //  }
+    if (collisionResult) {
+	console.log("skipping newcar, waiting till clear");
+	return collisionResult;
+    }
 
     var newcar = car.getNewCar();
     return [true, newcar]

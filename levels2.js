@@ -353,7 +353,7 @@ var busyIntersectionsLevel = {
 	 width: 10,
 	},	
 	{coordPath: [
-	    [1225,351],	 
+	    [1235,351],	 
 	    [600,351, 'pause',50],	 
 	    [-20, 351],
 	],
@@ -371,7 +371,7 @@ var busyIntersectionsLevel = {
 	 speed: 2,
 	},	
 	{coordPath: [
-	    [751,-45],	 
+	    [751,-65],	 
 	    [751,805],	 
 	],
 	 type: 'normal',
@@ -392,7 +392,7 @@ var busyIntersectionsLevel = {
 	 height: 12,
 	},	
 	{coordPath: [
-	    [728,-25],	 
+	    [728,-35],	 
 	    [728,353],	 
 	    [353, 350],
 	    [357, -5],
