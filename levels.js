@@ -1,4 +1,5 @@
 var defaultLevel = {
+    levelSize: [],
     roadDefs: [
 	{xStart:400,yStart:0, xFinish:400, yFinish:250, roadWidth:100, sidewalkWidth:17},
 	{xStart:400,yStart:350, xFinish:400, yFinish:600, roadWidth:100, sidewalkWidth:17},
@@ -62,6 +63,7 @@ var defaultLevel = {
 };
 
 var nostopsignsLevel = {
+    levelSize: [],
     roadDefs: [
 	{xStart:400,yStart:0, xFinish:400, yFinish:250, roadWidth:100, sidewalkWidth:17},
 	{xStart:400,yStart:350, xFinish:400, yFinish:600, roadWidth:100, sidewalkWidth:17},
@@ -121,6 +123,7 @@ var nostopsignsLevel = {
 };
 
 var trafficLightsLevel = {
+    levelSize: [],
     roadDefs: [
 	{xStart:400,yStart:0, xFinish:400, yFinish:250, roadWidth:100, sidewalkWidth:17},
 	{xStart:400,yStart:350, xFinish:400, yFinish:600, roadWidth:100, sidewalkWidth:17},
@@ -245,6 +248,7 @@ var trafficLightsLevel = {
 };
 
 var diagonalLevel = {
+    levelSize: [],
     roadDefs: [
 	{xStart:0,yStart:0, xFinish:266, yFinish:266, roadWidth:100, sidewalkWidth:17},
 	{xStart:0,yStart:600, xFinish:266, yFinish:334, roadWidth:100, sidewalkWidth:17},

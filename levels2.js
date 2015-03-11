@@ -1,4 +1,5 @@
 var rushHourLevel = {
+    levelSize: [],
     roadDefs: [
 	{xStart:400,yStart:0, xFinish:400, yFinish:250, roadWidth:100, sidewalkWidth:17},
 	{xStart:400,yStart:350, xFinish:400, yFinish:600, roadWidth:100, sidewalkWidth:17},
@@ -209,4 +210,42 @@ var rushHourLevel = {
     ],
 };
 
-allLevels = {'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel, 'rushhour':rushHourLevel}
+
+
+var busyIntersectionsLevel = {
+    levelSize: [1000,800],
+    roadDefs: [
+	{xStart:0,yStart:300, xFinish:250, yFinish:300, roadWidth:130, sidewalkWidth:17},
+    ],
+    bikeCoords: [438, 550],
+    intersectionDefs: {1:
+		       [
+			   [350,250],
+			   [350,350],
+			   [450,350],
+			   [450,250],
+			   [350,250],
+		       ]
+		      },
+    stopSigns: [
+    ],
+    trafficLights: [
+	{coords: [460,360], rotation: 0, intersection: 1, grouping: 2,
+	greenVal:0, yellowVal:1200, redVal:1500},
+	{coords: [340,240], rotation: 180, intersection: 1, grouping: 2,
+	greenVal:0, yellowVal:1200, redVal:1500},
+	{coords: [460,240], rotation: 270, intersection: 1, grouping: 1,
+	greenVal:1500, yellowVal:2700, redVal:0},
+	{coords: [340,360], rotation: 90, intersection: 1, grouping: 1,
+	greenVal:1500, yellowVal:2700, redVal:0},
+    ],
+    carDefs: [
+	
+    ],
+    parkedCars: [
+
+    ],
+};
+
+
+allLevels = {'busyintersections':busyIntersectionsLevel, 'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel, 'rushhour':rushHourLevel}

@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:false, level: rushHourLevel, stop:false};
+var globalOptions = {debugMode:true, level: busyIntersectionsLevel, stop:false};
 
 function start(renderer, stage) {
     globalOptions.stop = true;
@@ -6,7 +6,7 @@ function start(renderer, stage) {
 
     if (!renderer) {
 	addLevelChoices();
-	var renderer = PIXI.autoDetectRenderer(800, 600, {view:document.getElementById("game-canvas"), antialiasing:true});
+	var renderer = PIXI.autoDetectRenderer(globalOptions.level.levelSize[0] || 800, globalOptions.level.levelSize[1] || 600, {view:document.getElementById("game-canvas"), antialiasing:true});
 	var stage = new PIXI.Stage(0x3D3D5C); 
 	stage.interactive = true;
 	stage.click = function(mouseData) {
@@ -31,6 +31,9 @@ function reset(renderer, stage) {
 	consoleLog("click at " + mouseData.global.x + ", " + mouseData.global.y);
     }
     setupOptions(renderer, stage);
+    renderer.resize(globalOptions.level.levelSize[0] || 800,globalOptions.level.levelSize[1] || 600);
+    //renderer.view.style.width = globalOptions.level.levelSize[0] || 800 + 'px';
+    //renderer.view.style.height = globalOptions.level.levelSize[1] || 600 + 'px';
     init(renderer, stage);
     return stage
 }
