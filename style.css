@@ -9,3 +9,11 @@ body {
 .floatleft {
     float:left;
 }
+
+#whitehr {
+    color:#fff;
+    background-color:#fff;
+}
+#controls {
+    margin-left: 5px;
+}

@@ -7,7 +7,7 @@ function Bike(sprite) {
 Bike.prototype.prepareFinalStats = function() {
     timeFinished = new Date();
     totalTime = (timeFinished-this.stats.levelTimeStarted)/1000;
-    $("#stats").html('<span class="inputtext">Level complete! Stats:<br/>Number of Collisions: ' + this.stats.numHit + '<br/>Number of honks: ' + this.stats.numHonked + '<br/>Total time: ' + totalTime + ' seconds</span>')
+    $("#laststats").html('<span class="inputtext">Level complete! Stats:<br/>Number of Collisions: ' + this.stats.numHit + '<br/>Number of honks: ' + this.stats.numHonked + '<br/>Total time: ' + totalTime + ' seconds</span>')
 }
 
 Bike.prototype.writeStats = function(msg) {
