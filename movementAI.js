@@ -569,10 +569,18 @@ MovementAI.prototype.preparePaths = function() {
 	    if (angleDiff > 5) {
 		info.needsTurn = true;
 		info.turnIncrement = 1.6;//4 / (this.obj.def.speed + 1);
-		if ((angleList[idx+1] < angle) || counterclockwise) {
-		    info.turnIncrement = -1*info.turnIncrement;
+		var neg1 = 1;
+		var neg2 = 1;
+		if (counterclockwise) {
+		    neg1 = -1;
+		}
+		if (angleList[idx+1] < angle) {
+		    neg2 = -1;
+		}
+		info.turnIncrement = neg1*neg2*info.turnIncrement;
+		if (info.turnIncrement < 0) {
 		    info.leftTurn = true;
-		} // possible counterclockwise should just negate whatevers above?
+		}
 		info.numIncrements = Math.abs(angleDiff / info.turnIncrement);
 		info.nextAngle = angleList[idx+1];
 	    }
@@ -626,24 +634,3 @@ MovementAI.prototype.prepareDoors = function(sharedCarState, intersectTrigX, int
 	sharedCarState.doors[this.obj.carId] = this.obj.doors;
     }, this);
 }
-
-/*
-MovementAI.prototype.checkWaitingForLeft = function(sharedCarState) {
-    console.log("car " + this.obj.carId + " starting a left");
-    console.log(_.keys(sharedCarState.carsInIntersection).length);
-    var found = false;
-    if ((_.keys(sharedCarState.carsInIntersection).length) > 1){
-	_.each(sharedCarState.carsInIntersection, function(v, k) {
-	    if (found) {
-		return
-	    }
-	    var thatcar = sharedCarState.cars[k];
-	    console.log(thatcar.movementAI.curSpeed);
-	    if ((thatcar.movementAI.curSpeed > .7) && (this.obj.carId != thatcar.carId)) {
-		found = true;
-	    }
-	}, this);
-    }
-    return found
-}
-*/

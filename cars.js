@@ -23,7 +23,7 @@ function Car(sprite, lights, doors, def, stopSignLines, carId) {
 }
 
 Car.prototype.isInScene = function() {
-    if (this.sprite.position.y > 0 && this.sprite.position.y < globalOptions.level.levelSize[1] || 600 && this.sprite.position.x > 0 && this.sprite.position.x < globalOptions.level.levelSize[0] || 800) {
+    if (this.sprite.position.y > 0 && this.sprite.position.y < (globalOptions.level.levelSize[1] || 600) && this.sprite.position.x > 0 && this.sprite.position.x < (globalOptions.level.levelSize[0] || 800)) {
 	return true
     }
     return false

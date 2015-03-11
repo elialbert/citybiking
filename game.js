@@ -32,8 +32,6 @@ function reset(renderer, stage) {
     }
     setupOptions(renderer, stage);
     renderer.resize(globalOptions.level.levelSize[0] || 800,globalOptions.level.levelSize[1] || 600);
-    //renderer.view.style.width = globalOptions.level.levelSize[0] || 800 + 'px';
-    //renderer.view.style.height = globalOptions.level.levelSize[1] || 600 + 'px';
     init(renderer, stage);
     return stage
 }

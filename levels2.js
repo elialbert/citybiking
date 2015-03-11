@@ -213,37 +213,300 @@ var rushHourLevel = {
 
 
 var busyIntersectionsLevel = {
-    levelSize: [1000,800],
+    levelSize: [1200,800],
     roadDefs: [
-	{xStart:0,yStart:300, xFinish:250, yFinish:300, roadWidth:130, sidewalkWidth:17},
+	// intersection 1
+	{xStart:0,yStart:400, xFinish:250, yFinish:400, roadWidth:130, sidewalkWidth:17},
+	{xStart:315,yStart:0, xFinish:315, yFinish:335, roadWidth:130, sidewalkWidth:17},
+	{xStart:315,yStart:465, xFinish:315, yFinish:800, roadWidth:130, sidewalkWidth:17},
+	{xStart:380,yStart:400, xFinish:700, yFinish:400, roadWidth:130, sidewalkWidth:17},
+	// intersection 2
+	{xStart:765,yStart:0, xFinish:765, yFinish:335, roadWidth:130, sidewalkWidth:17},
+	{xStart:765,yStart:465, xFinish:765, yFinish:800, roadWidth:130, sidewalkWidth:17},
+	{xStart:830,yStart:400, xFinish:1200, yFinish:400, roadWidth:130, sidewalkWidth:17},
+
     ],
-    bikeCoords: [438, 550],
-    intersectionDefs: {1:
-		       [
-			   [350,250],
-			   [350,350],
-			   [450,350],
-			   [450,250],
-			   [350,250],
-		       ]
-		      },
+    bikeCoords: [821, 782],
+    intersectionDefs: 
+    {
+	1:
+	[
+	    [248,333],
+	    [248,470],
+	    [384,470],
+	    [384,333],
+	    [248,333],
+	]
+	,
+	2:
+	[
+	    [698,333],
+	    [698,470],
+	    [834,470],
+	    [834,333],
+	    [698,333],
+	]
+    },
     stopSigns: [
+	{coords: [841,477], rotation: 0, intersection: 2},
+	{coords: [691,326], rotation: 180, intersection: 2},
+	{coords: [841,326], rotation: 270, intersection: 2},
+	{coords: [691,477], rotation: 90, intersection: 2},
+
     ],
     trafficLights: [
-	{coords: [460,360], rotation: 0, intersection: 1, grouping: 2,
+	{coords: [391,477], rotation: 0, intersection: 1, grouping: 2,
 	greenVal:0, yellowVal:1200, redVal:1500},
-	{coords: [340,240], rotation: 180, intersection: 1, grouping: 2,
+	{coords: [241,326], rotation: 180, intersection: 1, grouping: 2,
 	greenVal:0, yellowVal:1200, redVal:1500},
-	{coords: [460,240], rotation: 270, intersection: 1, grouping: 1,
+	{coords: [391,326], rotation: 270, intersection: 1, grouping: 1,
 	greenVal:1500, yellowVal:2700, redVal:0},
-	{coords: [340,360], rotation: 90, intersection: 1, grouping: 1,
+	{coords: [241,477], rotation: 90, intersection: 1, grouping: 1,
 	greenVal:1500, yellowVal:2700, redVal:0},
+
     ],
     carDefs: [
+
+	{coordPath: [
+	    [-5,427],	 
+	    [1205, 427],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 3,
+	},
+
+	{coordPath: [
+	    [-10,451],	 
+	    [285, 451], 
+	    [285, 805],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	},
+
+	{coordPath: [
+	    [285,-5],	 
+	    [285, 805],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 3,
+	},	
+	{coordPath: [
+	    [285,-35],	 
+	    [285, 805],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 2,
+	},	
+	{coordPath: [
+	    [300,-65],	 
+	    [300, 420],
+	    [786, 420],
+	    [786, -5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 2,
+	},	
+	
+	{coordPath: [
+	    [354,805],	 
+	    [354, 450],
+	    [736, 450],
+	    [736, 805], 
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 2,
+	},	
 	
     ],
     parkedCars: [
+	// right intersection right side
+	{
+	    coords: [821,714],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,690],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,666],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,642],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,618],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,594],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,257],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,233],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,209],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,185],
+	    rotation: 180,
+	},
+	{
+	    coords: [821,161],
+	    rotation: 180,
+	},
+	// left side
+	{
+	    coords: [710,714],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,690],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,666],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,642],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,618],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,594],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,257],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,233],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,209],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,185],
+	    rotation: 180,
+	},
+	{
+	    coords: [710,161],
+	    rotation: 180,
+	},
 
+	// left intersection right side
+	{
+	    coords: [371,714],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,690],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,666],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,642],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,618],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,594],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,257],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,233],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,209],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,185],
+	    rotation: 180,
+	},
+	{
+	    coords: [371,161],
+	    rotation: 180,
+	},
+	// left side
+	{
+	    coords: [260,714],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,690],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,666],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,642],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,618],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,594],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,257],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,233],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,209],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,185],
+	    rotation: 180,
+	},
+	{
+	    coords: [260,161],
+	    rotation: 180,
+	},
     ],
 };
 

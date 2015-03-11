@@ -247,7 +247,7 @@ function buildLevel(stage, level) {
 	var polygonPoints = [];
 	var width = parkedCar.width || 8;
 	var height = parkedCar.height || 16;
-	var color = parkedCar.color;
+	var color = parkedCar.color || 'random';
 	if (color == 'random') {
 	    color = parseInt(getRandomColor(),16);
 	}
