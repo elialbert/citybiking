@@ -41,7 +41,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	angleInfo = this.angleInfos[this.obj.coordPathIndex - 1];
     }
     // sets up bbpolys
-    this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY);
+    this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY, !angleInfo.leftTurn);
     // sets up this.obj.lookaheadState - uses previous this.obj.angleState to know which bbpoly to use
     speedTarget = this.checkObstacles(sharedCarState, angleInfo) || speedTarget;
     // sets up this.obj.angleState 
@@ -216,8 +216,13 @@ MovementAI.prototype.checkObstacles = function(sharedCarState, angleInfo) {
     }
 }
 
-MovementAI.prototype.storeProjectedMovementLine = function(sharedCarState, angle, trigX, trigY) {
-    var forwardDistanceNormal = this._getLookaheadSpeed(sharedCarState, this.curSpeed)*40
+MovementAI.prototype.storeProjectedMovementLine = function(sharedCarState, angle, trigX, trigY, rightTurn) {
+    if ((this.obj.angleState == 'turning') && rightTurn) {
+	var forwardDistanceNormal = this._getLookaheadSpeed(sharedCarState, this.curSpeed)*25
+    }
+    else {
+	var forwardDistanceNormal = this._getLookaheadSpeed(sharedCarState, this.curSpeed)*40
+    }
     var forwardDistanceLong = this._getLookaheadSpeed(sharedCarState, this.curSpeed)*80
     this.lookaheadBBPoly = this.calculateLookahead(forwardDistanceNormal, 1.1, angle, trigX, trigY, true);
     this.longBBPoly = this.calculateLookahead(forwardDistanceLong, 2.5, angle, trigX, trigY, false);

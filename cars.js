@@ -148,13 +148,11 @@ function doCarRestart(car, sharedCarState) {
 	    return
 	}
 	if (checkCollision2(car.bbPoly, carObj.bbPoly)) {
-	    console.log("found restart collision: " + car.carId + "/" + carObj.carId);
 	    car.animateSprites({changeX:getRandomInt(-500000,-500), changeY: getRandomInt(-500000,-500), rotation:0}, true)
 	    collisionResult = [false, false]
 	}
     });
-    if (collisionResult) {
-	console.log("skipping newcar, waiting till clear");
+    if (collisionResult) { // dont add car back until next tick, then check bb again
 	return collisionResult;
     }
 
