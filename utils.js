@@ -109,3 +109,7 @@ function consoleLog(msg) {
 function getRandomColor() {
     return Math.random().toString(16).substr(-6);
 }
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}

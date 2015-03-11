@@ -120,7 +120,7 @@ function runCars(cars, sharedCarState) {
     found = false
     _.each(cars, function(car, idx) {
 	car.run(sharedCarState);
-	res = doCarRestart(car)
+	res = doCarRestart(car, sharedCarState)
 	if (res[0]) {
 	    found = [idx, res[1]]
 	    return
@@ -129,11 +129,26 @@ function runCars(cars, sharedCarState) {
     return found
 }
 
-function doCarRestart(car) {
+function doCarRestart(car, sharedCarState) {
     if (car.restartTimer > 0) {
 	return [false, false]
     };
     car.animateSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
+    var collisionResult = false;
+    _.each(sharedCarState.cars, function(carObj, carId) {
+	if (collisionResult || (carObj.carId === car.carId)) {
+	    return
+	}
+	if (checkCollision2(car.bbPoly, carObj.bbPoly)) {
+	    console.log("found restart collision: " + car.carId + "/" + carObj.carId);
+	    car.animateSprites({changeX:getRandomInt(-500000,-500), changeY: getRandomInt(-500000,-500), rotation:0}, true)
+	    collisionResult = [false, false]
+	}
+    });
+    //if (collisionResult) {
+//	return collisionResult;
+  //  }
+
     var newcar = car.getNewCar();
     return [true, newcar]
 }

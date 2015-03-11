@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:true, level: busyIntersectionsLevel, stop:false};
+var globalOptions = {debugMode:true, level: busyIntersectionsLevel, stop:false, betweenLevelsTimer: 1000};
 
 function start(renderer, stage) {
     globalOptions.stop = true;
@@ -26,14 +26,36 @@ function reset(renderer, stage) {
     stage.removeStageReference();
     delete stage;
     var stage = new PIXI.Stage(0x3D3D5C); 
-    stage.interactive = true;
-    stage.click = function(mouseData) {
-	consoleLog("click at " + mouseData.global.x + ", " + mouseData.global.y);
-    }
-    setupOptions(renderer, stage);
-    renderer.resize(globalOptions.level.levelSize[0] || 800,globalOptions.level.levelSize[1] || 600);
-    init(renderer, stage);
-    return stage
+    var text = new PIXI.Text("Get Ready...", {font:"60px Arial", fill: "white", align:"center", strokeThickness: 2, stroke: "white", });
+    text.anchor.x=.5;
+    text.anchor.y=.5;
+    texture = text.generateTexture();
+    var textSprite = new PIXI.Sprite(texture);
+    textSprite.position.x = 300;
+    textSprite.position.y = 300;
+    stage.addChild(textSprite);
+    var fakeCounter = 0;
+    requestAnimFrame(fakeAnimate);
+    setTimeout(function() {
+	stage.removeChild(textSprite);
+	stage.interactive = true;
+	stage.click = function(mouseData) {
+	    consoleLog("click at " + mouseData.global.x + ", " + mouseData.global.y);
+	}
+	globalOptions.betweenLevelsTimer = 1000;
+	setupOptions(renderer, stage);
+	renderer.resize(globalOptions.level.levelSize[0] || 800,globalOptions.level.levelSize[1] || 600);
+	init(renderer, stage);
+	return stage
+    }, globalOptions.betweenLevelsTimer);
+    function fakeAnimate() {
+	if (fakeCounter > 10) {
+	    return
+	}
+	requestAnimFrame(fakeAnimate);
+	renderer.render(stage);
+	fakeCounter += 1;
+    } 
 }
 
 function init(renderer, stage) {
@@ -80,6 +102,11 @@ function init(renderer, stage) {
 	bikeSprite.position.x += posChange.changeX;
 	bikeSprite.position.y += posChange.changeY;
 	bikeSprite.rotation = toRadians(posChange.direction - 270);
+	if (!bikeObj.isInScene()) {
+	    bikeObj.prepareFinalStats();
+	    globalOptions.stop = true;
+	    globalOptions.betweenLevelsTimer = 3000;
+	}
 	checkCollisions(bikeObj, staticCollisionObjects, posChange);
 	checkDoorCollisions(bikeObj, sharedCarState.doors, posChange);
 	checkBikeCollisions(bikeObj, dynamicCollisionObjects, posChange);

@@ -214,7 +214,7 @@ var rushHourLevel = {
 
 var busyIntersectionsLevel = {
     levelSize: [1200,800],
-    roadWidth: 130,
+    roadWidth: 142,
     roadDefs: [
 	// intersection 1
 	{xStart:0,yStart:400, xFinish:250, yFinish:400, roadWidth:130, sidewalkWidth:17},

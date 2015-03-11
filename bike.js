@@ -4,6 +4,11 @@ function Bike(sprite) {
     this.collisionResetCounter = 0;
 }
 
+Bike.prototype.prepareFinalStats = function() {
+    timeFinished = new Date();
+    totalTime = (timeFinished-this.stats.levelTimeStarted)/1000;
+    $("#stats").html('<span class="inputtext">Level complete! Stats:<br/>Number of Collisions: ' + this.stats.numHit + '<br/>Number of honks: ' + this.stats.numHonked + '<br/>Total time: ' + totalTime + ' seconds</span>')
+}
 
 Bike.prototype.writeStats = function(msg) {
     $("#stats").html('<span class="inputtext">' + msg + '</span><br/>');
@@ -52,3 +57,10 @@ Bike.prototype.doCollisionResetCounter = function() {
     }
 
 }
+
+Bike.prototype.isInScene = function() {
+    if (this.sprite.position.y > 0 && this.sprite.position.y < (globalOptions.level.levelSize[1] || 600) && this.sprite.position.x > 0 && this.sprite.position.x < (globalOptions.level.levelSize[0] || 800)) {
+	return true
+    }
+    return false
+};
