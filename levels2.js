@@ -267,6 +267,7 @@ var busyIntersectionsLevel = {
 
     ],
     carDefs: [
+	/*
 	{coordPath: [
 	    [-5,427],	 
 	    [1205, 427],
@@ -412,6 +413,21 @@ var busyIntersectionsLevel = {
 	 speed: 1,
 	 height: 28,
 	 width: 12,
+	},	*/
+	{coordPath: [
+	    [346,835],	 
+	    [346,438],	 
+	    [520,438],	 
+	    [549, 444, 'pause', 200],
+	    [600,444],	 
+	    [1205,438],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2, 
+	 speed: 1.2,
+	 height: 28,
+	 width: 12,
+	 fillColor: 0xE6E600,
 	},	
 
     ],

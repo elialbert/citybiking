@@ -11,6 +11,7 @@ function Car(sprite, lights, doors, def, stopSignLines, carId) {
     this.state = 'new';
     this.angleState = 'new';
     this.lookaheadState = 'moving';
+    this.extraState = 'normal';
     this.lastState = 'new';
     this.def = def;
     this.hit = false;
