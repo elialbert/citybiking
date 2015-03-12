@@ -125,7 +125,7 @@ Car.prototype.getNewCar = function() {
 }
 
 function runCars(cars, sharedCarState) {
-    found = false
+    var found = false
     _.each(cars, function(car, idx) {
 	car.run(sharedCarState);
 	res = doCarRestart(car, sharedCarState)
