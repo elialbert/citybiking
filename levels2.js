@@ -51,8 +51,7 @@ var rushHourLevel = {
 	 sceneIncrementRestart: 2,
 	 speed: 1.3,
 	 height: 16,
-	},
-	
+	},	
 	{coordPath: [
 	    [380,-20],
 	    [380, 100, 'pause',50],
@@ -287,8 +286,8 @@ var busyIntersectionsLevel = {
 	},
 	{coordPath: [
 	    [-95,451],	 
-	    [736, 451],
-	    [736, 805],
+	    [719, 450],
+	    [719, 805],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
@@ -699,8 +698,8 @@ var trafficJamLevel = {
 	},
 	{coordPath: [
 	    [-95,451],	 
-	    [736, 451],
-	    [736, 805],
+	    [719, 450],
+	    [719, 805],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
