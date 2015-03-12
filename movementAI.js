@@ -44,7 +44,6 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY, !angleInfo.leftTurn);
     // sets up this.obj.lookaheadState - uses previous this.obj.angleState to know which bbpoly to use
     speedTarget = this.checkObstacles(sharedCarState, angleInfo) || speedTarget;
-    console.log("found speedtarget " + speedTarget);
     // sets up this.obj.angleState 
     angleResult = this.calcAngle(sharedCarState, speedTarget);
     speedTarget = angleResult.speedTarget;
@@ -297,9 +296,6 @@ MovementAI.prototype.calculateLookahead = function(forwardDistance, extraWidth, 
 // check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
 // for non intersection waiting, return false for intersectionId
 MovementAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
-    if (this.obj.carId === 1){
-	console.log("curspeed is " + this.curSpeed);
-    }
     var foundIntersectionId = false;
     // basically draw a projected movement line forward, and ask for the movement line from other objs
     // compare if the lines cross or not
