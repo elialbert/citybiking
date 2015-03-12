@@ -88,10 +88,10 @@ function checkBikeCollisions(bikeObj, collisionObjects, posChange) {
 	return 
     }
     _.each(collisionObjects, function(obj) {
-	if ((obj.movementAI.bbPoly === undefined)) {
+	if ((obj.movementAI.lookaheadAI.bbPoly === undefined)) {
 	    return 
 	}
-	if (checkCollision2(bikeSprite.bbPoly, obj.movementAI.bbPoly)) {
+	if (checkCollision2(bikeSprite.bbPoly, obj.movementAI.lookaheadAI.bbPoly)) {
 	    posChange.speed = posChange.speed / 1.9;
 	    obj.hit = true;	    
 	    bikeObj.hitSomething("car");

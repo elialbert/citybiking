@@ -43,10 +43,10 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     //if (this.obj.carId === 1) {
     //	console.log("car 1 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
     //  }
-    return this.doMovement(deltaSpeed, angle, trigX, trigY);
+    return this.doMovement(deltaSpeed, angleResult, trigX, trigY);
 }
 
-MovementAI.prototype.doMovement = function(deltaSpeed, angle, trigX, trigY) {
+MovementAI.prototype.doMovement = function(deltaSpeed, angleResult, trigX, trigY) {
     this.curSpeed += deltaSpeed
     if (this.curSpeed<0) {
 	this.curSpeed = 0.00001;

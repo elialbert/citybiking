@@ -26,7 +26,12 @@ PathingAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
 	this.lastAngle = angle;
     }
     else {
-	this.obj.angleState = this.checkDestination(angleInfo);
+	var result = this.checkDestination(angleInfo);
+	this.obj.angleState = result.state;
+	if (result.found) {
+	    angleInfo = this.angleInfos[this.obj.coordPathIndex];
+	}
+	angle = angleInfo.angle;
     }
     if (this.obj.angleState == 'turning') {
 	if (this.movementAI.curSpeed < 1) {
@@ -47,13 +52,10 @@ PathingAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
 		if (angleInfo.leftTurn) {
 		    angleChange=0;
 		}
-		//else {
-		//    angleChange = .005;
-		//}
 	    }
 	    else {
 		if (angleInfo.leftTurn) {
-		    angleChange = angleChange/6;// / 1.5;
+		    angleChange = angleChange/6;
 		}
 	    }
 	}
@@ -92,9 +94,9 @@ PathingAI.prototype.checkDestination = function(angleInfo) {
 	    this.lastDiff = diff;
 	    if ((Math.abs(this.lastAngle - angleInfo.nextAngle)%360) < 2) {
 		this.nextPathCoord(true);
-		return 'moving'
+		return {found:true, state:'moving'}
 	    }
-	    return 'turning'
+	    return {found:false, state:'turning'}
 	}	
 	else if ((diff > this.lastDiff) && (diff < this.obj.def.speed*4)) {
 	    this.nextPathCoord(false)
@@ -103,7 +105,7 @@ PathingAI.prototype.checkDestination = function(angleInfo) {
 	    this.lastDiff = diff;
 	}
     }
-    return 'moving'
+    return {found:false, state:'moving'}
 }
 
 PathingAI.prototype.nextPathCoord = function(turnMode) {
@@ -117,9 +119,9 @@ PathingAI.prototype.nextPathCoord = function(turnMode) {
     }
     else {
 	var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
-	this.redoPath(this.obj.coordPathIndex, 
-		      [this.obj.sprite.position.x,this.obj.sprite.position.y], 
-		      nextCoords);
+	return this.redoPath(this.obj.coordPathIndex, 
+				     [this.obj.sprite.position.x,this.obj.sprite.position.y], 
+				     nextCoords);
     }
 
 }
@@ -130,6 +132,7 @@ PathingAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
     var angle = this.doPath(curCoords, nextCoords);
     //consoleLog("new angle for idx " + idx + " is " + angle);
     this.angleInfos[idx].angle = angle; 
+    return angle;
 }
 
 PathingAI.prototype.preparePaths = function() {
