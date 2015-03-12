@@ -42,12 +42,11 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     this.lookaheadAI.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY, !angleInfo.leftTurn);
     // sets up this.obj.lookaheadState - uses previous this.obj.angleState to know which bbpoly to use
     speedTarget = this.lookaheadAI.checkObstacles(sharedCarState, angleInfo) || speedTarget;
-    console.log("found speedtarget " + speedTarget);
     // sets up this.obj.angleState 
     angleResult = this.calcAngle(sharedCarState, speedTarget);
     speedTarget = angleResult.speedTarget;
     angle = angleResult.angle;
-
+    console.log("found speedtarget " + speedTarget + " and state " + this.obj.lookaheadState);
     if (this.obj.lookaheadState == 'slowing') {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
 	this.slowingCounter += 1;
@@ -68,7 +67,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     }
 
     //if (this.obj.carId === 10) {
-	//consoleLog("car 10 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
+	console.log("car 10 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
     //}
 
     this.curSpeed += deltaSpeed
