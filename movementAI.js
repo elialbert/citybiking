@@ -613,9 +613,7 @@ MovementAI.prototype.doPath = function(coords, next) {
     if (next != null) {
 	var deltaX = next[0]-coords[0];
 	var deltaY = next[1]-coords[1];
-	//consoleLog("deltax is " + deltaX + ", deltaY is " + deltaY);
 	var angle = (toDegrees(Math.atan2(deltaY, deltaX))-360) % 360;
-	//consoleLog("found angle " + angle);
 	return angle;
     }
 }
