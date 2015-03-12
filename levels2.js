@@ -1150,15 +1150,146 @@ var straightRoadLevel = {
 	    [300, 440], 
 	    [360, 416], 
 	    [660, 416], 
-	    [1205, 416],
+	    [1205, 420],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2.8,
 	 height: 20,
 	},
+	// right to left
+	{coordPath: [
+	    [1205,387],	 
+	    [-5, 387],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 3,
+	},
+	{coordPath: [
+	    [1265,387],	 
+	    [-5, 387],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.3,
+	},
+	{coordPath: [
+	    [1385,387],	 
+	    [-5, 387],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 1.5,
+	 height: 30,
+	 width: 12,
+	},
+	{coordPath: [
+	    [1205,359],	 
+	    [-5, 359],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 1.9,
+	},
+	{coordPath: [
+	    [1235,359],	 
+	    [-5, 359],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.9,
+	},
+	{coordPath: [
+	    [1285,359],	 
+	    [-5, 359],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.3,
+	 width: 12,
+	 height: 20,
+	},
+	{coordPath: [
+	    [1400, 359],
+	    [1100, 359],
+	    [852,339,'pause',1000],	 
+	    [830, 339],
+	    [800, 359],
+	    [508, 359],
+	    [408, 339],
+	    [400, 339, 'pause',2000],
+	    [380, 339],
+	    [200, 359],
+	    [-5, 359],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.3,
+	},
+	// reparker
+
 	
-	
+    ],
+    parkedCars: [
+	{
+	    coords: [405,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [430,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [455,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [480,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [505,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [805,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [830,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [855,462],
+	    rotation: 90,
+	},
+	{
+	    coords: [880,462],
+	    rotation: 90,
+	},
+	// top side
+	{
+	    coords: [700,339],
+	    rotation: 90,
+	},
+	{
+	    coords: [675,339],
+	    rotation: 90,
+	},
+	{
+	    coords: [650,339],
+	    rotation: 90,
+	},
+	{
+	    coords: [625,339],
+	    rotation: 90,
+	},
+	{
+	    coords: [600,339],
+	    rotation: 90,
+	},
+
     ],
 };
 
