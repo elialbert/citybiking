@@ -46,7 +46,9 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     angleResult = this.calcAngle(sharedCarState, speedTarget);
     speedTarget = angleResult.speedTarget;
     angle = angleResult.angle;
-    console.log("found speedtarget " + speedTarget + " and state " + this.obj.lookaheadState);
+    if (this.obj.carId===1) {
+	console.log("found speedtarget " + speedTarget + " and state " + this.obj.lookaheadState);
+    }
     if (this.obj.lookaheadState == 'slowing') {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
 	this.slowingCounter += 1;
@@ -66,9 +68,9 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	deltaSpeed = (speedTarget - this.curSpeed) / 6;
     }
 
-    //if (this.obj.carId === 10) {
-	console.log("car 10 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
-    //}
+    if (this.obj.carId === 1) {
+	console.log("car 1 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
+    }
 
     this.curSpeed += deltaSpeed
     if (this.curSpeed<0) {

@@ -102,6 +102,10 @@ LookaheadAI.prototype.calculateLookahead = function(forwardDistance, extraWidth,
 // check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
 // for non intersection waiting, return false for intersectionId
 LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
+    if (this.obj.carId === 1){
+	console.log("curspeed is " + this.curSpeed);
+    }
+
     var foundIntersectionId = false;
     // basically draw a projected movement line forward, and ask for the movement line from other objs
     // compare if the lines cross or not
