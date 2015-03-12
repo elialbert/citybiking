@@ -102,10 +102,6 @@ LookaheadAI.prototype.calculateLookahead = function(forwardDistance, extraWidth,
 // check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
 // for non intersection waiting, return false for intersectionId
 LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
-    if (this.obj.carId === 1){
-	console.log("curspeed is " + this.movementAI.curSpeed);
-    }
-
     var foundIntersectionId = false;
     // basically draw a projected movement line forward, and ask for the movement line from other objs
     // compare if the lines cross or not
@@ -136,7 +132,7 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 	if (found) {
 	    return
 	}
-	if ((this.obj.carId != carObj.carId) && carObj.movementAI.bbPoly) {	  	    
+	if ((this.obj.carId != carObj.carId) && carObj.movementAI.lookaheadAI.bbPoly) {	  	    
 	    var collisionLookahead = false;
 	    if ((carObj.movementAI.curSpeed >= .3) && (this.obj.angleState == 'turning')) {
 		var turningBBPoly = this.longBBPoly;
@@ -149,31 +145,31 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 			turningBBPoly = this.longAndWideBBPoly;
 		    }
 		}
-		var collisionLookahead = checkCollision2(turningBBPoly, carObj.movementAI.lookaheadBBPoly);
+		var collisionLookahead = checkCollision2(turningBBPoly, carObj.movementAI.lookaheadAI.lookaheadBBPoly);
 		if (collisionLookahead) {
-		    if (this.obj.carId === 90) {
+		    if (this.obj.carId === 100) {
 			consoleLog("car " + this.obj.carId + " collision lookahead with car " + carObj.carId);
 		    }
 		}
 	    }
-	    var collisionNormal = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.bbPoly);
+	    var collisionNormal = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadAI.bbPoly);
 	    if (collisionNormal) {
-		    if ((this.obj.carId === 100) && (carObj.carId===9)) {
+		    if ((this.obj.carId === 100)) {
 		consoleLog("car " + this.obj.carId + " collision normal with car " + carObj.carId);
 			}
 	    }
 
-	    var collisionExtra = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadBBPoly);
+	    var collisionExtra = checkCollision2(this.lookaheadBBPoly, carObj.movementAI.lookaheadAI.lookaheadBBPoly);
 	    if (collisionExtra) {
-		    if (this.obj.carId === 90) {
+		    if (this.obj.carId === 100) {
 			consoleLog("car " + this.obj.carId + " collision extra with car " + carObj.carId);
 		    }
 	    }
 
-	    var collisionCrash = checkCollision2(this.bbPoly, carObj.movementAI.bbPoly);
+	    var collisionCrash = checkCollision2(this.bbPoly, carObj.movementAI.lookaheadAI.bbPoly);
 	    if (collisionCrash) {
 		this.obj.sequentialHitCounter += 1;
-		    if (this.obj.carId === 90) {
+		    if (this.obj.carId === 100) {
 			consoleLog("car " + this.obj.carId + " collision crash with car " + carObj.carId);
 		    }
 	    }
