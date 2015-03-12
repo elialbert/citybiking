@@ -318,7 +318,7 @@ var sixCornersLevel = {
 	{xStart:675,yStart:490, xFinish:1200, yFinish:900, roadWidth:110, sidewalkWidth:17},
 
     ],
-    bikeCoords: [589, 789],
+    bikeCoords: [607, 674],
     bikeRotation: 355,
     intersectionDefs: {	
 	1:
@@ -336,13 +336,32 @@ var sixCornersLevel = {
     ],
     carDefs: [
 	{coordPath: [
-	    [554,835],	 
+	    [554,865],	 
 	    [618,415],
 	    [713,-5],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2.5,
+	},
+	{coordPath: [
+	    [570,895],	 
+	    [618,415],
+	    [713,-5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	},
+	{coordPath: [
+	    [551,830],	 
+	    [585,484],
+	    [530,422],
+	    [-5,540],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 3,
 	},
 	{coordPath: [
 	    [554,805],	 
@@ -352,6 +371,27 @@ var sixCornersLevel = {
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2,
+	},
+	{coordPath: [
+	    [-5,580],	 
+	    [604,445],
+	    [695,-5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	},
+	{coordPath: [
+	    [-25,590],	 
+	    [511,452],
+	    [530,313],
+	    [70,-5],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 1.5,
+	 height: 30,
+	 width: 10,
 	},
 	{coordPath: [
 	    [628,-5],	 
@@ -484,6 +524,17 @@ var sixCornersLevel = {
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2.5,
+	},
+	{coordPath: [
+	    [665,-95],	 
+	    [538,396],
+	    [-5,520],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 1,
+	 height: 24,
+	 width: 12,
 	},
 
     ],
