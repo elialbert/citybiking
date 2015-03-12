@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:false, level: busyIntersectionsLevel, stop:false, betweenLevelsTimer: 1000};
+var globalOptions = {debugMode:true, level: busyIntersectionsLevel, stop:false, betweenLevelsTimer: 1000};
 
 function start(renderer, stage) {
     globalOptions.stop = true;
