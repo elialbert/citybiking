@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:true, level: busyIntersectionsLevel, stop:false, betweenLevelsTimer: 1000};
+var globalOptions = {debugMode:false, level: sixCornersLevel, stop:false, betweenLevelsTimer: 1000};
 
 function start(renderer, stage) {
     globalOptions.stop = true;
@@ -138,6 +138,10 @@ function init(renderer, stage) {
 		    def.state = 'yellow';
 		}
 		else if (counter == def.redVal) {
+		    var tint = 0xFF0000;
+		    def.state = 'red';
+		}
+		else if (def.state === true) {
 		    var tint = 0xFF0000;
 		    def.state = 'red';
 		}

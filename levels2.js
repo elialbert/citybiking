@@ -1094,4 +1094,4 @@ var trafficJamLevel = {
 };
 
 
-allLevels = {'busyintersections':busyIntersectionsLevel, 'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel, 'rushhour':rushHourLevel, 'trafficJam':trafficJamLevel}
+allLevels = {'busyintersections':busyIntersectionsLevel,  'rushhour':rushHourLevel, 'trafficJam':trafficJamLevel, 'sixcorners':sixCornersLevel, 'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel,}
