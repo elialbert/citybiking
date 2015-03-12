@@ -44,6 +44,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     this.storeProjectedMovementLine(sharedCarState, angle, trigX, trigY, !angleInfo.leftTurn);
     // sets up this.obj.lookaheadState - uses previous this.obj.angleState to know which bbpoly to use
     speedTarget = this.checkObstacles(sharedCarState, angleInfo) || speedTarget;
+    console.log("found speedtarget " + speedTarget);
     // sets up this.obj.angleState 
     angleResult = this.calcAngle(sharedCarState, speedTarget);
     speedTarget = angleResult.speedTarget;
