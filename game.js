@@ -231,5 +231,5 @@ function addLevelChoices() {
 	choices += '<input class="optioninput" type="radio" name="levelchoice" value="' + name + '"><span class="inputtext">' + name + '</span><br/>';
     });
     choiceDiv.html(choices);
-    $("input:radio[name=levelchoice]").filter('[value=busyintersections]').prop('checked',true);
+    $("input:radio[name=levelchoice]").filter('[value=busyIntersections]').prop('checked',true);
 }
