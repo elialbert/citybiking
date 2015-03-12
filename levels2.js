@@ -1201,13 +1201,13 @@ var straightRoadLevel = {
 	 speed: 2.9,
 	},
 	{coordPath: [
-	    [1285,359],	 
-	    [-5, 359],
+	    [1285,361],	 
+	    [-5, 361],
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2.3,
-	 width: 12,
+	 width: 9,
 	 height: 20,
 	},
 	{coordPath: [
