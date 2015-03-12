@@ -8,7 +8,19 @@ function moveBike(direction, speed, input) {
 	speed -= .05;
     }
     if (input.up) {
-	speed += Math.pow(.03,2)*22; // meh
+	if (speed < .1) {
+	    speed = .106;
+	}
+	else if (speed < .6) {
+	    var ds = (1-Math.pow(1.06,(-1*speed)));
+	    //console.log("ds: " + ds);
+	    speed += ds
+	}
+	else {
+	    speed += Math.pow(.03,2)*15; // meh
+	}
+
+	
     }
     if (input.left) {
 	if (speed >= 1) {
