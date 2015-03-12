@@ -96,16 +96,28 @@ LookaheadAI.prototype.calculateLookahead = function(forwardDistance, extraWidth,
 	[upperRightX, upperRightY],
 	[upperLeftX, upperLeftY]
     ]);
-
 }
 
-// check, in this order: cars, bike, stopsigns (soon: stoplights, peds)
+// check, in this order: cars, bike, stopsigns, stoplights (soon: peds, bikes)
 // for non intersection waiting, return false for intersectionId
 LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
-    var foundIntersectionId = false;
     // basically draw a projected movement line forward, and ask for the movement line from other objs
     // compare if the lines cross or not
     // return if conflict found, what type of conflict, and any additional info (like intersectionId)
+    var foundIntersectionId = this.prepareIntersections(sharedCarState);
+    var carOnCarResult = this.carOnCarLookahead(sharedCarState, angleInfo, foundIntersectionId);
+    if (carOnCarResult.found !== false) {
+	return carOnCarResult
+    }
+    var bikeLookahead = this.bikeLookahead(sharedCarState, foundIntersectionId);
+    if (bikeLookahead.found) {
+	return bikeLookahead
+    }
+    return this.otherLookahead(sharedCarState, foundIntersectionId);
+}
+
+LookaheadAI.prototype.prepareIntersections = function(sharedCarState) {
+    var foundIntersectionId = false;
     _.each(sharedCarState.intersections, function(intersectionPoly, intersectionId) {
 	intersectionBBPolyCheck = this.bbPoly;
 	if (this.movementAI.curSpeed > 1.6) {
@@ -113,8 +125,7 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 	}
 	else if (this.movementAI.curSpeed > .1) {
 	    intersectionBBPolyCheck = this.lookaheadBBPoly;
-	}
-	
+	}	
 	if (checkInIntersection(intersectionBBPolyCheck, intersectionPoly)) {
 	    foundIntersectionId = intersectionId;
 	    sharedCarState.carsInIntersection[this.obj.carId] = intersectionId;
@@ -123,9 +134,10 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 	    delete sharedCarState.carsInIntersection[this.obj.carId]
 	}
     }, this);
+    return foundIntersectionId
+}
 
-
-
+LookaheadAI.prototype.carOnCarLookahead = function(sharedCarState, angleInfo, foundIntersectionId) {
     var found = false;
     var typeFound = false;
     _.each(sharedCarState.cars, function(carObj, carId) {
@@ -199,13 +211,12 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 	    }
 	}
     }, this);
+    return {found: found, type: typeFound, intersectionId: foundIntersectionId}
+}
 
-    if (found !== false) {
-	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
-    }
-
+LookaheadAI.prototype.bikeLookahead = function(sharedCarState, foundIntersectionId) {
+    var found = false;
     if (checkCollision2(this.lookaheadBBPoly, sharedCarState.theBike.sprite.bbPoly)) {
-	//consoleLog("BIKE HIT!!!");
 	found = -1;
 	typeFound = 'bike';
 	if (this.movementAI.curSpeed > .1) {
@@ -215,13 +226,17 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
     if (checkCollision2(this.bbPoly, sharedCarState.theBike.sprite.bbPoly)) {
-	//consoleLog("BIKE HIT!!!");
 	found = -1;
 	typeFound = 'bike';
 	sharedCarState.theBike.gotHit();
 	return {found: found, intersectionId: foundIntersectionId, type: typeFound}
     }
-        
+    return {found: found, intersectionId: foundIntersectionId, type: false}
+}
+
+LookaheadAI.prototype.otherLookahead = function(sharedCarState, foundIntersectionId) {
+    var found = false;
+    var typeFound = false;
     _.each(this.obj.stopSignLines, function(linedefs, intersectionId) {
 	_.each(linedefs, function(linedef, idx) {
 	    var line = linedef.points;
@@ -263,7 +278,6 @@ LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
 	}
 
     }, this);
-
     return {found: found, intersectionId: foundIntersectionId, type: typeFound}
 }
 

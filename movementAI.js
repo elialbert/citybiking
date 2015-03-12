@@ -39,7 +39,30 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     // sets up this.obj.angleState 
     angleResult = this.pathingAI.calcAngle(sharedCarState, speedTarget);
     speedTarget = angleResult.speedTarget;
-    angle = angleResult.angle;
+    var deltaSpeed = this.calcDeltaSpeed(speedTarget);
+    //if (this.obj.carId === 1) {
+    //	console.log("car 1 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
+    //  }
+    return this.doMovement(deltaSpeed, angle, trigX, trigY);
+}
+
+MovementAI.prototype.doMovement = function(deltaSpeed, angle, trigX, trigY) {
+    this.curSpeed += deltaSpeed
+    if (this.curSpeed<0) {
+	this.curSpeed = 0.00001;
+    }
+    var changeX = trigX * this.curSpeed;
+    var changeY = trigY * this.curSpeed;
+
+    //consoleLog("changex is " + changeX + ", changeY is " + changeY);
+    return {changeX: changeX, 
+	    changeY: changeY, 
+	    rotation: toRadians(angleResult.angle-270), 
+	    lookaheadState: this.obj.lookaheadState,
+	    state: this.obj.state}
+};
+
+MovementAI.prototype.calcDeltaSpeed = function(speedTarget) {
     if (this.obj.lookaheadState == 'slowing') {
 	var deltaSpeed = this.slowingCoefficient*Math.sqrt(this.slowingCounter);
 	this.slowingCounter += 1;
@@ -56,25 +79,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
     else if (this.obj.lookaheadState == 'moving') {
 	this.acceleratingCounter = 0;
 	this.slowingCounter = 0;
-	deltaSpeed = (speedTarget - this.curSpeed) / 6;
+	var deltaSpeed = (speedTarget - this.curSpeed) / 6;
     }
-
-    //if (this.obj.carId === 1) {
-//	console.log("car 1 speedtarget: " + speedTarget + ", lookahead state: " + this.obj.lookaheadState + ", " + "angleState: " + this.obj.angleState + ", deltaSpeed: " + deltaSpeed + ", curspeed: " + this.curSpeed);
-  //  }
-
-    this.curSpeed += deltaSpeed
-    if (this.curSpeed<0) {
-	this.curSpeed = 0.00001;
-    }
-    var changeX = trigX * this.curSpeed;
-    var changeY = trigY * this.curSpeed;
-
-    //consoleLog("changex is " + changeX + ", changeY is " + changeY);
-    return {changeX: changeX, 
-	    changeY: changeY, 
-	    rotation: toRadians(angle-270), 
-	    lookaheadState: this.obj.lookaheadState,
-	    state: this.obj.state}
-};
-
+    return deltaSpeed
+}
