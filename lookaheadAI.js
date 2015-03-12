@@ -103,7 +103,7 @@ LookaheadAI.prototype.calculateLookahead = function(forwardDistance, extraWidth,
 // for non intersection waiting, return false for intersectionId
 LookaheadAI.prototype.doLookahead = function(sharedCarState, angleInfo) {
     if (this.obj.carId === 1){
-	console.log("curspeed is " + this.curSpeed);
+	console.log("curspeed is " + this.movementAI.curSpeed);
     }
 
     var foundIntersectionId = false;
