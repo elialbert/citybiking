@@ -153,15 +153,19 @@ function doCarRestart(car, sharedCarState) {
     if (car.restartTimer > 0) {
 	return [false, false]
     };
+
     car.animateSprites({changeX:car.startingCoords[0], changeY: car.startingCoords[1], rotation:0}, true)
     car.bbPoly = BBFromSprite(car.sprite);
     var collisionResult = false;
+
     _.each(sharedCarState.cars, function(carObj, carId) {
 	if (collisionResult || (carObj.carId === car.carId)) {
 	    return
 	}
-	if (checkCollision2(car.bbPoly, carObj.bbPoly)) {
+	if (checkCollision2(car.movementAI.lookaheadAI.lookaheadBBPoly, carObj.bbPoly)) {
 	    car.animateSprites({changeX:getRandomInt(-500000,-500), changeY: getRandomInt(-500000,-500), rotation:0}, true)
+	    car.bbPoly = BBFromSprite(car.sprite);
+	    car.movementAI.lookaheadAI.bbPoly = car.bbPoly;	    
 	    collisionResult = [false, false]
 	}
     });

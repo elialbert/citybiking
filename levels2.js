@@ -1092,5 +1092,75 @@ var trafficJamLevel = {
     ],
 };
 
+var straightRoadLevel = {
+    levelSize: [1200,800],
+    roadDefs: [
+	{xStart:0,yStart:400, xFinish:1200, yFinish:400, roadWidth:140, sidewalkWidth:17},
+    ],
+    bikeCoords: [25, 460],
+    bikeRotation: 270,
+    intersectionDefs: {},
+    stopSigns: [
+    ],
+    carDefs: [	
+	{coordPath: [
+	    [-35,442],	 
+	    [1205, 442],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 1,
+	 height: 30,
+	 width: 10,
+	},
+	{coordPath: [
+	    [-5,415],	 
+	    [1205, 415],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.5,
+	},
+	{coordPath: [
+	    [-55,415],	 
+	    [1205, 415],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.6,
+	},
+	{coordPath: [
+	    [-105,415],	 
+	    [1205, 415],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	},
+	{coordPath: [
+	    [-5,440],	 
+	    [1205, 440],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	},
+	{coordPath: [
+	    [-85,442],	
+	    [300, 440], 
+	    [360, 416], 
+	    [660, 416], 
+	    [1205, 416],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2.8,
+	 height: 20,
+	},
+	
+	
+    ],
+};
 
-allLevels = {'busyintersections':busyIntersectionsLevel,  'rushhour':rushHourLevel, 'trafficJam':trafficJamLevel, 'sixcorners':sixCornersLevel, 'stopsigns':defaultLevel, 'crossroads':nostopsignsLevel, 'trafficlights':trafficLightsLevel, 'diagonal':diagonalLevel,}
+
+allLevels = {'busyIntersections':busyIntersectionsLevel,  'rushHour':rushHourLevel, 'trafficJam':trafficJamLevel, 'sixCorners':sixCornersLevel, 'straightRoad':straightRoadLevel}

@@ -178,12 +178,15 @@ LookaheadAI.prototype.carOnCarLookahead = function(sharedCarState, angleInfo, fo
 		    }
 	    }
 
-	    var collisionCrash = checkCollision2(this.bbPoly, carObj.movementAI.lookaheadAI.bbPoly);
-	    if (collisionCrash) {
-		this.obj.sequentialHitCounter += 1;
-		    if (this.obj.carId === 100) {
+	    var collisionCrash = false;
+	    if (carObj.isInScene()) {
+		var collisionCrash = checkCollision2(this.bbPoly, carObj.movementAI.lookaheadAI.bbPoly);
+		if (collisionCrash) {
+		    this.obj.sequentialHitCounter += 1;
+		    if ((this.obj.carId === 120) && (carObj.carId===124)) {
 			consoleLog("car " + this.obj.carId + " collision crash with car " + carObj.carId);
 		    }
+		}
 	    }
 
 	    if (collisionCrash === true) {
