@@ -59,7 +59,8 @@ MovementAI.prototype.doMovement = function(deltaSpeed, angleResult, trigX, trigY
 	    changeY: changeY, 
 	    rotation: toRadians(angleResult.angle-270), 
 	    lookaheadState: this.obj.lookaheadState,
-	    state: this.obj.state}
+	    state: this.obj.state,
+	    leftTurn: angleResult.leftTurn}
 };
 
 MovementAI.prototype.calcDeltaSpeed = function(speedTarget) {

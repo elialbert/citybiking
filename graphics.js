@@ -173,6 +173,8 @@ function buildLevel(stage, level) {
 	    carSprite.addChild(lights.rearLights[1]);
 	    carSprite.addChild(lights.headLights[0]);
 	    carSprite.addChild(lights.headLights[1]);
+	    carSprite.addChild(lights.blinkers[0]);
+	    carSprite.addChild(lights.blinkers[1]);
 	}
 	if (globalOptions.debugMode) {
 	    var text = new PIXI.Text(carId, {font:"10px Arial", fill: "white", align:"center", strokeThickness: 1, stroke: "white", });
@@ -211,6 +213,22 @@ function buildLevel(stage, level) {
     }
 
     function drawCarLights(carSprite, width) {
+
+	function drawLight(lightIdx, color, alpha) {
+	    var light = new PIXI.Graphics();
+	    var offsetX = carSprite.polygonPoints[lightIdx].x - 2;
+	    var offsetY = carSprite.polygonPoints[lightIdx].y - 2;
+	    light.beginFill(color, alpha);	 
+	    light.drawCircle((carSprite.position.x + offsetX), (carSprite.position.y + offsetY), 2);
+	    light.endFill();
+	    texture = light.generateTexture()
+	    var lightSprite = new PIXI.Sprite(texture)
+	    lightSprite.position.x = offsetX; // position is relative to parent (the carSprite)
+	    lightSprite.position.y = offsetY;
+	    lightSprites.push(lightSprite);
+
+	}
+
 	// use polygon points to pick corners for 4 lights:
 	// 0: frontleft
 	// 1: rearleft
@@ -226,19 +244,11 @@ function buildLevel(stage, level) {
 		var color = 0xFFFFFF;
 		var alpha = .8
 	    }
-	    var light = new PIXI.Graphics();
-	    var offsetX = carSprite.polygonPoints[lightIdx].x - 2;
-	    var offsetY = carSprite.polygonPoints[lightIdx].y - 2;
-	    light.beginFill(color, alpha);	 
-	    light.drawCircle((carSprite.position.x + offsetX), (carSprite.position.y + offsetY), 2);
-	    light.endFill();
-	    texture = light.generateTexture()
-	    var lightSprite = new PIXI.Sprite(texture)
-	    lightSprite.position.x = offsetX; // position is relative to parent (the carSprite)
-	    lightSprite.position.y = offsetY;
-	    lightSprites.push(lightSprite);
+	    drawLight(lightIdx, color, alpha);
 	});
-	return {rearLights: [lightSprites[0],lightSprites[1]], headLights:[lightSprites[2],lightSprites[3]]}
+	drawLight(1, 0xFFFF00, 1);
+	drawLight(2, 0xFFFF00, 1);
+	return {rearLights: [lightSprites[0],lightSprites[1]], headLights:[lightSprites[2],lightSprites[3]], blinkers: [lightSprites[4], lightSprites[5]]}
 
     };
 

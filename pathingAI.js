@@ -63,12 +63,12 @@ PathingAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
 	angle = (this.lastAngle || angle) + angleChange;
 	this.lastAngle = angle;
 	speedTarget = Math.max((this.obj.def.speed / 2), 1)
-	return {angle:angle, speedTarget: speedTarget}
+	return {angle:angle, speedTarget: speedTarget, leftTurn: angleInfo.leftTurn}
     }
     else if (this.obj.lookaheadState == 'moving') {
 	speedTarget = speedTarget || this.obj.def.speed;
     }
-    return {angle:angle, speedTarget: speedTarget}
+    return {angle:angle, speedTarget: speedTarget, leftTurn: angleInfo.leftTurn}
 }
     
 PathingAI.prototype.checkDestination = function(angleInfo) {

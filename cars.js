@@ -54,6 +54,18 @@ Car.prototype.animateSprites = function(movement, reset) {
 	    lightSprite.alpha = .4;
 	}
     });
+    if (this.angleState === 'turning') {
+	if (movement.leftTurn) {
+	    this.lights.blinkers[0].alpha=1;
+	}
+	else {
+	    this.lights.blinkers[1].alpha=1;
+	}
+    }
+    else {
+	this.lights.blinkers[0].alpha=0;
+	this.lights.blinkers[1].alpha=0;
+    }
 };
 
 Car.prototype.changeDoor = function(doorDef, openBool) {
