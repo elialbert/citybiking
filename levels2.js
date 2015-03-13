@@ -1157,6 +1157,33 @@ var straightRoadLevel = {
 	 speed: 2.8,
 	 height: 20,
 	},
+	{coordPath: [
+	    [-205,440],
+	    [500,440],
+	    [650,460],
+	    [661,460,'left door',1600],
+	    [760,458],
+	    [810,440],
+	    [1205, 440],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	 width: 6,
+	},
+	{coordPath: [
+	    [920,460],
+	    [1000,460,'pause',499,],
+	    [1102,459,'left door',799],
+	    [1200,458],
+	    [1205,440],
+	],
+	 type: 'normal',
+	 sceneIncrementRestart: 2,
+	 speed: 2,
+	 width: 6,
+	},
+
 	// right to left
 	{coordPath: [
 	    [1205,387],	 
