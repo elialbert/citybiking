@@ -23,7 +23,6 @@ PathingAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
     var waitingForLeft = false
     if (this.obj.extraState === 'pause') {
 	this.obj.angleState = 'moving';
-	this.lastAngle = angle;
     }
     else {
 	var result = this.checkDestination(angleInfo);
@@ -66,7 +65,8 @@ PathingAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
 	return {angle:angle, speedTarget: speedTarget, leftTurn: angleInfo.leftTurn}
     }
     else if (this.obj.lookaheadState == 'moving') {
-	this.lastAngle = angle;
+	//console.log("setting last angle to " + angle);
+	//this.lastAngle = angle;
 	speedTarget = speedTarget || this.obj.def.speed;
     }
     return {angle:angle, speedTarget: speedTarget, leftTurn: angleInfo.leftTurn}
@@ -85,9 +85,13 @@ PathingAI.prototype.checkDestination = function(angleInfo) {
 	else {
 	    var turnDistance = 15;
 	}
+	//consoleLog("anglestate: " + this.obj.angleState + " diffx: " + Math.abs(nextCoords[0] - this.obj.sprite.position.x) + ", diffy: " + Math.abs(nextCoords[1] - this.obj.sprite.position.y) + ", needsturn: " + angleInfo.needsTurn + ", turndist: " + turnDistance);
+	//console.log("lastangle: " + this.lastAngle + " nextangle: " + angleInfo.nextAngle);
 	if ((angleInfo.needsTurn && (diff < turnDistance)) || (this.obj.angleState == 'turning')) {
+	    //console.log("in turn " + this.obj.coordPathIndex + " angle: " + angleInfo.nextAngle + ", lastangle: " + this.lastAngle);
 	    this.lastDiff = diff;
-	    if ((Math.abs(this.lastAngle - angleInfo.nextAngle)%360) < 2) {
+	    var anglediff = Math.abs(Math.min((360-Math.abs(this.lastAngle)),Math.abs(this.lastAngle)) - Math.min((360-Math.abs(angleInfo.nextAngle)),Math.abs(angleInfo.nextAngle)))
+	    if (anglediff < 2) {
 		this.nextPathCoord(true);
 		return {found:true, state:'moving'}
 	    }
@@ -125,8 +129,11 @@ PathingAI.prototype.nextPathCoord = function(turnMode) {
 PathingAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
     //consoleLog("in redopath with curcoords " + curCoords + " and nextcoords " + nextCoords);
     var angle = this.doPath(curCoords, nextCoords);
-    //consoleLog("new angle for idx " + idx + " is " + angle);
-    this.angleInfos[idx].angle = angle; 
+    this.angleInfos[idx] = this.setTurnIncrement(this.angleInfos,idx,angle);
+    if (!this.angleInfos[idx].nextAngle) {
+    	this.angleInfos[idx].nextAngle = angle;
+    }
+    this.lastAngle = angle;
     return angle;
 }
 
@@ -137,43 +144,47 @@ PathingAI.prototype.preparePaths = function() {
 	var next = coordPath[idx+1];
 	var angle = this.doPath(coords, next);
 	if (angle != null) {
-	    angleList.push(angle);
+	    angleList.push({angle:angle});
 	}
     }, this);
     var angleInfo = [];
     var speed = this.obj.def.speed;
     _.each(angleList, function(angle, idx) {
-	info = {angle: angle, needsTurn: false}
-	if (angleList[idx+1] != null) {
-	    var counterclockwise = false;
-	    angleDiff = Math.abs(angleList[idx+1] - angle);
-	    angleDiffNew = Math.min(angleDiff, 360-angleDiff);
-	    if (angleDiffNew < angleDiff) {
-		angleDiff = angleDiffNew;
-		counterclockwise = true;
-	    }
-	    if (angleDiff >= 0) {
-		info.needsTurn = true;
-		info.turnIncrement = 1.6;//4 / (this.obj.def.speed + 1);
-		var neg1 = 1;
-		var neg2 = 1;
-		if (counterclockwise) {
-		    neg1 = -1;
-		}
-		if (angleList[idx+1] < angle) {
-		    neg2 = -1;
-		}
-		info.turnIncrement = neg1*neg2*info.turnIncrement;
-		if (info.turnIncrement < 0) {
-		    info.leftTurn = true;
-		}
-		info.numIncrements = Math.abs(angleDiff / info.turnIncrement);
-		info.nextAngle = angleList[idx+1];
-	    }
-	}
-	angleInfo.push(info);
+	angleInfo.push(this.setTurnIncrement(angleList, idx, angle.angle));
     }, this);
     return angleInfo
+}
+
+PathingAI.prototype.setTurnIncrement = function(angleList, idx, angle) {
+    info = {angle: angle, needsTurn: false}
+    if (angleList[idx+1] != null) {
+	var counterclockwise = false;
+	angleDiff = Math.abs(angleList[idx+1].angle - angle);
+	angleDiffNew = Math.min(angleDiff, 360-angleDiff);
+	if (angleDiffNew < angleDiff) {
+	    angleDiff = angleDiffNew;
+	    counterclockwise = true;
+	}
+	if (angleDiff >= 0) {
+	    info.needsTurn = true;
+	    info.turnIncrement = 1.6;//4 / (this.obj.def.speed + 1);
+	    var neg1 = 1;
+	    var neg2 = 1;
+	    if (counterclockwise) {
+		neg1 = -1;
+	    }
+	    if (angleList[idx+1].angle < angle) {
+		neg2 = -1;
+	    }
+	    info.turnIncrement = neg1*neg2*info.turnIncrement;
+	    if (info.turnIncrement < 0) {
+		info.leftTurn = true;
+	    }
+	    info.numIncrements = Math.abs(angleDiff / info.turnIncrement);
+	    info.nextAngle = angleList[idx+1].angle;
+	}
+    }
+    return info
 }
 
 PathingAI.prototype.doPath = function(coords, next) {

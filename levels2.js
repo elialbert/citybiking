@@ -20,6 +20,7 @@ var rushHourLevel = {
     stopSigns: [
     ],
     trafficLights: [
+	
 	{coords: [460,360], rotation: 0, intersection: 1, grouping: 2,
 	greenVal:1500, yellowVal:2700, redVal:0},
 	{coords: [340,240], rotation: 180, intersection: 1, grouping: 2,
@@ -40,6 +41,7 @@ var rushHourLevel = {
 	*/
     ],
     carDefs: [
+	
 	{coordPath: [
 	    [380,-70],
 	    [380, 100],
@@ -50,7 +52,8 @@ var rushHourLevel = {
 	 sceneIncrementRestart: 2,
 	 speed: 1,
 	 height: 24,
-	},
+	 },
+
 	{coordPath: [
 	    [375,-100],
 	    [375, 100],
@@ -63,6 +66,7 @@ var rushHourLevel = {
 	 speed: 1.3,
 	 height: 16,
 	},	
+
 	{coordPath: [
 	    [380,-20],
 	    [380, 100, 'pause',50],
@@ -80,16 +84,13 @@ var rushHourLevel = {
 	    [-5,320],
 	    [384,320],
 	    [405,-50],
-	    /*
-	    [408,183],
-	    [408,-50]
-	    */
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
 	 speed: 2.5,
 	 fillColor: 0x4D4DFF,
 	},
+	
 	{coordPath: [
 	    [-35,326],
 	    [801,326],
@@ -172,7 +173,7 @@ var rushHourLevel = {
 	 speed: 0,
 	 fillColor: 0xFFFFFF,
 	},
-	
+
     ],
     parkedCars: [
 	{
@@ -282,6 +283,7 @@ var busyIntersectionsLevel = {
 
     ],
     carDefs: [
+	
 	{coordPath: [
 	    [-5,427],	 
 	    [1205, 427],
@@ -446,9 +448,9 @@ var busyIntersectionsLevel = {
 	{coordPath: [
 	    [798,915],	 
 	    [802,561],	 
-	    [818, 540],
-	    [818, 536, 'pause', 1000],
-	    [818, 520],
+	    [821, 540],
+	    [821, 536, 'pause', 1000],
+	    [821, 520],
 	    [800, 390],
 	    [800, -5],
 	],

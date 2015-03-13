@@ -25,6 +25,7 @@ MovementAI.prototype.calcMovement = function(sharedCarState) {
 	}
     };
     var angle = this.pathingAI.lastAngle;
+
     var trigX = Math.cos(toRadians(angle));
     var trigY = Math.sin(toRadians(angle));
 
