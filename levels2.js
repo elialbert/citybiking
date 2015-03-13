@@ -1,4 +1,5 @@
 var rushHourLevel = {
+    description: "see if you can navigate across the road without getting into trouble. watch out for doors! bonus: take a right, pull a u-turn, then take a left.",
     levelSize: [],
     roadDefs: [
 	{xStart:400,yStart:0, xFinish:400, yFinish:250, roadWidth:100, sidewalkWidth:17},
@@ -20,6 +21,15 @@ var rushHourLevel = {
     ],
     trafficLights: [
 	{coords: [460,360], rotation: 0, intersection: 1, grouping: 2,
+	greenVal:1500, yellowVal:2700, redVal:0},
+	{coords: [340,240], rotation: 180, intersection: 1, grouping: 2,
+	greenVal:1500, yellowVal:2700, redVal:0},
+	{coords: [460,240], rotation: 270, intersection: 1, grouping: 1,
+	greenVal:0, yellowVal:1200, redVal:1500},
+	{coords: [340,360], rotation: 90, intersection: 1, grouping: 1,
+	greenVal:0, yellowVal:1200, redVal:1500},
+	/*
+	{coords: [460,360], rotation: 0, intersection: 1, grouping: 2,
 	greenVal:0, yellowVal:1200, redVal:1500},
 	{coords: [340,240], rotation: 180, intersection: 1, grouping: 2,
 	greenVal:0, yellowVal:1200, redVal:1500},
@@ -27,6 +37,7 @@ var rushHourLevel = {
 	greenVal:1500, yellowVal:2700, redVal:0},
 	{coords: [340,360], rotation: 90, intersection: 1, grouping: 1,
 	greenVal:1500, yellowVal:2700, redVal:0},
+	*/
     ],
     carDefs: [
 	{coordPath: [
@@ -67,12 +78,16 @@ var rushHourLevel = {
 	
 	{coordPath: [
 	    [-5,320],
-	    [420,320],
-	    [415,-50]
+	    [384,320],
+	    [405,-50],
+	    /*
+	    [408,183],
+	    [408,-50]
+	    */
 	],
 	 type: 'normal',
 	 sceneIncrementRestart: 2,
-	 speed: 3,
+	 speed: 2.5,
 	 fillColor: 0x4D4DFF,
 	},
 	{coordPath: [
@@ -212,6 +227,7 @@ var rushHourLevel = {
 
 
 var busyIntersectionsLevel = {
+    description: 'practice going from the starting point to each exit on the level. watch out for that bus.',
     levelSize: [1200,800],
     roadWidth: 142,
     roadDefs: [
@@ -624,6 +640,7 @@ var busyIntersectionsLevel = {
 };
 
 var trafficJamLevel = {
+    description: 'really too many cars here for safe biking.',
     levelSize: [1200,800],
     roadWidth: 142,
     roadDefs: [
@@ -1093,6 +1110,7 @@ var trafficJamLevel = {
 };
 
 var straightRoadLevel = {
+    description: "just practice staying on the right, watch out for doors. you will get honked at - don't let it get to you.",
     levelSize: [1200,800],
     roadDefs: [
 	{xStart:0,yStart:400, xFinish:1200, yFinish:400, roadWidth:140, sidewalkWidth:17},

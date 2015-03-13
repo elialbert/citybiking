@@ -307,6 +307,7 @@ var diagonalLevel = {
 };
 
 var sixCornersLevel = {
+    description: "a classic chicago intersection. try different turns. try to get across through a red without waiting for green by crossing left with traffic, then left again.",
     levelSize: [1200,800],
     roadWidth: 142,
     roadDefs: [

@@ -1,4 +1,4 @@
-var globalOptions = {debugMode:false, level: busyIntersectionsLevel, stop:false, betweenLevelsTimer: 1000};
+var globalOptions = {debugMode:true, level: rushHourLevel, stop:false, betweenLevelsTimer: 1000};
 
 function start(renderer, stage) {
     globalOptions.stop = true;
@@ -217,6 +217,7 @@ function setupOptions(renderer, stage) {
 	$("input:radio[name=levelchoice]").click(function() {
 	    var strLevel = $(this).val();
 	    globalOptions.level = allLevels[strLevel];
+	    $("#levelDescription").html(strLevel + " level: " + globalOptions.level.description);
 	    start(renderer, stage);
 	});
 
@@ -231,5 +232,7 @@ function addLevelChoices() {
 	choices += '<input class="optioninput" type="radio" name="levelchoice" value="' + name + '"><span class="inputtext">' + name + '</span><br/>';
     });
     choiceDiv.html(choices);
-    $("input:radio[name=levelchoice]").filter('[value=busyIntersections]').prop('checked',true);
+    var strLevel = "busyIntersections";
+    $("input:radio[name=levelchoice]").filter('[value='+strLevel+']').prop('checked',true);
+    $("#levelDescription").html(strLevel + " level: " + globalOptions.level.description);
 }

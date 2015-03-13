@@ -66,6 +66,7 @@ PathingAI.prototype.calcAngle = function(sharedCarState, speedTarget) {
 	return {angle:angle, speedTarget: speedTarget, leftTurn: angleInfo.leftTurn}
     }
     else if (this.obj.lookaheadState == 'moving') {
+	this.lastAngle = angle;
 	speedTarget = speedTarget || this.obj.def.speed;
     }
     return {angle:angle, speedTarget: speedTarget, leftTurn: angleInfo.leftTurn}
@@ -84,12 +85,6 @@ PathingAI.prototype.checkDestination = function(angleInfo) {
 	else {
 	    var turnDistance = 15;
 	}
-	//if (this.obj.carId === 10) {
-	//    consoleLog("diffx: " + Math.abs(nextCoords[0] - this.obj.sprite.position.x) + ", diffy: " + Math.abs(nextCoords[1] - this.obj.sprite.position.y) + ", needsturn: " + angleInfo.needsTurn + ", turndist: " + turnDistance);
-	    //consoleLog("diff: " + diff + ", lastDiff: " + this.lastDiff);
-	    
-	//}
-
 	if ((angleInfo.needsTurn && (diff < turnDistance)) || (this.obj.angleState == 'turning')) {
 	    this.lastDiff = diff;
 	    if ((Math.abs(this.lastAngle - angleInfo.nextAngle)%360) < 2) {
@@ -118,7 +113,7 @@ PathingAI.prototype.nextPathCoord = function(turnMode) {
 	this.obj.sprite.position.y = nextCoords[1];
     }
     else {
-	var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];
+	var nextCoords = this.obj.coordPath[this.obj.coordPathIndex+1];	
 	return this.redoPath(this.obj.coordPathIndex, 
 				     [this.obj.sprite.position.x,this.obj.sprite.position.y], 
 				     nextCoords);

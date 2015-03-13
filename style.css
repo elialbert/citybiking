@@ -17,3 +17,7 @@ body {
 #controls {
     margin-left: 5px;
 }
+
+#levelDescription {
+    text-align:center;
+}

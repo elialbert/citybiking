@@ -63,8 +63,10 @@ Car.prototype.animateSprites = function(movement, reset) {
 	}
     }
     else {
-	this.lights.blinkers[0].alpha=0;
-	this.lights.blinkers[1].alpha=0;
+	if (this.lights.blinkers) {
+	    this.lights.blinkers[0].alpha=0;
+	    this.lights.blinkers[1].alpha=0;
+	}
     }
 };
 
