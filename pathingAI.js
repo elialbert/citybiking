@@ -130,6 +130,7 @@ PathingAI.prototype.redoPath = function(idx, curCoords, nextCoords) {
     //consoleLog("in redopath with curcoords " + curCoords + " and nextcoords " + nextCoords);
     var angle = this.doPath(curCoords, nextCoords);
     this.angleInfos[idx] = this.setTurnIncrement(this.angleInfos,idx,angle);
+    //console.dir(this.angleInfos[idx]);
     if (!this.angleInfos[idx].nextAngle) {
     	this.angleInfos[idx].nextAngle = angle;
     }

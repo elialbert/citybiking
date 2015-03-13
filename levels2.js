@@ -1123,6 +1123,7 @@ var straightRoadLevel = {
     stopSigns: [
     ],
     carDefs: [	
+	
 	{coordPath: [
 	    [-35,442],	 
 	    [1205, 442],
@@ -1181,8 +1182,8 @@ var straightRoadLevel = {
 	    [-205,440],
 	    [500,440],
 	    [650,460],
-	    [661,460,'left door',1600],
-	    [760,458],
+	    [661,460,'left door',16],
+	    [760,455],
 	    [810,440],
 	    [1205, 440],
 	],
