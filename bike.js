@@ -48,7 +48,7 @@ Bike.prototype.doCollisionResetCounter = function() {
 	this.collisionResetCounter += 1;
 	return true
     }
-    if (this.collisionResetCounter < 50) {
+    if (this.collisionResetCounter < 100) {
 	this.collisionResetCounter += 1;
 	return false
     }
