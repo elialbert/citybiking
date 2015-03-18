@@ -27,17 +27,20 @@
 
 </head>
 <body onload="start();">
-
-  <div id="controls" class="floatleft">
-    <!--
+  <div align="center">
+    <canvas id="game-canvas" width="1000" height="800"></canvas>
+  </div><br/>
+  <div class="inputtext" id="levelDescription"></div>
     <form action="">
+      <label><span class="inputtext">Level Select:</span></label><br/>
+      <div id="levelchoices"></div>
+      <p/>
       <span id="quat" class="inputtext"></span>
       <label><span class="inputtext">Debug Mode:</span></label><br/>
       <input class="optioninput" type="radio" name="debug" value="true" ><span class="inputtext">On</span><br>
       <input class="optioninput" type="radio" name="debug" value="false" checked="checked"><span class="inputtext">Off</span>
       <p/>
-      <label><span class="inputtext">Level Select:</span></label><br/>
-      <div id="levelchoices"></div>
+
     </form>
     <p/>
     <span class="inputtext">----------------------</span><br/>
@@ -45,12 +48,5 @@
     <span class="inputtext">----------------------</span><br/>
     <div id="laststats" class="floatleft inputtext">
     </div><br/>
-    -->
-  </div>
-
-  <div align="center">
-    <canvas id="game-canvas" width="1000" height="800"></canvas>
-  </div><br/>
-  <div class="inputtext" id="levelDescription"></div>
 </body>
 </html>
