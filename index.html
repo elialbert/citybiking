@@ -3,8 +3,10 @@
 <head>
     <title>bike practice game</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
     <script src="SAT.min.js"></script>
     <script src="fulltilt.min.js"></script>
@@ -23,18 +25,42 @@
 
 </head>
 <body onload="start();">
-  <div id="controls" class="floatleft">
-    <form action="">
-      <label><span class="inputtext">Level Select:</span></label><br/>
-      <div id="levelchoices"></div>
-      <p/>
-      <span id="quat" class="inputtext"></span><br/>
-      <label><span class="inputtext">Debug Mode:</span></label><br/>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll" id="navheader">
+                <button type="button" class="navbar-toggle" id="navtoggle" data-toggle="collapse" data-target="#navcollapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="navbarbrand" href="#/home">City Biking Practice Game</a>	
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navcollapse">
+                <ul class="nav navbar-nav navbar-right">
+<span class="inputtext">Debug Mode:</span></label><br/>
+
       <input class="optioninput" type="radio" name="debug" value="true" ><span class="inputtext">On</span><br>
       <input class="optioninput" type="radio" name="debug" value="false" checked="checked"><span class="inputtext">Off</span>
-      <p/>
+                </ul>
 
-    </form>
+                <ul class="nav navbar-nav navbar-right" id="levelchoices">
+
+                </ul>
+		<br/>
+		<div id="stats" class="inputtext"></div>
+		<div id="laststats" class="inputtext"></div>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+<!--
+  <div id="controls" class="floatleft">
     <p/>
     <span class="inputtext">----------------------</span><br/>
     <div id="stats" class="floatleft inputtext"></div><br/>
@@ -42,6 +68,7 @@
     <div id="laststats" class="floatleft inputtext">
     </div><br/>
   </div>
+  -->
   <div align="center">
     <canvas id="game-canvas" width="1000" height="800"></canvas>
   </div><br/>

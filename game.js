@@ -233,11 +233,11 @@ function doTiltMovement(quat, input) {
     }
 
     if(window.innerHeight > window.innerWidth){
-	if (quat.x > .05) {
+	if (quat.x > .04) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x < -.05) {
+	else if (quat.x < -.04) {
 	    input.up = false;
 	    input.down = true;
 	}
@@ -245,11 +245,11 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = false;
 	}
-	if (quat.y > .025) {
+	if (quat.y > .035) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y < -.025) {
+	else if (quat.y < -.035) {
 	    input.left = false;
 	    input.right = true;
 	}
@@ -259,11 +259,11 @@ function doTiltMovement(quat, input) {
 	}
     }
     else {
-	if (quat.x < -.05) {
+	if (quat.x < -.04) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x > .05) {
+	else if (quat.x > .04) {
 	    input.up = false;
 	    input.down = true;
 	}
@@ -271,11 +271,11 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = false;
 	}
-	if (quat.y < -.025) {
+	if (quat.y < -.035) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y > .025) {
+	else if (quat.y > .035) {
 	    input.left = false;
 	    input.right = true;
 	}
@@ -289,8 +289,8 @@ function doTiltMovement(quat, input) {
 }
 
 function fitToScreen(renderer) {
-    var newWidth = window.innerWidth - 260;
-    var newHeight = window.innerHeight - 60;
+    var newWidth = window.innerWidth;
+    var newHeight = window.innerHeight - 260;
     var specifiedWidth = globalOptions.level.levelSize[0] || 800;
     var specifiedHeight = globalOptions.level.levelSize[1] || 600;
     //console.log("width diff: " + (specifiedWidth - newWidth));
@@ -332,7 +332,7 @@ function setupOptions(renderer, stage) {
 
 function addLevelChoices() {
     choiceDiv = $("#levelchoices");
-    var choices = '';
+    var choices = '<span class="inputtext">Level Choice:</span></label><br/>';
     _.each(allLevels, function(level, name, idx) {
 	choices += '<input class="optioninput" type="radio" name="levelchoice" value="' + name + '"><span class="inputtext">' + name + '</span><br/>';
     });
