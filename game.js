@@ -73,6 +73,18 @@ function init(renderer, stage) {
     var initialBikeRotation = level.bikeRotation || 0
     var input = {up: false, down: false, left: false, right: false}
     var posChange = {changeX:0, changeY:0, direction:270-initialBikeRotation, speed:0}
+    var promise = new FULLTILT.getDeviceOrientation({ 'type': 'world' });
+    var deviceOrientation;
+    promise
+	.then(function(controller) {
+	    console.log("got device orientation");
+	    deviceOrientation = controller;
+	    console.dir(deviceOrientation);
+	})
+	.catch(function(message) {
+	    console.log("failed device orientation");
+	    console.error(message);
+	});
     setupKeys(input);
     stage.addChild(bikeSprite);
 
@@ -84,6 +96,10 @@ function init(renderer, stage) {
 	if (globalOptions.stop) {
 	    return reset(renderer, stage)
 	}
+	if (deviceOrientation) {
+	    var quat = deviceOrientation.getScreenAdjustedQuaternion();
+	}
+	doTiltMovement(quat, input);
         requestAnimFrame( animate );
 	doEnvironment();
 	doBikeMovement();
@@ -200,6 +216,33 @@ function setupKeys(input) {
 	}
     });
 
+}
+
+function doTiltMovement(quat, input) {
+    if (quat) {
+	$("#quat").html("x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w);
+    }
+    else {
+	$("#quat").html("undefined");
+    }
+    /*
+    if (quat.x < 0) {
+	input.left = true;
+	input.right = false;
+    }
+    else if (quat.x > 0) {
+	input.right = true;
+	input.left = false;
+    }
+    if (quat.y > 0) {
+	input.up = true;
+	input.down = false;
+    }
+    else if (quat.y < 0) {
+	input.up = false;
+	input.down = true;
+    }
+    */
 }
 
 function setupOptions(renderer, stage) {
