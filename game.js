@@ -219,14 +219,14 @@ function setupKeys(input) {
 }
 
 function doTiltMovement(quat, input) {
-    /*
+    
     if (quat) {
-	$("#quat").html("x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w);
+	$("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w);
     }
     else {
 	$("#quat").html("undefined");
     }
-    */
+    
     if (!quat) {
 	return
     }
