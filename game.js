@@ -223,14 +223,14 @@ function doTiltMovement(quat, input) {
     if (!quat || (quat.x===0 && quat.y===0 && quat.z===0)) {
 	return
     }
-    if (globalOptions.debugMode) {
+    //if (globalOptions.debugMode) {
 	if (quat) {
 	    $("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w+"<br/>"+"up: " + input.up + ", down: " + input.down + ", left: " + input.left + ", right: " + input.right);
 	}
 	else {
 	    $("#quat").html("undefined");
 	}	
-    }
+    //}
 
     if(window.innerHeight > window.innerWidth){
 	if (quat.x > .04) {

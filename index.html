@@ -27,42 +27,17 @@
 
 </head>
 <body onload="start();">
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll" id="navheader">
-                <button type="button" class="navbar-toggle" id="navtoggle" data-toggle="collapse" data-target="#navcollapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" id="navbarbrand" href="#/home">City Biking Practice Game</a>	
 
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="navcollapse">
-                <ul class="nav navbar-nav navbar-right">
-		  <span class="inputtext">Debug Mode:</span><br/>
-
-		  <input class="optioninput" type="radio" name="debug" value="true" ><span class="inputtext">On</span><br>
-		  <input class="optioninput" type="radio" name="debug" value="false" checked="checked"><span class="inputtext">Off</span>
-		</ul>
-
-                <ul class="nav navbar-nav navbar-right" id="levelchoices">
-		  <li> test</li>
-                </ul>
-		<br/>
-		<div id="stats" class="inputtext"></div>
-		<div id="laststats" class="inputtext"></div>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-<!--
   <div id="controls" class="floatleft">
+    <form action="">
+      <span id="quat" class="inputtext"></span>
+      <label><span class="inputtext">Debug Mode:</span></label><br/>
+      <input class="optioninput" type="radio" name="debug" value="true" ><span class="inputtext">On</span><br>
+      <input class="optioninput" type="radio" name="debug" value="false" checked="checked"><span class="inputtext">Off</span>
+      <p/>
+      <label><span class="inputtext">Level Select:</span></label><br/>
+      <div id="levelchoices"></div>
+    </form>
     <p/>
     <span class="inputtext">----------------------</span><br/>
     <div id="stats" class="floatleft inputtext"></div><br/>
@@ -70,7 +45,7 @@
     <div id="laststats" class="floatleft inputtext">
     </div><br/>
   </div>
-  -->
+
   <div align="center">
     <canvas id="game-canvas" width="1000" height="800"></canvas>
   </div><br/>
