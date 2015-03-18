@@ -331,6 +331,7 @@ function setupOptions(renderer, stage) {
 
 
 function addLevelChoices() {
+    return
     choiceDiv = $("#levelchoices");
     var choices = '<span class="inputtext">Level Choice:</span></label><br/>';
     _.each(allLevels, function(level, name, idx) {
