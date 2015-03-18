@@ -219,30 +219,55 @@ function setupKeys(input) {
 }
 
 function doTiltMovement(quat, input) {
+    /*
     if (quat) {
 	$("#quat").html("x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w);
     }
     else {
 	$("#quat").html("undefined");
     }
-    /*
-    if (quat.x < 0) {
-	input.left = true;
-	input.right = false;
-    }
-    else if (quat.x > 0) {
-	input.right = true;
-	input.left = false;
-    }
-    if (quat.y > 0) {
-	input.up = true;
-	input.down = false;
-    }
-    else if (quat.y < 0) {
-	input.up = false;
-	input.down = true;
-    }
     */
+    if (!quat) {
+	return
+    }
+
+    if(window.innerHeight > window.innerWidth){
+	if (quat.x > 0) {
+	    input.up = true;
+	    input.down = false;
+	}
+	else if (quat.x < 0) {
+	    input.up = false;
+	    input.down = true;
+	}
+	if (quat.y > 0) {
+	    input.left = true;
+	    input.right = false;
+	}
+	else if (quat.y < 0) {
+	    input.left = false;
+	    input.right = true;
+	}
+    }
+    else {
+	if (quat.x < 0) {
+	    input.up = true;
+	    input.down = false;
+	}
+	else if (quat.x > 0) {
+	    input.up = false;
+	    input.down = true;
+	}
+	if (quat.y < 0) {
+	    input.left = true;
+	    input.right = false;
+	}
+	else if (quat.y > 0) {
+	    input.left = false;
+	    input.right = true;
+	}
+    }
+    
 }
 
 function setupOptions(renderer, stage) {
