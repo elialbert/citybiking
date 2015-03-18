@@ -243,9 +243,9 @@ var busyIntersectionsLevel = {
 	{xStart:830,yStart:400, xFinish:1200, yFinish:400, roadWidth:130, sidewalkWidth:17},
 
     ],
-    //bikeCoords: [821, 782],
-    bikeCoords: [341,74],
-    bikeRotation: 180,
+    bikeCoords: [821, 782],
+    //bikeCoords: [341,74],
+    //bikeRotation: 180,
     intersectionDefs: 
     {
 	1:

@@ -7,6 +7,7 @@ function start(renderer, stage) {
     if (!renderer) {
 	addLevelChoices();
 	var renderer = PIXI.autoDetectRenderer(globalOptions.level.levelSize[0] || 800, globalOptions.level.levelSize[1] || 600, {view:document.getElementById("game-canvas"), antialiasing:true});
+	fitToScreen(renderer);
 	var stage = new PIXI.Stage(0x3D3D5C); 
 	stage.interactive = true;
 	stage.click = function(mouseData) {
@@ -45,6 +46,7 @@ function reset(renderer, stage) {
 	globalOptions.betweenLevelsTimer = 1000;
 	setupOptions(renderer, stage);
 	renderer.resize(globalOptions.level.levelSize[0] || 800,globalOptions.level.levelSize[1] || 600);
+	fitToScreen(renderer);
 	init(renderer, stage);
 	return stage
     }, globalOptions.betweenLevelsTimer);
@@ -77,7 +79,6 @@ function init(renderer, stage) {
     var deviceOrientation;
     promise
 	.then(function(controller) {
-	    console.log("got device orientation");
 	    deviceOrientation = controller;
 	    console.dir(deviceOrientation);
 	})
@@ -219,16 +220,16 @@ function setupKeys(input) {
 }
 
 function doTiltMovement(quat, input) {
-    
-    if (quat) {
-	$("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w+"<br/>"+"up: " + input.up + ", down: " + input.down + ", left: " + input.left + ", right: " + input.right);
-    }
-    else {
-	$("#quat").html("undefined");
-    }
-    
-    if (!quat) {
+    if (!quat || (quat.x===0 && quat.y===0 && quat.z===0)) {
 	return
+    }
+    if (globalOptions.debugMode) {
+	if (quat) {
+	    $("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w+"<br/>"+"up: " + input.up + ", down: " + input.down + ", left: " + input.left + ", right: " + input.right);
+	}
+	else {
+	    $("#quat").html("undefined");
+	}	
     }
 
     if(window.innerHeight > window.innerWidth){
@@ -285,6 +286,25 @@ function doTiltMovement(quat, input) {
 
     }
     
+}
+
+function fitToScreen(renderer) {
+    var newWidth = window.innerWidth - 260;
+    var newHeight = window.innerHeight - 60;
+    var specifiedWidth = globalOptions.level.levelSize[0] || 800;
+    var specifiedHeight = globalOptions.level.levelSize[1] || 600;
+    //console.log("width diff: " + (specifiedWidth - newWidth));
+    //console.log("height diff: " + (specifiedHeight - newHeight));
+    if ((specifiedWidth - newWidth) > (specifiedHeight - newHeight)) {
+	newHeight = newWidth * specifiedHeight / specifiedWidth;
+    }
+    else {
+	newWidth = newHeight * specifiedWidth / specifiedHeight;
+    }
+    //console.log("newwidth: " + newWidth);
+    //console.log("newheight: " + newHeight);
+    renderer.view.style.width = newWidth + "px";
+    renderer.view.style.height = newHeight + "px";
 }
 
 function setupOptions(renderer, stage) {
