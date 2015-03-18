@@ -232,11 +232,11 @@ function doTiltMovement(quat, input) {
     }
 
     if(window.innerHeight > window.innerWidth){
-	if (quat.x > .07) {
+	if (quat.x > .035) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x < -.07) {
+	else if (quat.x < -.035) {
 	    input.up = false;
 	    input.down = true;
 	}
@@ -244,11 +244,11 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = false;
 	}
-	if (quat.y > .07) {
+	if (quat.y > .035) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y < -.07) {
+	else if (quat.y < -.035) {
 	    input.left = false;
 	    input.right = true;
 	}
@@ -258,11 +258,11 @@ function doTiltMovement(quat, input) {
 	}
     }
     else {
-	if (quat.x < -.07) {
+	if (quat.x < -.035) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x > .07) {
+	else if (quat.x > .035) {
 	    input.up = false;
 	    input.down = true;
 	}
@@ -270,11 +270,11 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = false;
 	}
-	if (quat.y < -.07) {
+	if (quat.y < -.035) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y > .07) {
+	else if (quat.y > .035) {
 	    input.left = false;
 	    input.right = true;
 	}
