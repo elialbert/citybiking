@@ -300,7 +300,7 @@ function fitToScreen(renderer) {
     var specifiedHeight = globalOptions.level.levelSize[1] || 600;
     //console.log("width diff: " + (specifiedWidth - newWidth));
     //console.log("height diff: " + (specifiedHeight - newHeight));
-    if ((specifiedWidth - newWidth) > (specifiedHeight - newHeight)) {
+    if ((!doHeight) && ((specifiedWidth - newWidth) > (specifiedHeight - newHeight))) {
 	newHeight = newWidth * specifiedHeight / specifiedWidth;
 	window.alert("b1")
     }
