@@ -232,37 +232,37 @@ function doTiltMovement(quat, input) {
     }
 
     if(window.innerHeight > window.innerWidth){
-	if (quat.x > 0) {
+	if (quat.x > .04) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x < 0) {
+	else if (quat.x < -.04) {
 	    input.up = false;
 	    input.down = true;
 	}
-	if (quat.y > 0) {
+	if (quat.y > .04) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y < 0) {
+	else if (quat.y < -.04) {
 	    input.left = false;
 	    input.right = true;
 	}
     }
     else {
-	if (quat.x < 0) {
+	if (quat.x < -.04) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x > 0) {
+	else if (quat.x > .04) {
 	    input.up = false;
 	    input.down = true;
 	}
-	if (quat.y < 0) {
+	if (quat.y < -.04) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y > 0) {
+	else if (quat.y > .04) {
 	    input.left = false;
 	    input.right = true;
 	}
