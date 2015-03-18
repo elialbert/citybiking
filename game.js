@@ -240,6 +240,10 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = true;
 	}
+	else {
+	    input.up = false;
+	    input.down = false;
+	}
 	if (quat.y > .07) {
 	    input.left = true;
 	    input.right = false;
@@ -247,6 +251,10 @@ function doTiltMovement(quat, input) {
 	else if (quat.y < -.07) {
 	    input.left = false;
 	    input.right = true;
+	}
+	else {
+	    input.left = false;
+	    input.right = false;
 	}
     }
     else {
@@ -258,6 +266,10 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = true;
 	}
+	else {
+	    input.up = false;
+	    input.down = false;
+	}
 	if (quat.y < -.07) {
 	    input.left = true;
 	    input.right = false;
@@ -266,6 +278,11 @@ function doTiltMovement(quat, input) {
 	    input.left = false;
 	    input.right = true;
 	}
+	else {
+	    input.left = false;
+	    input.right = false;
+	}
+
     }
     
 }
