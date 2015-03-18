@@ -290,8 +290,7 @@ function doTiltMovement(quat, input) {
 
 function fitToScreen(renderer) {
     var newWidth = window.innerWidth;
-    var newHeight = window.innerHeight;
-    window.alert("w: " + newWidth + ", h: " + newHeight);
+    var newHeight = window.innerHeight-60;
     var doHeight = false;
     if (newHeight < 360) {
 	doHeight = true;
@@ -302,11 +301,9 @@ function fitToScreen(renderer) {
     //console.log("height diff: " + (specifiedHeight - newHeight));
     if ((!doHeight) && ((specifiedWidth - newWidth) > (specifiedHeight - newHeight))) {
 	newHeight = newWidth * specifiedHeight / specifiedWidth;
-	window.alert("b1")
     }
     else {
 	newWidth = newHeight * specifiedWidth / specifiedHeight;
-	window.alert("b2")
     }
     //console.log("newwidth: " + newWidth);
     //console.log("newheight: " + newHeight);
@@ -338,7 +335,6 @@ function setupOptions(renderer, stage) {
 
 
 function addLevelChoices() {
-
     choiceDiv = $("#levelchoices");
     var choices = '';
     _.each(allLevels, function(level, name, idx) {
