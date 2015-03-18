@@ -292,15 +292,21 @@ function fitToScreen(renderer) {
     var newWidth = window.innerWidth;
     var newHeight = window.innerHeight;
     window.alert("w: " + newWidth + ", h: " + newHeight);
+    var doHeight = false;
+    if (newHeight < 360) {
+	doHeight = true;
+    }
     var specifiedWidth = globalOptions.level.levelSize[0] || 800;
     var specifiedHeight = globalOptions.level.levelSize[1] || 600;
     //console.log("width diff: " + (specifiedWidth - newWidth));
     //console.log("height diff: " + (specifiedHeight - newHeight));
     if ((specifiedWidth - newWidth) > (specifiedHeight - newHeight)) {
 	newHeight = newWidth * specifiedHeight / specifiedWidth;
+	window.alert("b1")
     }
     else {
 	newWidth = newHeight * specifiedWidth / specifiedHeight;
+	window.alert("b2")
     }
     //console.log("newwidth: " + newWidth);
     //console.log("newheight: " + newHeight);
