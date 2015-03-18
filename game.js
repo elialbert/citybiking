@@ -223,21 +223,21 @@ function doTiltMovement(quat, input) {
     if (!quat || (quat.x===0 && quat.y===0 && quat.z===0)) {
 	return
     }
-    //if (globalOptions.debugMode) {
+    if (globalOptions.debugMode) {
 	if (quat) {
 	    $("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w+"<br/>"+"up: " + input.up + ", down: " + input.down + ", left: " + input.left + ", right: " + input.right);
 	}
 	else {
 	    $("#quat").html("undefined");
 	}	
-    //}
+    }
 
     if(window.innerHeight > window.innerWidth){
 	if (quat.x > .04) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x < -.04) {
+	else if (quat.x < -.135) {
 	    input.up = false;
 	    input.down = true;
 	}
@@ -245,11 +245,11 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = false;
 	}
-	if (quat.y > .035) {
+	if (quat.y > .05) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y < -.035) {
+	else if (quat.y < -.05) {
 	    input.left = false;
 	    input.right = true;
 	}
@@ -263,7 +263,7 @@ function doTiltMovement(quat, input) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x > .04) {
+	else if (quat.x > .135) {
 	    input.up = false;
 	    input.down = true;
 	}
@@ -271,11 +271,11 @@ function doTiltMovement(quat, input) {
 	    input.up = false;
 	    input.down = false;
 	}
-	if (quat.y < -.035) {
+	if (quat.y < -.05) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y > .035) {
+	else if (quat.y > .05) {
 	    input.left = false;
 	    input.right = true;
 	}
