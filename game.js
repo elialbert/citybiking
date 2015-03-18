@@ -290,7 +290,7 @@ function doTiltMovement(quat, input) {
 
 function fitToScreen(renderer) {
     var newWidth = window.innerWidth;
-    var newHeight = window.innerHeight;
+    var newHeight = window.innerHeight-80;
     var specifiedWidth = globalOptions.level.levelSize[0] || 800;
     var specifiedHeight = globalOptions.level.levelSize[1] || 600;
     //console.log("width diff: " + (specifiedWidth - newWidth));
