@@ -221,7 +221,7 @@ function setupKeys(input) {
 function doTiltMovement(quat, input) {
     
     if (quat) {
-	$("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w);
+	$("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w+"<br/>"+"up: " + input.up + ", down: " + input.down + ", left: " + input.left + ", right: " + input.right);
     }
     else {
 	$("#quat").html("undefined");
@@ -232,37 +232,37 @@ function doTiltMovement(quat, input) {
     }
 
     if(window.innerHeight > window.innerWidth){
-	if (quat.x > .1) {
+	if (quat.x > .07) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x < -.1) {
+	else if (quat.x < -.07) {
 	    input.up = false;
 	    input.down = true;
 	}
-	if (quat.y > .1) {
+	if (quat.y > .07) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y < -.1) {
+	else if (quat.y < -.07) {
 	    input.left = false;
 	    input.right = true;
 	}
     }
     else {
-	if (quat.x < -.1) {
+	if (quat.x < -.07) {
 	    input.up = true;
 	    input.down = false;
 	}
-	else if (quat.x > .1) {
+	else if (quat.x > .07) {
 	    input.up = false;
 	    input.down = true;
 	}
-	if (quat.y < -.1) {
+	if (quat.y < -.07) {
 	    input.left = true;
 	    input.right = false;
 	}
-	else if (quat.y > .1) {
+	else if (quat.y > .07) {
 	    input.left = false;
 	    input.right = true;
 	}
