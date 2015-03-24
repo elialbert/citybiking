@@ -276,7 +276,7 @@ function setupJoystick(width, height) {
     }
     else {
 	containerEl.css("top",height+"px");
-	containerEl.css("left",(extraWidth + width-(.35*width))+"px");
+	containerEl.css("left",(extraWidth + width-200)+"px");
     }
     joystickEl.css("position","absolute");
     joystickEl.css("top",(containerEl.height()/2-10) + "px");
