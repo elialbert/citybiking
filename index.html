@@ -7,12 +7,9 @@
     <!--<link rel="stylesheet" type="text/css" href="bootstrap.css">-->
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <!--
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.js"></script>
-    -->
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
     <script src="SAT.min.js"></script>
-    <script src="fulltilt.min.js"></script>
     <script src="pixi.js"></script>
     <script src="levels.js"></script>
     <script src="levels2.js"></script>
@@ -30,6 +27,15 @@
 <body onload="start();">
   <div align="center">
     <canvas id="game-canvas" width="1000" height="800"></canvas>
+    <div id="joystick-container">
+      <div id="joystick-left" class="joystick-groove"></div>
+      <div id="joystick-up" class="joystick-groove"></div>
+      <div id="joystick-right" class="joystick-groove"></div>
+      <div id="joystick-down" class="joystick-groove"></div>
+      <div id="joystick" class="draggable ui-widget-content">O</div>
+    </div>
+
+
   </div><br/>
   <div class="inputtext" id="levelDescription"></div>
     <form action="">

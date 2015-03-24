@@ -29,3 +29,26 @@ body {
 #levelDescription {
     text-align:center;
 }
+
+#joystick-container {
+    height: 10%;
+    width: 5%;
+    border: 2px solid #fff;
+    position: absolute;
+    top: 750px;
+    left: 1500px;
+}
+
+.joystick-groove {
+    border: 1px solid #ff0000;
+}
+
+#joystick {
+    color: white;
+    width: 20px;
+    height: 20px;
+}
+
+#textpadding {
+    visibility: hidden;
+}

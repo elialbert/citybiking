@@ -3,7 +3,6 @@ var globalOptions = {debugMode:false, level: busyIntersectionsLevel, stop:false,
 function start(renderer, stage) {
     globalOptions.stop = true;
     // create a renderer instance.
-
     if (!renderer) {
 	addLevelChoices();
 	var renderer = PIXI.autoDetectRenderer(globalOptions.level.levelSize[0] || 800, globalOptions.level.levelSize[1] || 600, {view:document.getElementById("game-canvas"), antialiasing:true});
@@ -75,20 +74,8 @@ function init(renderer, stage) {
     var initialBikeRotation = level.bikeRotation || 0
     var input = {up: false, down: false, left: false, right: false}
     var posChange = {changeX:0, changeY:0, direction:270-initialBikeRotation, speed:0}
-    var promise = new FULLTILT.getDeviceOrientation({ 'type': 'world' });
-    var deviceOrientation;
-    promise
-	.then(function(controller) {
-	    deviceOrientation = controller;
-	    console.dir(deviceOrientation);
-	})
-	.catch(function(message) {
-	    console.log("failed device orientation");
-	    console.error(message);
-	});
     setupKeys(input);
     stage.addChild(bikeSprite);
-
 
     globalOptions.stop=false;
     requestAnimFrame( animate );
@@ -97,10 +84,6 @@ function init(renderer, stage) {
 	if (globalOptions.stop) {
 	    return reset(renderer, stage)
 	}
-	if (deviceOrientation) {
-	    var quat = deviceOrientation.getScreenAdjustedQuaternion();
-	}
-	doTiltMovement(quat, input);
         requestAnimFrame( animate );
 	doEnvironment();
 	doBikeMovement();
@@ -115,6 +98,7 @@ function init(renderer, stage) {
     }
 
     function doBikeMovement() {
+	runJoystick(input);
 	posChange = moveBike(posChange.direction,posChange.speed,input)
 	bikeSprite.position.x += posChange.changeX;
 	bikeSprite.position.y += posChange.changeY;
@@ -219,75 +203,6 @@ function setupKeys(input) {
 
 }
 
-function doTiltMovement(quat, input) {
-    if (!quat || (quat.x===0 && quat.y===0 && quat.z===0)) {
-	return
-    }
-    if (globalOptions.debugMode) {
-	if (quat) {
-	    $("#quat").html("orientation: " + (window.innerHeight > window.innerWidth) + ", x: " + quat.x + ", y: " + quat.y + ", z: " + quat.z + ", w: " + quat.w+"<br/>"+"up: " + input.up + ", down: " + input.down + ", left: " + input.left + ", right: " + input.right);
-	}
-	else {
-	    $("#quat").html("undefined");
-	}	
-    }
-
-    if(window.innerHeight > window.innerWidth){
-	if (quat.x > .04) {
-	    input.up = true;
-	    input.down = false;
-	}
-	else if (quat.x < -.135) {
-	    input.up = false;
-	    input.down = true;
-	}
-	else {
-	    input.up = false;
-	    input.down = false;
-	}
-	if (quat.y > .05) {
-	    input.left = true;
-	    input.right = false;
-	}
-	else if (quat.y < -.05) {
-	    input.left = false;
-	    input.right = true;
-	}
-	else {
-	    input.left = false;
-	    input.right = false;
-	}
-    }
-    else {
-	if (quat.x < -.04) {
-	    input.up = true;
-	    input.down = false;
-	}
-	else if (quat.x > .135) {
-	    input.up = false;
-	    input.down = true;
-	}
-	else {
-	    input.up = false;
-	    input.down = false;
-	}
-	if (quat.y < -.05) {
-	    input.left = true;
-	    input.right = false;
-	}
-	else if (quat.y > .05) {
-	    input.left = false;
-	    input.right = true;
-	}
-	else {
-	    input.left = false;
-	    input.right = false;
-	}
-
-    }
-    
-}
-
 function fitToScreen(renderer) {
     var newWidth = window.innerWidth;
     var newHeight = window.innerHeight-60;
@@ -309,6 +224,7 @@ function fitToScreen(renderer) {
     //console.log("newheight: " + newHeight);
     renderer.view.style.width = newWidth + "px";
     renderer.view.style.height = newHeight + "px";
+    setupJoystick(newWidth, newHeight);
 }
 
 function setupOptions(renderer, stage) {
@@ -344,4 +260,108 @@ function addLevelChoices() {
     var strLevel = "busyIntersections";
     $("input:radio[name=levelchoice]").filter('[value='+strLevel+']').prop('checked',true);
     $("#levelDescription").html(strLevel + " level: " + globalOptions.level.description);
+}
+
+function setupJoystick(width, height) {
+    extraWidth = (window.innerWidth - width) / 2
+    containerEl = $("#joystick-container");
+    joystickEl = $("#joystick");
+    containerEl.css("position","absolute");
+    containerEl.css("top",(height-(.15*height))+"px");
+    containerEl.css("left",(extraWidth + width-(.15*width))+"px");
+    joystickEl.css("position","absolute");
+    joystickEl.css("top",(containerEl.height()/2-10) + "px");
+    joystickEl.css("left",(containerEl.width()/2 - 10) + "px");
+
+    heightOffset = containerEl.height()*.25;
+
+    // setup groove boxes
+    jslEl = $("#joystick-left");
+    jsrEl = $("#joystick-right");
+    jsuEl = $("#joystick-up");
+    jsdEl = $("#joystick-down");
+    jslEl.css("position","absolute");
+    jslEl.css("height",containerEl.height()/2);
+    jslEl.css("width",containerEl.width()/3-2);
+    jslEl.css("top","0px");
+    jslEl.css("left","0px");
+    jsrEl.css("position","absolute");
+    jsrEl.css("height",containerEl.height()/2);
+    jsrEl.css("width",containerEl.width()/3-2);
+    jsrEl.css("top","0px");
+    jsrEl.css("left",containerEl.width()/3*2);
+    jsuEl.css("position","absolute");
+    jsuEl.css("height",containerEl.height()/2 - heightOffset);
+    jsuEl.css("width",containerEl.width()/3-2);
+    jsuEl.css("top","0px");
+    jsuEl.css("left",containerEl.width()/3);
+    jsdEl.css("position","absolute");
+    jsdEl.css("height",containerEl.height()/2 - heightOffset-2);
+    jsdEl.css("width",containerEl.width()-2);
+    jsdEl.css("top",containerEl.height()/2 + heightOffset);
+    jsdEl.css("left","0px");
+
+
+    joystickEl.draggable({
+	containment: "#joystick-container",
+	scroll: false,
+	revert: true,
+    });
+    globalOptions.joystickContainerWidth = containerEl.width();
+    globalOptions.joystickContainerHeight = containerEl.height();
+    globalOptions.joystickStartingPosition = $("#joystick").position();
+}
+
+function runJoystick(input) {
+    var joystickEl = $("#joystick");
+    var triggerHeight = globalOptions.joystickContainerHeight * .25;
+    var triggerWidth = globalOptions.joystickContainerWidth * .25;
+    var position = joystickEl.position();
+    var top = position.top - globalOptions.joystickStartingPosition.top;
+    var left = position.left - globalOptions.joystickStartingPosition.left;
+    jslEl = $("#joystick-left");
+    jsrEl = $("#joystick-right");
+    jsuEl = $("#joystick-up");
+    jsdEl = $("#joystick-down");
+    if (top < -1*triggerHeight) {
+	input.up = true;
+	input.down = false;
+	jsuEl.css("background-color","red");
+	jsdEl.css("background-color","");
+    }
+    else if (top > triggerHeight) {
+	input.up = false;
+	input.down = true;
+	jsuEl.css("background-color","");
+	jsdEl.css("background-color","red");
+    }
+    else {
+	input.up = false;
+	input.down = false;
+	jsuEl.css("background-color","");
+	jsdEl.css("background-color","");
+    }
+    
+    if (left < -1*triggerWidth) {
+	input.left = true;
+	input.right = false;
+	jslEl.css("background-color","red");
+	jsrEl.css("background-color","");
+    }
+    else if (left > triggerWidth) {
+	input.left = false;
+	input.right = true;
+	jslEl.css("background-color","");
+	jsrEl.css("background-color","red");
+    }
+    else { 
+	input.left = false;
+	input.right = false;
+	jslEl.css("background-color","");
+	jsrEl.css("background-color","");
+    }
+	
+    //console.log("input up is " + input.up + ", left is " + input.left + ", right is " + input.right + ", down is " + input.down);
+    
+    
 }
