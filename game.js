@@ -267,8 +267,14 @@ function setupJoystick(width, height) {
     containerEl = $("#joystick-container");
     joystickEl = $("#joystick");
     containerEl.css("position","absolute");
-    containerEl.css("top",(height-(.15*height))+"px");
-    containerEl.css("left",(extraWidth + width-(.15*width))+"px");
+    if ((window.innerWidth - width) > 50) {
+	containerEl.css("top",(height-(.4*height))+"px");
+	containerEl.css("left",(extraWidth + width+"px"));
+    }
+    else {
+	containerEl.css("top",height+"px");
+	containerEl.css("left",(extraWidth + width-(.35*width))+"px");
+    }
     joystickEl.css("position","absolute");
     joystickEl.css("top",(containerEl.height()/2-10) + "px");
     joystickEl.css("left",(containerEl.width()/2 - 10) + "px");

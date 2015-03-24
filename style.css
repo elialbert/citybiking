@@ -31,8 +31,8 @@ body {
 }
 
 #joystick-container {
-    height: 10%;
-    width: 5%;
+    height: 40%;
+    width: 20%;
     border: 2px solid #fff;
     position: absolute;
     top: 750px;
