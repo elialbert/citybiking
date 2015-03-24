@@ -98,7 +98,9 @@ function init(renderer, stage) {
     }
 
     function doBikeMovement() {
-	runJoystick(input);
+	if (window.innerWidth < 461) {
+	    runJoystick(input);
+	}
 	posChange = moveBike(posChange.direction,posChange.speed,input)
 	bikeSprite.position.x += posChange.changeX;
 	bikeSprite.position.y += posChange.changeY;
@@ -227,8 +229,15 @@ function fitToScreen(renderer) {
     window.addEventListener("resize", function() {
 	fitToScreen(renderer);
     }, false);
-
-    setupJoystick(newWidth, newHeight);
+    if (window.innerWidth < 461) {
+	setupJoystick(newWidth, newHeight);
+    }
+    else {
+	containerEl = $("#joystick-container");
+	joystickEl = $("#joystick");
+	containerEl.css("visibility","hidden");
+	joystickEl.css("visibility","hidden");
+    }
 }
 
 function setupOptions(renderer, stage) {

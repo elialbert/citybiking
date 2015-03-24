@@ -158,7 +158,7 @@ var rushHourLevel = {
 	    [442,50, 'pause',50000],
 	],
 	 type: 'parked',
-	 sceneIncrementRestart: 3,
+	 sceneIncrementRestart: 4,
 	 speed: 0,
 	 fillColor: 0xFFFFFF,
 	},
