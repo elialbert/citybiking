@@ -266,6 +266,9 @@ function setupJoystick(width, height) {
     extraWidth = (window.innerWidth - width) / 2
     containerEl = $("#joystick-container");
     joystickEl = $("#joystick");
+    if (containerEl.width() < 200) {
+	containerEl.css("width",200);
+    }
     containerEl.css("position","absolute");
     if ((window.innerWidth - width) > 50) {
 	containerEl.css("top",(height-(.4*height))+"px");
