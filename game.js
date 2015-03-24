@@ -224,6 +224,10 @@ function fitToScreen(renderer) {
     //console.log("newheight: " + newHeight);
     renderer.view.style.width = newWidth + "px";
     renderer.view.style.height = newHeight + "px";
+    window.addEventListener("resize", function() {
+	fitToScreen(renderer);
+    }, false);
+
     setupJoystick(newWidth, newHeight);
 }
 
@@ -272,7 +276,7 @@ function setupJoystick(width, height) {
     containerEl.css("position","absolute");
     if ((window.innerWidth - width) > 50) {
 	containerEl.css("top",(height-(.4*height))+"px");
-	containerEl.css("left",(extraWidth + width+"px"));
+	containerEl.css("left",(extraWidth + width-100+"px"));
     }
     else {
 	containerEl.css("top",height+"px");
